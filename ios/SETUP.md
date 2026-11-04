@@ -91,6 +91,21 @@ Golden fixtures are real responses of finished games, in `BNXTTests/Fixtures/`, 
 
 **Look at the screens** after building UI: run `AppStoreScreenshotUITests` (or `bundle exec fastlane screenshots`) and open every image.
 
+## Local CI (required before merging)
+
+Tests don't run on GitHub's macOS runners (REQUIREMENTS §7.22). After pushing a branch, run:
+
+```bash
+ios/scripts/ci-local.sh            # lint + unit + UI tests on HEAD, posts the `local-tests` status to GitHub
+ios/scripts/ci-local.sh --no-post  # same checks on uncommitted work, nothing posted
+SIM="iPhone 17 Pro" ios/scripts/ci-local.sh   # another simulator
+```
+
+It refuses to post for a dirty tree or an unpushed commit, so the status always matches the tested commit. Pending → success/failure
+shows on the PR; logs land in `.tmp/ci-local/<sha>/`. `main` requires `local-tests` and the GitHub `lint` check.
+Fallback when the Mac isn't available: `gh workflow run CI --ref <branch> -f macos_tests=true` (GitHub macOS runner, slow queue).
+Pushing a new commit to the PR means running the script again: statuses belong to commits.
+
 ## Lint
 
 ```bash

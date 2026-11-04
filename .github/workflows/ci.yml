@@ -1,10 +1,19 @@
 name: CI
 
+# Unit + UI tests run on the developer's Mac via ios/scripts/ci-local.sh, which posts the required
+# `local-tests` commit status (REQUIREMENTS.md §7.22). GitHub only runs the cheap lint job automatically;
+# the macOS test job remains as a manual fallback: gh workflow run CI --ref <branch> -f macos_tests=true
+
 on:
   push:
     branches: [main]
   pull_request:
-  workflow_dispatch:   # run on any branch: gh workflow run CI --ref <branch>
+  workflow_dispatch:
+    inputs:
+      macos_tests:
+        description: Also run unit + UI tests on a GitHub macOS runner
+        type: boolean
+        default: false
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -12,16 +21,16 @@ concurrency:
 
 jobs:
   lint:
-    runs-on: macos-26
+    runs-on: ubuntu-latest
+    container: ghcr.io/realm/swiftlint:0.65.1
     steps:
       - uses: actions/checkout@v4
-      - name: Install SwiftLint
-        run: brew install swiftlint
       - name: Lint
         run: swiftlint --strict --reporter github-actions-logging
 
-  test:
-    name: Unit + UI tests
+  macos-tests:
+    name: Unit + UI tests (GitHub macOS, manual)
+    if: github.event_name == 'workflow_dispatch' && inputs.macos_tests
     runs-on: macos-26
     steps:
       - uses: actions/checkout@v4

@@ -293,9 +293,15 @@ on surface, which fails WCAG AA. The new value measures 5.7:1 and 5.2:1. Pinned 
 **§7.21 Releases: one command minus the last click.** fastlane + App Store Connect API key, metadata in git, and screenshots captured by
 `AppStoreScreenshotUITests`; a human presses Submit for Review (playbook 04).
 
+**§7.22 Tests run on the developer's Mac, not GitHub's macOS runners.** *Decided 4 Nov 2026:* `ios/scripts/ci-local.sh` runs lint and
+both test suites on the Mac against the pushed commit and posts a `local-tests` commit status; `main` requires `local-tests` and the
+GitHub `lint` job (a SwiftLint container on Linux) before merging. *Why:* GitHub's macOS runners queued 5–15 minutes per run, while the local
+run takes about a minute. *Why not a self-hosted runner:* the repo is public, and a fork's pull request could run code on the Mac.
+*Trade-off:* checks only run when someone runs the script; the GitHub macOS job stays available as a manual fallback.
+
 ## 8. Release status & roadmap
 
-**Live:** nothing yet. **On `main`:** app shell 0.1.0 (5 placeholder tabs, theme tokens, test targets, CI). **On `phase0-live-recorder`:** live recorder, Archivo, API key plumbing.
+**Live:** nothing yet. **On `main`:** app shell 0.1.0 (5 placeholder tabs, Archivo display type, theme tokens, API key plumbing, test targets, local CI), live recorder.
 **Prototype:** v0.1 (HTML, data snapshot 3 Nov 2026).
 
 ### Phase 0: foundations & permission (in progress)
