@@ -294,10 +294,15 @@ on surface, which fails WCAG AA. The new value measures 5.7:1 and 5.2:1. Pinned 
 `AppStoreScreenshotUITests`; a human presses Submit for Review (playbook 04).
 
 **§7.22 Tests run on the developer's Mac, not GitHub's macOS runners.** *Decided 4 Nov 2026:* `ios/scripts/ci-local.sh` runs lint and
-both test suites on the Mac against the pushed commit and posts a `local-tests` commit status; `main` requires `local-tests` and the
-GitHub `lint` job (a SwiftLint container on Linux) before merging. *Why:* GitHub's macOS runners queued 5–15 minutes per run, while the local
+both test suites on the Mac against the pushed commit and posts a `local-tests` commit status, next to GitHub's `lint` job (a SwiftLint
+container on Linux). *Why:* GitHub's macOS runners queued 5–15 minutes per run, while the local
 run takes about a minute. *Why not a self-hosted runner:* the repo is public, and a fork's pull request could run code on the Mac.
 *Trade-off:* checks only run when someone runs the script; the GitHub macOS job stays available as a manual fallback.
+
+**§7.23 Solo development: commit straight to `main`, no branches or PRs.** *Decided 4 Nov 2026.* *Why:* one developer, so a PR per
+change adds ceremony without review value. `main` still blocks force-pushes and deletion. Checks aren't required for merging, because
+there's nothing to merge; `ci-local.sh` runs after every push instead. *Revisit when* a second contributor joins or the project changes:
+then go back to the playbook's branch + PR flow and require `local-tests` and `lint` on `main` again. (The PR template stays for that.)
 
 ## 8. Release status & roadmap
 

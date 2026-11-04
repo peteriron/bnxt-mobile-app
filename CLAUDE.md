@@ -56,10 +56,12 @@ by `accessibilityIdentifier`, but query the tab bar by index. Dismiss a focused 
 
 ## Shipping a change
 
-1. Work on a branch; run the test command above while iterating.
-2. Commit and push the branch, then run `ios/scripts/ci-local.sh`. It posts the `local-tests` status that `main` requires (§7.22).
-   Don't wait for GitHub macOS runners: there are none in the normal flow.
-3. Open the PR; merge once `local-tests` and `lint` are green, and only when asked.
+Solo development (§7.23): work directly on `main`, no feature branches or PRs, until a second contributor joins.
+
+1. Run the test command above (or `ios/scripts/ci-local.sh --no-post`) while iterating.
+2. Commit and push to `main` when asked, then run `ios/scripts/ci-local.sh`. It posts the `local-tests` status to the pushed commit (§7.22).
+   There are no GitHub macOS runners in the normal flow; GitHub only runs `lint`.
+3. If `local-tests` or `lint` fails, fix it in the next commit.
 
 ## Releasing
 
@@ -68,4 +70,4 @@ already waiting for review. Never submit for review: that's the human's step.
 
 ## Git
 
-Commit and push only when asked. Feature work happens on a branch, merged when asked.
+Commit and push only when asked. Commits go straight to `main` for now (§7.23); force-pushes to `main` are blocked.

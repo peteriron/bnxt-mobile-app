@@ -93,7 +93,7 @@ Golden fixtures are real responses of finished games, in `BNXTTests/Fixtures/`, 
 
 ## Local CI (required before merging)
 
-Tests don't run on GitHub's macOS runners (REQUIREMENTS §7.22). After pushing a branch, run:
+Tests don't run on GitHub's macOS runners (REQUIREMENTS §7.22). After pushing to `main` (solo flow, §7.23), run:
 
 ```bash
 ios/scripts/ci-local.sh            # lint + unit + UI tests on HEAD, posts the `local-tests` status to GitHub
@@ -102,9 +102,10 @@ SIM="iPhone 17 Pro" ios/scripts/ci-local.sh   # another simulator
 ```
 
 It refuses to post for a dirty tree or an unpushed commit, so the status always matches the tested commit. Pending → success/failure
-shows on the PR; logs land in `.tmp/ci-local/<sha>/`. `main` requires `local-tests` and the GitHub `lint` check.
+shows on the commit in GitHub; logs land in `.tmp/ci-local/<sha>/`. Checks aren't required for merging while there's one developer
+(§7.23); when that changes, require `local-tests` and `lint` on `main` again.
 Fallback when the Mac isn't available: `gh workflow run CI --ref <branch> -f macos_tests=true` (GitHub macOS runner, slow queue).
-Pushing a new commit to the PR means running the script again: statuses belong to commits.
+Every pushed commit needs its own run: statuses belong to commits.
 
 ## Lint
 
