@@ -54,6 +54,13 @@ by `accessibilityIdentifier`, but query the tab bar by index. Dismiss a focused 
 - Never decode players' `facebook` / `twitter` / `instagram` or `description`; show age, never the birth date (§7.16).
 - No analytics, advertising or tracking SDKs (§7.16).
 
+## Shipping a change
+
+1. Work on a branch; run the test command above while iterating.
+2. Commit and push the branch, then run `ios/scripts/ci-local.sh`. It posts the `local-tests` status that `main` requires (§7.22).
+   Don't wait for GitHub macOS runners: there are none in the normal flow.
+3. Open the PR; merge once `local-tests` and `lint` are green, and only when asked.
+
 ## Releasing
 
 `/release x.y.z` runs [`.claude/commands/release.md`](.claude/commands/release.md). Before staging anything, check App Store Connect for a version
