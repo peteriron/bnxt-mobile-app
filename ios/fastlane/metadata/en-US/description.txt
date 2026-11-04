@@ -1,0 +1,10 @@
+Follow your club through the BNXT League, the joint top division of Belgium and the Netherlands.
+
+• Your club first: next game, last result, standing and leaders on one screen
+• Live games with score, clock and play-by-play
+• Full box scores, quarter scores and top performers for every game
+• Standings for the whole league, Belgium and the Netherlands, plus the projected playoff picture
+• Stat leaders in nine categories and side-by-side player comparison
+• Every club, roster and player page with season averages and game logs
+
+No account, no tracking. Built on public BNXT League data.

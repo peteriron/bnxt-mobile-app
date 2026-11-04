@@ -1,0 +1,123 @@
+# Release lanes (docs/ios-playbook/04-release-and-app-store.md, REQUIREMENTS.md §7.21).
+# Scaffold: not yet exercised against App Store Connect. Needs ASC_KEY_ID / ASC_ISSUER_ID in ios/fastlane/.env
+# and the .p8 key at ~/.appstoreconnect/private_keys/ (ios/SETUP.md, "Releasing").
+# Nothing here ever submits for review: that's the human's click.
+
+default_platform(:ios)
+
+IOS_DIR = File.expand_path("..", __dir__)
+REPO_DIR = File.expand_path("..", IOS_DIR)
+SPEC = File.join(IOS_DIR, "project.yml")
+BUNDLE_ID = "com.pjproductions.bnxt"
+TEST_DEVICE = ENV.fetch("TEST_DEVICE", "iPhone 18 Pro")
+# App Store Connect accepts only fixed screenshot sizes; iPhone 14 Plus renders 1284x2778 (6.7").
+SCREENSHOT_DEVICE = ENV.fetch("SCREENSHOT_DEVICE", "iPhone 14 Plus")
+# `name=` alone resolves to the newest runtime, which may not have that device; pin the OS.
+SCREENSHOT_OS = ENV.fetch("SCREENSHOT_OS", "26.5")
+SCREENSHOT_NAMES = %w[01-Home 02-Games 03-Standings 04-Stats 05-Clubs].freeze
+BLOCKING_STATES = %w[WAITING_FOR_REVIEW IN_REVIEW PENDING_DEVELOPER_RELEASE PENDING_APPLE_RELEASE].freeze
+
+def generate!
+  sh("cd '#{IOS_DIR}' && xcodegen generate")
+end
+
+def asc_api_key
+  key_id = ENV["ASC_KEY_ID"] or UI.user_error!("Set ASC_KEY_ID in ios/fastlane/.env")
+  issuer = ENV["ASC_ISSUER_ID"] or UI.user_error!("Set ASC_ISSUER_ID in ios/fastlane/.env")
+  path = ENV.fetch("ASC_KEY_PATH", File.expand_path("~/.appstoreconnect/private_keys/AuthKey_#{key_id}.p8"))
+  app_store_connect_api_key(key_id: key_id, issuer_id: issuer, key_filepath: path)
+end
+
+def check_version!(version)
+  UI.user_error!("Pass version:x.y.z") unless version.to_s.match?(/\A\d+\.\d+\.\d+\z/)
+end
+
+platform :ios do
+  desc "Regenerate the project and run unit + UI tests (screenshot test excluded)"
+  lane :test do
+    generate!
+    sh("cd '#{IOS_DIR}' && xcodebuild -project BNXT.xcodeproj -scheme BNXT " \
+       "-destination 'platform=iOS Simulator,name=#{TEST_DEVICE}' " \
+       "-skip-testing:BNXTUITests/AppStoreScreenshotUITests -collect-test-diagnostics never test")
+  end
+
+  desc "Set MARKETING_VERSION and increment CURRENT_PROJECT_VERSION in project.yml"
+  lane :bump_version do |options|
+    version = options[:version]
+    check_version!(version)
+    spec = File.read(SPEC)
+    build = spec[/CURRENT_PROJECT_VERSION: "(\d+)"/, 1].to_i + 1
+    spec = spec.sub(/MARKETING_VERSION: "[^"]*"/, %(MARKETING_VERSION: "#{version}"))
+               .sub(/CURRENT_PROJECT_VERSION: "\d+"/, %(CURRENT_PROJECT_VERSION: "#{build}"))
+    File.write(SPEC, spec)
+    generate!
+    UI.success("Bumped to #{version} (#{build})")
+  end
+
+  desc "Capture App Store screenshots with AppStoreScreenshotUITests into fastlane/screenshots/en-US"
+  lane :screenshots do
+    generate!
+    work = File.join(REPO_DIR, ".tmp", "screenshots")
+    out = File.join(IOS_DIR, "fastlane", "screenshots", "en-US")
+    sh("rm -rf '#{work}' '#{out}' && mkdir -p '#{work}' '#{out}'") # deliver uploads every PNG it finds
+    sh("cd '#{IOS_DIR}' && xcodebuild -project BNXT.xcodeproj -scheme BNXT " \
+       "-destination 'platform=iOS Simulator,name=#{SCREENSHOT_DEVICE},OS=#{SCREENSHOT_OS}' " \
+       "-only-testing:BNXTUITests/AppStoreScreenshotUITests -resultBundlePath '#{work}/run.xcresult' " \
+       "-collect-test-diagnostics never test")
+    sh("xcrun xcresulttool export attachments --path '#{work}/run.xcresult' --output-path '#{work}/attachments'")
+    manifest = JSON.parse(File.read(File.join(work, "attachments", "manifest.json")))
+    manifest.flat_map { |t| t["attachments"] }.each do |a|
+      name = SCREENSHOT_NAMES.find { |n| a["suggestedHumanReadableName"].to_s.start_with?(n) } or next
+      FileUtils.cp(File.join(work, "attachments", a["exportedFileName"]), File.join(out, "#{name}.png"))
+    end
+    missing = SCREENSHOT_NAMES.reject { |n| File.exist?(File.join(out, "#{n}.png")) }
+    UI.user_error!("Missing screenshots: #{missing.join(', ')}") unless missing.empty?
+    UI.success("Screenshots in #{out}. Look at every one before staging.")
+  end
+
+  desc "Archive and upload the build (ios/scripts/release.sh)"
+  lane :build_and_upload do
+    sh("'#{IOS_DIR}/scripts/release.sh'")
+  end
+
+  desc "Upload metadata + screenshots, attach the processed build, verify. Never submits."
+  lane :stage_app_store do |options|
+    version = options[:version]
+    check_version!(version)
+    asc_api_key
+    app = Spaceship::ConnectAPI::App.find(BUNDLE_ID) or UI.user_error!("App #{BUNDLE_ID} not found in App Store Connect")
+
+    # deliver edits whichever version is in progress, so refuse while one is with Apple.
+    busy = app.get_app_store_versions.select { |v| BLOCKING_STATES.include?(v.app_store_state) }
+    UI.user_error!("Version #{busy.map(&:version_string).join(', ')} is #{busy.map(&:app_store_state).join(', ')}. Not staging.") unless busy.empty?
+
+    deliver(
+      app_identifier: BUNDLE_ID, app_version: version,
+      metadata_path: File.join(IOS_DIR, "fastlane", "metadata"),
+      screenshots_path: File.join(IOS_DIR, "fastlane", "screenshots"),
+      overwrite_screenshots: true, skip_binary_upload: true, submit_for_review: false,
+      force: true, precheck_include_in_app_purchases: false
+    )
+
+    build_number = File.read(SPEC)[/CURRENT_PROJECT_VERSION: "(\d+)"/, 1]
+    build = nil
+    40.times do
+      build = Spaceship::ConnectAPI::Build.all(app_id: app.id, version: version, build_number: build_number).first
+      break if build&.processed?
+      UI.message("Waiting for build #{version} (#{build_number}) to finish processing…")
+      sleep(30)
+    end
+    UI.user_error!("Build #{build_number} not processed yet; re-run the lane later") unless build&.processed?
+
+    store_version = app.get_edit_app_store_version or UI.user_error!("No editable App Store version")
+    store_version.select_build(build_id: build.id)
+
+    # Uploads to an already-submitted version can silently do nothing, so verify.
+    names = store_version.get_app_store_version_localizations.flat_map do |loc|
+      loc.get_app_screenshot_sets.flat_map { |set| set.app_screenshots.map(&:file_name) }
+    end
+    missing = SCREENSHOT_NAMES.reject { |n| names.any? { |f| f.to_s.start_with?(n) } }
+    UI.user_error!("Screenshots missing in App Store Connect: #{missing.join(', ')}") unless missing.empty?
+    UI.success("#{version} (#{build_number}) staged. Review it in App Store Connect and press Submit for Review yourself.")
+  end
+end

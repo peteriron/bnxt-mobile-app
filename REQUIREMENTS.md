@@ -1,0 +1,319 @@
+# BNXT League fan app: requirements
+
+The working spec. When a decision changes, rewrite it here in place; git keeps the old wording.
+Decisions are numbered (§7.x) so code comments and commits can refer to them.
+
+Related documents:
+[docs/bnxt-api.md](docs/bnxt-api.md) (data source reference) ·
+[ios/SETUP.md](ios/SETUP.md) (toolchain, build, test, release) ·
+[docs/ios-playbook/](docs/ios-playbook/README.md) (how we work) ·
+[prototype](prototype/index.html) ([hosted](https://claude.ai/artifact/BTCCtu4TkY31ohTfxLtjUv))
+
+---
+
+## 1. Overview & goals
+
+A native iPhone app for fans of the BNXT League, the joint Belgian–Dutch top basketball league,
+built on public league data. It should be the fastest way for a supporter to answer: *when does my
+club play, what's the score, where do we stand, and who's playing well?*
+
+**Goals**
+- A club-centric Home that shows a supporter's club at a glance (live/next game, last result, standing, leaders).
+- Complete, accurate league data: standings, all games, box scores, players, stat leaders.
+- Live games with score, clock and play-by-play (subject to data availability, §7.4).
+- Feels native: SwiftUI, Liquid Glass, Dynamic Type, VoiceOver, fast and offline-tolerant.
+
+**Non-goals (v1)**
+- Push notifications, Live Activities and widgets (§7.3).
+- News, video and podcasts (§7.3).
+- Dutch and French (strings are localisable from day one; §7.11).
+- Accounts, social features, comments, betting or fantasy.
+- Following more than one club (§7.8).
+- iPad and Mac layouts (deferred, not dropped).
+- Season archive and player career history.
+
+## 2. Users & scope
+
+| | |
+|---|---|
+| Primary user | A **club supporter** of one of the 16 BNXT clubs (§7.1) |
+| Secondary user | Neutral league followers and stats fans (served by Games, Standings, Stats) |
+| Platform | iPhone, iOS 26+ (§7.13) |
+| Distribution | App Store, free, Belgium + Netherlands first |
+| Languages | English in v1; Dutch and French later (§7.11) |
+| Accounts | None. Favourite club is stored on device (§7.16) |
+| Branding | Independent fan app built on public league data unless BNXT partners with us (§7.17) |
+
+## 3. Feature requirements
+
+Prototype references: `prototype/app.js` implements every screen below with real data; port its derivation rules
+(and their edge cases) rather than reinventing them.
+
+### 3.1 Onboarding
+- On first launch: a splash screen, then **Pick your club**: a 3-column logo grid of all clubs of the current season,
+  grouped 🇧🇪 Belgium / 🇳🇱 Netherlands, sorted by display name.
+- The continue button is disabled until a club is picked and then reads "Follow <club>".
+- The choice is stored on device. It can be changed from Settings and from any club page ("Make my club").
+
+### 3.2 Home (club-centric)
+In this order:
+1. **Live card** when the favourite club is playing: logos, live score, period + clock, the last play.
+   Tapping it opens Game detail (§3.4).
+2. **Next game** (opponent, vs/@, "In N days" or "Today", date and time) and **Last result** (W/L, score), side by side.
+3. **Standing**: league position, W–L, current streak, national rank ("3rd of the Belgian clubs"), whether
+   the club is in a playoff place, and a 5-row snippet of the table centred on the club.
+4. **Club leaders**: the club's top player in PTS, REB, AST and VAL (per-game averages).
+5. **Around the league**: results from the most recent round of games (the last 4 days with results), as a horizontal carousel.
+6. **League leaders**: VAL top 3.
+- Header: club logo and name, plus Search and Settings buttons.
+
+### 3.3 Games
+- Segmented **Upcoming / Results**; filter chips **All clubs / <my club>**.
+- Grouped by day with headers "Today", "Tomorrow", "Yesterday", or the full weekday and date.
+- Live games are pinned in a **Live now** section at the top of Upcoming.
+- Row: both clubs (logo, display name, score when started), status column (time / LIVE + clock / Final). The winner is shown
+  in full colour and the loser dimmed. A dot marks the favourite club.
+- Results newest first, upcoming soonest first.
+
+### 3.4 Game detail
+- Header: competition and phase, status (date/time and arena, LIVE + clock, or Final), both clubs (tappable to the club page)
+  with records, and a big score or tip-off time.
+- **Quarter table** (Q1–Q4, OT columns when played, total).
+- Tabs depend on state:
+  - **Live:** Play-by-play (newest first, with the score after each scoring play and a 3PT marker) · Box score · Summary · Info.
+  - **Final:** Summary · Box score · Info.
+  - **Upcoming:** Preview · Info.
+- **Summary:** top performer per club (highest VAL), team comparison bars (FG, 3P, FT with made/attempted, REB, AST, STL, BLK,
+  TOV, where the lower value wins), game leaders (PTS, REB, AST).
+- **Box score:** club switch. Columns MIN PTS REB AST STL BLK FG 3P FT OR TO PF (+/- if any non-zero) VAL. Starters marked,
+  team totals row, sticky player column, horizontal scroll. Tapping a row opens the player.
+- **Preview:** record, position, PPG, points allowed, REB, AST, FG%, 3P%, last-5 form for both clubs, a "player to watch" per club
+  (highest VAL), earlier meetings this season, **Tickets** (the home club's ticket URL) and **Add to Calendar**.
+- **Info:** date and tip-off (CET/CEST), arena and city, where to watch (BNXT.tv), tickets (not for finished games), and
+  the official game report on bnxtleague.com.
+
+### 3.5 Standings
+- Segmented **League / Belgium / Netherlands / Playoffs** (§7.5).
+- Table: rank, club, W, L, point difference, streak. A colour stripe marks the zone, the favourite club's row is tinted,
+  and tapping a row opens the club.
+- Belgium and Netherlands show national ranks with a dashed **cut line** after the last playoff place.
+- **Playoffs:** projected brackets "if the season ended today", labelled *Projected*. BE quarter-finals 1v8, 4v5, 2v7, 3v6 → semi-finals → final;
+  NL semi-finals 1v4, 2v3 → final. Series lengths are shown.
+- A legend and a "How the season works" explainer, both driven by config.
+
+### 3.6 Stats
+- Segmented **Players / Teams**.
+- Players: category chips VAL, PTS, REB, AST, STL, BLK, 2P%, 3P%, FT%. A hero card for #1 (photo, value, club), then ranks 2–20
+  with bars. Source: league rankings (minimum-attempt rules are the league's).
+- Teams: PPG, points allowed, RPG, APG, FG%, 3P%, SPG, TPG (lower is better for points allowed and turnovers), computed from box scores.
+- A **Compare** button opens §3.7.
+
+### 3.7 Compare players
+- Two slots (A violet, B orange). Defaults: A = the favourite club's top player by VAL; B = the league VAL leader (or the next leader if that's A).
+- Tapping a slot opens a sheet with a search field (player or club) listing players by VAL.
+- 12 mirrored bars: PTS, REB, AST, STL, BLK, TOV (lower wins), FG%, 3P%, FT%, VAL, MIN, GP. The better value is highlighted;
+  equal values highlight neither.
+- Reachable from Stats and from any player page ("Compare with another player" pre-fills A).
+
+### 3.8 Clubs, club page, player page, search, settings
+- **Clubs:** a search field, then 3-column grids per country (logo, display name, W–L and position, a star on the favourite).
+- **Club page:** a hero in the club colour (logo watermark), display name, country, city, arena, official name, facts (record,
+  position, PPG, points allowed), **Make my club**, **Tickets**. Tabs Roster (by jersey number: photo, name, position, height, flag, PPG) ·
+  Games (upcoming, then results with form) · Player stats (sortable per-game table).
+- **Player page:** a cut-out photo hero with a jersey-number watermark, first name and SURNAME, club. Bio: position, height, age,
+  nationality. Season averages (PTS REB AST VAL / STL BLK TO PF) with "#N in league" badges for top-10 ranks; shooting
+  rings (FG, 2PT, 3PT, FT with made/attempted per game); points-per-game chart with the average line; game log (opponent, W/L,
+  score, MIN PTS REB AST) linking to games. Players without games yet show bio only.
+- **Search:** players and clubs, from the first character, with suggestions when empty.
+- **Settings:** my club, language (English; NL/FR "coming later"), show onboarding again, data source and date.
+
+### 3.9 Version checker
+Keeps every user on a build that works (§7.18).
+- States: **up to date** · **update available** (a dismissible Home banner, shown once per latest version, plus a Settings row) ·
+  **update required** (a full-screen blocking view with an Update button, which can't be dismissed) · **unknown** (behaves as up to date).
+- Inputs: installed `CFBundleShortVersionString` and a remote **version policy**: `latestVersion`, `minimumVersion`,
+  `blockedVersions[]`, `storeURL`, localised `message`, `minimumDataSchema`.
+- Rules, in order:
+  1. Installed version unparsable or no policy → unknown.
+  2. Installed version in `blockedVersions` → required.
+  3. Installed version below `minimumVersion` → required.
+  4. App data schema below `minimumDataSchema` → required.
+  5. Installed version below `latestVersion` → available.
+  6. Otherwise → up to date.
+- Versions compare as SemVer `MAJOR.MINOR.PATCH` (missing parts = 0, numeric not lexical, pre-release suffix ignored).
+- Checked on launch and when returning to the foreground, at most once per 6 hours. The last policy is cached on device.
+- **A network failure never blocks the app:** fall back to the cached policy, otherwise unknown.
+- A policy change must pass a validation test before it's published: `minimumVersion ≤ latestVersion`, `storeURL` is https,
+  and `minimumVersion` is not above the version live in the App Store.
+
+## 4. Non-functional requirements
+
+| Area | Requirement |
+|---|---|
+| Performance | Cold launch to cached Home < 1.5 s on a recent iPhone; lists scroll at full frame rate; box score opens < 300 ms from cache |
+| Offline | The last successful response per request is cached; on failure the cache is served with a "last updated" time; first launch offline shows a clear empty state |
+| Network etiquette | Requests stay well inside the API's rate limit; live polling only while the live screen is visible (docs/bnxt-api.md, "Polling policy") |
+| Accessibility | Dynamic Type up to AX sizes (stacked layouts, tables scroll); VoiceOver labels on logos, scores and live state; text tokens ≥ 4.5:1 (tested); Reduce Motion respected |
+| Localization | String Catalogs; `LocalizedStringKey` for UI text, `Text(verbatim:)` for data; plurals for counts |
+| Privacy | §7.16: no accounts, no analytics or tracking SDKs, no personal data beyond public player profiles |
+| Reliability | Lenient decoding: one bad record never drops a list. Crash-free sessions ≥ 99.5 % |
+| Legal | Permission for data, logos, photos and name before public release (§7.17) |
+| Quality | Every feature ships with tests; every bug fix starts with a failing test (§7.19) |
+
+## 5. Technical architecture
+
+SwiftUI + MVVM on iOS 26, Swift 6 with strict concurrency, no third-party runtime dependencies (§7.13). The Xcode project is generated
+from `ios/project.yml` (§7.12). Code lives in the app target under `App/ Models/ Networking/ Persistence/ Services/
+ViewModels/ Views/ Theme/ Resources/`; tests in `BNXTTests` (XCTest) and `BNXTUITests` (XCUITest). Details and commands are in
+[ios/SETUP.md](ios/SETUP.md).
+
+### 5.1 Design tokens (from the prototype, `Theme.swift`)
+
+| Token | Value | Use |
+|---|---|---|
+| ink / surface / surface2 / surface3 | `#07060B` / `#14121C` / `#1D1A28` / `#29253A` | Backgrounds, cards, controls |
+| textPrimary / textSecondary / textTertiary | `#F5F3FB` / `#A9A4BD` / `#8A84A3` | Text levels (tertiary raised, §7.20) |
+| violet / violetHigh | `#6441FF` / `#A08CFF` | Brand, league-leader zone, compare A |
+| lime | `#E2FF00` | Highlight, my club, BE playoff zone, selected tab |
+| orange | `#FF6A13` | NL playoff zone, compare B |
+| live / win / loss | `#FF3B52` / `#3DDC97` / `#FF5C74` | Semantic |
+
+Display type: wide, heavy italic (the brand uses Druk Wide; see §7.10) for titles and numbers, with tabular digits. SF Pro for text.
+Club colours drive hero gradients; dark logos get a light plate (prototype: `DARK` detection).
+
+## 6. Data & API integration
+
+Source: the BNXT League's JSON API behind bnxtleague.com (`bnxt.sportpress.info/api/v1`). Full reference, quirks,
+personal-data inventory and polling policy are in [docs/bnxt-api.md](docs/bnxt-api.md).
+
+| Screen | Endpoints |
+|---|---|
+| Onboarding, Clubs | `competition-team/all`, `standings/…` |
+| Home | `standings/…`, `schedule/game-slider`, `competition-team/player-averages/{team}`, `player/average-rankings` |
+| Games | `schedule/game-slider` (+ full schedule, still to find: §8 Phase 0) |
+| Game detail | `schedule/find/{game}`, `schedule/overview/{game}`, `boxscore/game/{cid}/{game}`, live: still to find (§7.4) |
+| Standings | `standings/competition/{cid}/phase/{phase}` + season config |
+| Stats | `player/average-rankings/{cid}`, team aggregates from box scores |
+| Club page | `competition-team/find/{team}`, `roster/team-players/{team}`, `competition-team/player-averages/{team}`, `competition-team/statistics-by-game/total/{team}` |
+| Player page | `roster/find/{roster}`, `boxscore/player/season-games/{roster}`, rankings |
+
+Usage terms: none published; the API requires a client key that the website ships publicly. Using it for
+research is fine; a public release needs BNXT's permission (§7.17).
+
+## 7. Decisions
+
+**§7.1 Primary persona: club supporter.** Home is built around one favourite club picked at onboarding.
+*Why:* most fans follow one club; league-wide views remain one tab away. *Trade-off:* neutral fans get a club-centric Home.
+
+**§7.2 Tabs: Home · Games · Standings · Stats · Clubs.** Players are reached via Clubs, Stats, game detail and search.
+*Why:* matches how fans navigate (by club and by game). Five tabs is the iPhone maximum without "More".
+
+**§7.3 v1 scope = core + live + stat leaders/compare.** Push, news/video, widgets and Live Activities come after v1.
+*Why:* push needs a backend (§7.15) and news duplicates the website; live and stats are the differentiators.
+
+**§7.4 Live games are in v1, conditional on data.** We haven't yet observed what the API serves during a live game.
+*Decision:* verify on a game night in Phase 0. If the public API has no live data, the options are a Genius Sports / FIBA LiveStats
+licence or "score refresh every minute" with no play-by-play. *Note:* the prototype's live game is simulated and labelled so.
+
+**§7.5 Standings: phase switcher with zones from config.** League / Belgium / Netherlands / projected Playoffs. Zones are
+league leader (violet), Belgian top 8 (lime) and Dutch top 4 (orange), with no relegation in 2026-27.
+*Why:* the format changes from season to season, so the rules are data, not code.
+
+**§7.6 Game detail is full depth.** Quarters, team comparison, full box scores, top performers, game leaders, info, tickets.
+*Why:* box scores are the most-requested stats content; the data is complete for finished games.
+
+**§7.7 Compare = season averages side by side.** No game-log trend in v1.
+
+**§7.8 One favourite club in v1.** Multiple favourites come later. *Why:* keeps Home simple and decisive.
+
+**§7.9 Dark mode only in v1.** `UIUserInterfaceStyle = Dark`. *Why:* the brand identity is dark-first; a light theme
+needs its own design pass, not an inversion.
+
+**§7.10 Brand font: open.** The brand face is Druk Wide (commercial). *Options:* license it for the app, or bundle Archivo (OFL)
+at 112–125 % width, which the prototype uses. Until decided, `Theme.display` uses the system font, expanded heavy italic.
+
+**§7.11 English is the development language.** String keys are English source text; NL and FR are added later via the
+String Catalog. *Why:* serves both countries equally until both translations exist. (The playbook's previous project used
+Dutch; this one deliberately doesn't.)
+
+**§7.12 Generated Xcode project.** XcodeGen from `ios/project.yml`; `.xcodeproj` and Info.plist are git-ignored.
+
+**§7.13 Architecture: SwiftUI + MVVM with `@Observable`, iOS 26+, no third-party runtime dependencies.**
+View models are `@MainActor @Observable final class`es with dependencies injected through initializers (API client, stores,
+`now`, debounce intervals); no singletons inside tested types. One hand-written `URLSession` client with one method per endpoint.
+*Why `@Observable` instead of the playbook's `ObservableObject`:* iOS 26 is the minimum, and Observation tracks nested
+observable objects, which removes the playbook's "nested ObservableObject doesn't re-render" pitfall.
+*Why iOS 26:* Liquid Glass and the current SwiftUI APIs; the audience is on recent iPhones.
+
+**§7.14 Season, competition and phase IDs are configuration.** They change every summer (2026-27: season 2027, competition 25, phase 183).
+Bundled fallback in `Season.current`, overridable by remote config.
+
+**§7.15 Backend: none unless unavoidable (open until Phase 0).** Default: the app talks straight to the API with a file cache,
+and remote config (version policy, season IDs, zones, display names, club colours) is a static JSON file.
+A small caching proxy becomes necessary if any of these is true:
+(a) the rate limit (`X-RateLimit-Limit: 200`) is per key rather than per client, so all users would share it;
+(b) BNXT won't issue an app key and the website key can't be used;
+(c) live data needs fan-out.
+*Trade-off accepted for now:* no push notifications (§7.3).
+
+**§7.16 Privacy.** No accounts, no analytics, advertising or tracking SDKs; nothing about the user leaves the device except the
+data requests themselves. Crash data only via Apple's opt-in reporting (Xcode Organizer / MetricKit).
+Player data shown is the league's public profile: name, photo, jersey, position, height, nationality, **age** (computed from
+birth date; the date itself is never shown). **Never decoded:** players' `facebook` / `twitter` / `instagram` fields and the free-text
+`description`; staff personal fields if they ever appear. Enforced by `Decodable` types without those properties and a `Mirror` test.
+The favourite club is stored in `UserDefaults` only.
+
+**§7.17 Permission and branding.** Before any public release we need BNXT League's permission for data, logos, photos and the "BNXT"
+name, or the league publishes the app itself. Until then: the repo stays **private** (it contains club logos and player photos), the app presents
+itself as independent ("built on public BNXT League data"), and the bundle ID `com.pjproductions.bnxt` is provisional.
+
+**§7.18 Version checker with soft and hard updates** (§3.9). The policy is hosted with remote config (§7.15).
+*Why:* the data source is unversioned and outside our control; if it changes we must be able to move users onto a fixed build.
+A network failure never blocks.
+
+**§7.19 Testing: XCTest unit tests + XCUITest UI tests** per the playbook. Golden fixtures from real finished games, one shared
+`MockURLProtocol`, test-first bug fixes, UI tests by identifier and the tab bar by index.
+*(The earlier plan used Swift Testing in a Swift package; dropped in favour of the playbook's two app test targets.)*
+
+**§7.20 Tertiary text colour raised from `#716B88` to `#8A84A3`.** *Why:* the prototype value measured 4.0:1 on ink and 3.67:1
+on surface, which fails WCAG AA. The new value measures 5.7:1 and 5.2:1. Pinned by `ThemeTests.testTextTokensClearAAContrast`.
+
+**§7.21 Releases: one command minus the last click.** fastlane + App Store Connect API key, metadata in git, and screenshots captured by
+`AppStoreScreenshotUITests`; a human presses Submit for Review (playbook 04).
+
+## 8. Release status & roadmap
+
+**Live:** nothing yet. **On `main`:** app shell 0.1.0 (5 placeholder tabs, theme tokens, test targets, CI).
+**Prototype:** v0.1 (HTML, data snapshot 3 Nov 2026).
+
+### Phase 0: foundations & permission (in progress)
+- [x] Repo, generated Xcode project, unit and UI test targets, CI, lint config, scratch dir, release scaffolding
+- [ ] Contact BNXT League: data and API key, usage terms, logos/photos, name, live feed (§7.17)
+- [ ] Record a live game night: what `status` and live endpoints return, update cadence (§7.4)
+- [ ] Find the full-season schedule call (the website's calendar page)
+- [ ] Determine whether the rate limit is per key or per IP → settle §7.15
+- [ ] Brand font decision (§7.10); set `DEVELOPMENT_TEAM` and confirm the bundle ID
+
+### Phase 1: data layer
+API client (one method per endpoint) + lenient DTOs + golden fixtures; file cache with offline fallback; remote config;
+**version checker** (§3.9) with tests; privacy `Mirror` tests (§7.16); proxy only if §7.15 says so.
+
+### Phase 2: design system & shell
+Theme components (game row, live card, segmented control, chips, stat ring, sparkline, box score table, club logo with
+dark-plate); onboarding; settings; favourite-club store; deep links; version-checker UI.
+
+### Phase 3: core screens
+Clubs, club page, player page, games, game detail (final + upcoming), standings, stats, compare, home, search. Each ships with its tests.
+
+### Phase 4: live
+Live polling (visible-only), live card, live game detail; verified on two real game nights.
+
+### Phase 5: hardening & beta
+Accessibility and performance passes, Dynamic Type, offline, a TestFlight beta with fans of 2–3 clubs.
+
+### Phase 6: launch
+App Store metadata and screenshots, version policy set to 1.0.0, phased release.
+
+### After v1 (stretch)
+Push notifications and Live Activities (needs §7.15 revisited) · widgets · NL/FR · news & video · multiple favourites ·
+season archive · player careers · iPad.

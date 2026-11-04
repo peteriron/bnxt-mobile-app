@@ -1,0 +1,89 @@
+# XcodeGen spec: the single source of truth for the Xcode project (REQUIREMENTS.md §7.12).
+# Generate with `cd ios && xcodegen generate`. BNXT.xcodeproj and the Info.plist are git-ignored.
+# Regenerate after adding or removing files, or the new file silently isn't compiled.
+name: BNXT
+
+options:
+  bundleIdPrefix: com.pjproductions
+  deploymentTarget:
+    iOS: "26.0"
+  createIntermediateGroups: true
+  developmentLanguage: en
+
+settings:
+  base:
+    MARKETING_VERSION: "0.1.0"        # x.y.z, set by the bump_version lane; read by the version checker (§3.9)
+    CURRENT_PROJECT_VERSION: "1"      # build number, only ever goes up
+    SWIFT_VERSION: "6.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+    DEVELOPMENT_TEAM: ""              # TODO: Apple Developer Team ID (ios/SETUP.md, "Signing")
+    CODE_SIGN_STYLE: Automatic
+
+targets:
+  BNXT:
+    type: application
+    platform: iOS
+    sources:
+      - path: BNXT
+    info:
+      path: BNXT/App/Info.plist
+      properties:
+        CFBundleDisplayName: BNXT
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        UILaunchScreen:
+          UIColorName: LaunchBackground
+        UIUserInterfaceStyle: Dark
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        ITSAppUsesNonExemptEncryption: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.pjproductions.bnxt   # TODO: confirm before the first upload (§7.17)
+        TARGETED_DEVICE_FAMILY: "1"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        LOCALIZATION_PREFERS_STRING_CATALOGS: YES
+        SWIFT_EMIT_LOC_STRINGS: YES
+
+  BNXTTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: BNXTTests
+    dependencies:
+      - target: BNXT
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.pjproductions.bnxt.tests
+        GENERATE_INFOPLIST_FILE: YES
+
+  BNXTUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: BNXTUITests
+    dependencies:
+      - target: BNXT
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.pjproductions.bnxt.uitests
+        GENERATE_INFOPLIST_FILE: YES
+
+schemes:
+  BNXT:
+    build:
+      targets:
+        BNXT: all
+        BNXTTests: [test]
+        BNXTUITests: [test]
+    test:
+      gatherCoverageData: true
+      coverageTargets: [BNXT]
+      targets:
+        - BNXTTests
+        - BNXTUITests
+    run:
+      config: Debug
+    archive:
+      config: Release
