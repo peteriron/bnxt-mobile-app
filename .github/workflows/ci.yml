@@ -30,6 +30,14 @@ jobs:
           xcode-version: latest-stable
       - name: Install XcodeGen
         run: brew install xcodegen
+      - name: Write build secrets
+        env:
+          BNXT_API_KEY: ${{ secrets.BNXT_API_KEY }}
+        run: |
+          # Optional: without the secret the app builds with no API key (REQUIREMENTS §7.15).
+          if [ -n "$BNXT_API_KEY" ]; then
+            printf 'BNXT_API_KEY = %s\n' "$BNXT_API_KEY" > ios/Config/Secrets.xcconfig
+          fi
       - name: Generate project
         run: cd ios && xcodegen generate
       - name: Pick an iPhone simulator on iOS 26+

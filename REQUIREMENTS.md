@@ -211,11 +211,13 @@ research is fine; a public release needs BNXT's permission (§7.17).
 **§7.3 v1 scope = core + live + stat leaders/compare.** Push, news/video, widgets and Live Activities come after v1.
 *Why:* push needs a backend (§7.15) and news duplicates the website; live and stats are the differentiators.
 
-**§7.4 Live games are in v1, conditional on data.** We haven't yet observed what the API serves during a live game.
-*Decision:* verify on a game night in Phase 0. If the public API has no live data, the options are a Genius Sports / FIBA LiveStats
-licence or "score refresh every minute" with no play-by-play. *Finding (4 Nov 2026):* the Genius Sports / FIBA LiveStats JSON feed
-behind the website's "live stats" link is reachable without a key and carries full play-by-play, so live data exists, but it's a
-licensed third-party feed and may only be used with permission. *Note:* the prototype's live game is simulated and labelled so.
+**§7.4 Live games are in v1, using the FIBA LiveStats feed for now.** *Decided 4 Nov 2026:* live clock, period and play-by-play
+come from the public Genius Sports / FIBA LiveStats JSON (`…/data/{genius_id}/data.json`, no key), the feed the website's
+"live stats" link uses; scores and box scores also keep coming from the BNXT API. *Why:* it's the only live play-by-play source found,
+and it works today. *Risks accepted:* the feed belongs to Genius Sports, not BNXT, and may change or be blocked without notice, so the app
+treats it as optional (live screens fall back to BNXT scores refreshed on the polling schedule) and remote config can switch it off.
+*To do:* confirm with BNXT whether their agreement covers it (§7.17), and measure its update cadence on a game night (Phase 0).
+*Note:* the prototype's live game is simulated and labelled so.
 
 **§7.5 Standings: phase switcher with zones from config.** League / Belgium / Netherlands / projected Playoffs. Zones are
 league leader (violet), Belgian top 8 (lime) and Dutch top 4 (orange), with no relegation in 2026-27.
@@ -231,12 +233,11 @@ league leader (violet), Belgian top 8 (lime) and Dutch top 4 (orange), with no r
 **§7.9 Dark mode only in v1.** `UIUserInterfaceStyle = Dark`. *Why:* the brand identity is dark-first; a light theme
 needs its own design pass, not an inversion.
 
-**§7.10 Brand font: open.** bnxtleague.com uses **Druk Wide** (Medium, Italic, Bold Italic) by Commercial Type, a commercial face.
-Options: (1) **Druk Wide app licence** from Commercial Type, or BNXT's own licence if it covers apps (ask them first);
-(2) a free OFL face, bundled: **Archivo** (width 62–125 %, italics; used in the prototype), **Hubot Sans** or **Mona Sans** (GitHub, width axis,
-italics), **Anybody** (width up to 150 %, italics), **Saira** (width axis, italics, sporty);
-(3) **SF Pro Expanded** via `.width(.expanded)`: no bundling or licence, native look, less brand character.
-Until decided, `Theme.display` uses option 3.
+**§7.10 Brand font: Archivo.** *Decided 4 Nov 2026.* The website's face, Druk Wide (Commercial Type), is commercial. Archivo is free
+(SIL OFL 1.1), close in character, and already used by the prototype. Bundled faces (`Resources/Fonts/`, `UIAppFonts`, `DisplayFace`):
+Archivo Expanded Black Italic for headlines (`Theme.display`), Archivo Expanded ExtraBold Italic for scores and big numbers (`Theme.score`),
+Archivo SemiExpanded ExtraBold Italic for dense numbers (`Theme.compactNumber`). All scale with Dynamic Type; body text stays SF Pro.
+The OFL text ships with the fonts. *Alternatives considered:* a Druk Wide app licence, Hubot/Mona Sans, Anybody, Saira, SF Pro Expanded.
 
 **§7.11 English is the development language.** String keys are English source text; NL and FR are added later via the
 String Catalog. *Why:* serves both countries equally until both translations exist. (The playbook's previous project used
@@ -254,13 +255,14 @@ observable objects, which removes the playbook's "nested ObservableObject doesn'
 **§7.14 Season, competition and phase IDs are configuration.** They change every summer (2026-27: season 2027, competition 25, phase 183).
 Bundled fallback in `Season.current`, overridable by remote config.
 
-**§7.15 Backend: none unless unavoidable (open until Phase 0).** Default: the app talks straight to the API with a file cache,
-and remote config (version policy, season IDs, zones, display names, club colours) is a static JSON file.
-A small caching proxy becomes necessary if any of these is true:
-(a) the rate limit (`X-RateLimit-Limit: 200`) is per key rather than per client, so all users would share it;
-(b) BNXT won't issue an app key and the website key can't be used;
-(c) live data needs fan-out.
-*Trade-off accepted for now:* no push notifications (§7.3).
+**§7.15 No backend; the app uses the website's API key for now.** *Decided 4 Nov 2026:* the app talks straight to the BNXT API with
+the bnxtleague.com client key, with a file cache, and remote config (version policy, season IDs, zones, display names, club colours) is a
+static JSON file. The key reaches the app at build time (`ios/Config/Secrets.xcconfig`, git-ignored → Info.plist `BNXTAPIKey` →
+`APIConfiguration`); locally from `.env`, in CI from the `BNXT_API_KEY` Actions secret. It's never committed, because the repo is public.
+*Risks accepted:* anyone can extract a key from an app binary (it's already public on the website); if the website rotates its key, every
+installed app breaks until a new key arrives, so remote config will be able to override the key, and the version checker (§3.9) is the last resort.
+*Revisit (a proxy or an app-specific key from BNXT) if:* the game-night recording shows the 200-request limit is shared per key; BNXT asks
+us to stop using the website key; or push notifications move into scope (§7.3).
 
 **§7.16 Privacy.** No accounts, no analytics, advertising or tracking SDKs; nothing about the user leaves the device except the
 data requests themselves. Crash data only via Apple's opt-in reporting (Xcode Organizer / MetricKit).
@@ -275,7 +277,7 @@ The favourite club is stored in `UserDefaults` only.
 independent fan app built with the league's permission, not as the official app, unless BNXT says otherwise.
 *Still open:* (a) whether the permission covers an **app API key** and the expected request volume (§7.15); (b) whether it covers the
 **Genius Sports / FIBA LiveStats feed** (§7.4); that feed belongs to Genius Sports, so it likely needs their licence or BNXT's sublicence.
-The bundle ID `com.pjproductions.bnxt` is provisional until the first upload.
+Bundle ID / App ID: `com.pjproductions.bnxt` (confirmed 4 Nov 2026, registered in the developer account).
 
 **§7.18 Version checker with soft and hard updates** (§3.9). The policy is hosted with remote config (§7.15).
 *Why:* the data source is unversioned and outside our control; if it changes we must be able to move users onto a fixed build.
@@ -293,18 +295,19 @@ on surface, which fails WCAG AA. The new value measures 5.7:1 and 5.2:1. Pinned 
 
 ## 8. Release status & roadmap
 
-**Live:** nothing yet. **On `main`:** app shell 0.1.0 (5 placeholder tabs, theme tokens, test targets, CI).
+**Live:** nothing yet. **On `main`:** app shell 0.1.0 (5 placeholder tabs, theme tokens, test targets, CI). **On `phase0-live-recorder`:** live recorder, Archivo, API key plumbing.
 **Prototype:** v0.1 (HTML, data snapshot 3 Nov 2026).
 
 ### Phase 0: foundations & permission (in progress)
 - [x] Repo, generated Xcode project, unit and UI test targets, CI, lint config, scratch dir, release scaffolding
 - [x] Contact BNXT League: permission for data, logos, photos and name granted 4 Nov 2026 (§7.17)
-- [ ] Follow up with BNXT: app API key and volume (§7.15), live feed licence (§7.4), whether their Druk Wide licence covers apps (§7.10)
+- [x] Use the website key and the FIBA LiveStats feed for now (§7.15, §7.4); key plumbing via `Secrets.xcconfig` + CI secret
+- [ ] Ask BNXT: is using the website key at app volume OK, and does the agreement cover the FIBA LiveStats feed (§7.15, §7.4)
 - [ ] Record a live game night with `tools/record_live.py` (first chance: Thu 5 Nov, CHA–RCB 20:30): what `status` and live endpoints return, update cadence (§7.4)
 - [ ] Find the full-season schedule call (the website's calendar page)
-- [ ] Determine whether the rate limit is per key or per IP → settle §7.15
+- [ ] Determine whether the rate limit is per key or per IP (game-night recording) → revisit §7.15 if shared
 - [x] Set `DEVELOPMENT_TEAM` (92HC396B37)
-- [ ] Brand font decision (§7.10); confirm the bundle ID
+- [x] Brand font: Archivo, bundled (§7.10); App ID `com.pjproductions.bnxt` confirmed (§7.17)
 
 ### Phase 1: data layer
 API client (one method per endpoint) + lenient DTOs + golden fixtures; file cache with offline fallback; remote config;

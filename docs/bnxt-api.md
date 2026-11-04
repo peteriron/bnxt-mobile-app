@@ -9,7 +9,7 @@ Decisions that depend on this file are in [REQUIREMENTS.md](../REQUIREMENTS.md) 
 |---|---|
 | Base URL | `https://bnxt.sportpress.info/api/v1` |
 | Auth | Header `X-Authorization: <client key>`. Without it: `401 {"errors":[{"code":"401","message":"Unauthorized"}]}`. `server-config` works without a key |
-| The key | The website's public client key, visible in its JS bundle. Kept in `.env` (git-ignored) for research scripts only. Not ours: don't ship it and don't print it (REQUIREMENTS §7.17) |
+| The key | The website's public client key, visible in its JS bundle. Used by the app for now (REQUIREMENTS §7.15): `.env` for scripts, `ios/Config/Secrets.xcconfig` for builds, the `BNXT_API_KEY` Actions secret for CI, all outside git. Never commit or print it |
 | Other headers the site sends | `Content-Type: application/json`, `X-Localization: en\|nl\|fr`, and `?lang=en` on every URL |
 | Rate limit | `X-RateLimit-Limit: 200`, `X-RateLimit-Remaining` (window not documented; probably per minute). Per key or per IP is unknown: **to test in Phase 0** |
 | Caching | `Cache-Control: no-cache, private`, no ETag / Last-Modified. Apply our own TTLs |

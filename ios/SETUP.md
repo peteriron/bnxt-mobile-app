@@ -46,6 +46,17 @@ Resources/    assets, fonts, String Catalog
 
 Folders appear as they get their first file.
 
+## API key (once per machine)
+
+The app uses the bnxtleague.com client key for now (REQUIREMENTS §7.15). Put it in the git-ignored build config:
+
+```bash
+cp ios/Config/Secrets.example.xcconfig ios/Config/Secrets.xcconfig   # then paste the key (same value as BNXT_API_KEY in .env)
+```
+
+Without it the app builds, but `APIConfiguration.main` is nil and data calls can't authenticate. CI writes the file from the
+`BNXT_API_KEY` Actions secret (`gh secret set BNXT_API_KEY`).
+
 ## Signing
 
 Team ID `92HC396B37` (Peter Jans, paid Apple Developer Program) is set as `DEVELOPMENT_TEAM` in `project.yml`; automatic signing.

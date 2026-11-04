@@ -25,14 +25,45 @@ enum Theme {
     static let win = RGB(hex: 0x3DDC97).color
     static let loss = RGB(hex: 0xFF5C74).color
 
-    /// Wide italic display type for headlines and numbers. System font until the brand-font
-    /// decision (§7.10) lands; then this becomes the bundled face. Scales with Dynamic Type.
+    /// Wide italic display type for headlines (Archivo Expanded Black Italic, §7.10).
+    /// Scales with Dynamic Type relative to `style`. Body text stays on the system font.
     static func display(_ style: Font.TextStyle = .largeTitle) -> Font {
-        .system(style, design: .default).weight(.black).width(.expanded).italic()
+        .custom(DisplayFace.headline.rawValue, size: DisplayFace.baseSize(style), relativeTo: style)
     }
 
+    /// Scores and big numbers (Archivo Expanded ExtraBold Italic) with tabular digits.
     static func score(_ style: Font.TextStyle = .largeTitle) -> Font {
-        display(style).monospacedDigit()
+        .custom(DisplayFace.number.rawValue, size: DisplayFace.baseSize(style), relativeTo: style).monospacedDigit()
+    }
+
+    /// Dense numbers where space is tight (Archivo SemiExpanded ExtraBold Italic): box scores, tables.
+    static func compactNumber(_ style: Font.TextStyle = .body) -> Font {
+        .custom(DisplayFace.compactNumber.rawValue, size: DisplayFace.baseSize(style), relativeTo: style).monospacedDigit()
+    }
+}
+
+/// The bundled Archivo faces (SIL OFL 1.1, `Resources/Fonts/Archivo-OFL.txt`), by PostScript name.
+/// Registered through `UIAppFonts` in project.yml; `ThemeTests` checks every face loads.
+enum DisplayFace: String, CaseIterable {
+    case headline = "ArchivoExpanded-BlackItalic"
+    case number = "ArchivoExpanded-ExtraBoldItalic"
+    case compactNumber = "ArchivoSemiExpanded-ExtraBoldItalic"
+
+    /// Apple's default point sizes per text style at the standard Dynamic Type setting.
+    static func baseSize(_ style: Font.TextStyle) -> CGFloat {
+        switch style {
+        case .largeTitle: 34
+        case .title: 28
+        case .title2: 22
+        case .title3: 20
+        case .headline, .body: 17
+        case .callout: 16
+        case .subheadline: 15
+        case .footnote: 13
+        case .caption: 12
+        case .caption2: 11
+        @unknown default: 17
+        }
     }
 }
 

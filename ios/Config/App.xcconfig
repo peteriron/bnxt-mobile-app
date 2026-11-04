@@ -1,0 +1,7 @@
+// Build settings shared by Debug and Release (referenced from project.yml).
+// Secrets live in Secrets.xcconfig, which is git-ignored; copy Secrets.example.xcconfig to create it.
+// Without it the app builds, but APIConfiguration.main is nil (REQUIREMENTS.md §7.15).
+
+BNXT_API_KEY =
+
+#include? "Secrets.xcconfig"
