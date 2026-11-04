@@ -37,5 +37,5 @@ tools/               research scripts for the upstream API (need .env)
 
 ## Content notice
 
-`prototype/data.js` embeds BNXT club logos and player photos for design purposes. Keep this repository **private** until usage rights
-are agreed with BNXT League (REQUIREMENTS §7.17).
+Club logos, player photos, league data and the BNXT name are used with BNXT League's permission (REQUIREMENTS §7.17).
+They remain the property of BNXT League and the clubs; they're not covered by any licence for this repository's code.

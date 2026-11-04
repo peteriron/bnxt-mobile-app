@@ -48,7 +48,8 @@ by `accessibilityIdentifier`, but query the tab bar by index. Dismiss a focused 
 
 ## Data and secrets
 
-- The upstream key is the website's public client key, in `.env` only (git-ignored). Never commit it, never print it in full, never put it in the app (§7.17).
+- The upstream key is the website's public client key, in `.env` only (git-ignored). Never commit it, never print it in full, never put it in the app (§7.15, §7.17).
+- The GitHub repo is **public** (`peteriron/bnxt-mobile-app`): everything committed is published. BNXT permission covers logos/photos/data (§7.17), not secrets.
 - Never decode players' `facebook` / `twitter` / `instagram` or `description`; show age, never the birth date (§7.16).
 - No analytics, advertising or tracking SDKs (§7.16).
 

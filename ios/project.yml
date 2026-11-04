@@ -17,7 +17,7 @@ settings:
     SWIFT_VERSION: "6.0"
     SWIFT_STRICT_CONCURRENCY: complete
     ENABLE_USER_SCRIPT_SANDBOXING: YES
-    DEVELOPMENT_TEAM: ""              # TODO: Apple Developer Team ID (ios/SETUP.md, "Signing")
+    DEVELOPMENT_TEAM: 92HC396B37      # Peter Jans (paid team); see ios/SETUP.md, "Signing"
     CODE_SIGN_STYLE: Automatic
 
 targets:

@@ -48,7 +48,9 @@ Folders appear as they get their first file.
 
 ## Signing
 
-Set `DEVELOPMENT_TEAM` in `project.yml` to the Apple Developer Team ID, then regenerate. Automatic signing.
+Team ID `92HC396B37` (Peter Jans, paid Apple Developer Program) is set as `DEVELOPMENT_TEAM` in `project.yml`; automatic signing.
+To look it up: developer.apple.com/account → Membership details → Team ID; or Xcode → Settings → Accounts → the team;
+or `security find-identity -v -p codesigning` (the 10 characters in brackets after "Apple Distribution").
 The bundle ID `com.pjproductions.bnxt` is provisional (REQUIREMENTS §7.17).
 
 ## Tests
