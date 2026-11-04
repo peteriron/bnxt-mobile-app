@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:   # run on any branch: gh workflow run CI --ref <branch>
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -29,6 +30,14 @@ jobs:
           xcode-version: latest-stable
       - name: Install XcodeGen
         run: brew install xcodegen
+      - name: Write build secrets
+        env:
+          BNXT_API_KEY: ${{ secrets.BNXT_API_KEY }}
+        run: |
+          # Optional: without the secret the app builds with no API key (REQUIREMENTS §7.15).
+          if [ -n "$BNXT_API_KEY" ]; then
+            printf 'BNXT_API_KEY = %s\n' "$BNXT_API_KEY" > ios/Config/Secrets.xcconfig
+          fi
       - name: Generate project
         run: cd ios && xcodegen generate
       - name: Pick an iPhone simulator on iOS 26+
@@ -37,10 +46,16 @@ jobs:
           UDID=$(xcrun simctl list devices available -j | python3 -c "
           import json, re, sys
           devs = json.load(sys.stdin)['devices']
-          ok = [(k, d) for k, v in devs.items() for d in v
-                if 'iOS' in k and d['name'].startswith('iPhone')
-                and int(re.search(r'iOS-(\d+)', k).group(1)) >= 26]
-          print(sorted(ok)[-1][1]['udid'])")
+          ok = []
+          for runtime, items in devs.items():
+              m = re.search(r'iOS-(\d+)-(\d+)', runtime)
+              if not m or int(m.group(1)) < 26:
+                  continue
+              ok += [((int(m.group(1)), int(m.group(2))), d['name'], d['udid'])
+                     for d in items if d['name'].startswith('iPhone')]
+          if not ok:
+              sys.exit('No iPhone simulator on iOS 26+')
+          print(max(ok, key=lambda x: (x[0], x[1]))[2])")
           echo "udid=$UDID" >> "$GITHUB_OUTPUT"
       - name: Test (same command as ios/SETUP.md)
         run: |

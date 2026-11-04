@@ -9,7 +9,7 @@ Decisions that depend on this file are in [REQUIREMENTS.md](../REQUIREMENTS.md) 
 |---|---|
 | Base URL | `https://bnxt.sportpress.info/api/v1` |
 | Auth | Header `X-Authorization: <client key>`. Without it: `401 {"errors":[{"code":"401","message":"Unauthorized"}]}`. `server-config` works without a key |
-| The key | The website's public client key, visible in its JS bundle. Kept in `.env` (git-ignored) for research scripts only. Not ours: don't ship it and don't print it (REQUIREMENTS §7.17) |
+| The key | The website's public client key, visible in its JS bundle. Used by the app for now (REQUIREMENTS §7.15): `.env` for scripts, `ios/Config/Secrets.xcconfig` for builds, the `BNXT_API_KEY` Actions secret for CI, all outside git. Never commit or print it |
 | Other headers the site sends | `Content-Type: application/json`, `X-Localization: en\|nl\|fr`, and `?lang=en` on every URL |
 | Rate limit | `X-RateLimit-Limit: 200`, `X-RateLimit-Remaining` (window not documented; probably per minute). Per key or per IP is unknown: **to test in Phase 0** |
 | Caching | `Cache-Control: no-cache, private`, no ETag / Last-Modified. Apply our own TTLs |
@@ -51,7 +51,8 @@ Competition-team IDs (new every season): 537 CHA, 539 OOS, 541 ANT, 543 MON, 545
 | News / video / events | `article/list`, `article/find/{slug}`, `video/list`, `event/list`, `award/find/{id}` | not used in v1 |
 | Menu / pages | `menu/list`, `page/find/{slug}` | links to the format article and "Where to watch" |
 | Config | `server-config` | UI translations, no key needed |
-| External | FIBA LiveStats `https://fibalivestats.dcd.shared.geniussports.com/u/BNXT/{genius_id}/` · BNXT.tv `https://www.bnxt.tv/` · game report `https://bnxtleague.com/en/game-report/{gameId}` | |
+| External | FIBA LiveStats page `https://fibalivestats.dcd.shared.geniussports.com/u/BNXT/{genius_id}/` · BNXT.tv `https://www.bnxt.tv/` · game report `https://bnxtleague.com/en/game-report/{gameId}` | |
+| FIBA LiveStats JSON | `https://fibalivestats.dcd.shared.geniussports.com/data/{genius_id}/data.json` (no key) | Genius Sports feed, **third-party and licensed**. Reachable without auth on 4 Nov 2026: `clock`, `period`, `inOT`, `pbp` (537 events for a finished game), `scorers`, `leaddata`, `officials`, `tm` (team/player stats). Research only until licensed (REQUIREMENTS §7.4) |
 
 ## Field mapping and quirks
 
@@ -98,9 +99,25 @@ All people in the API are professional players and staff with public league prof
 
 ## Research tooling
 
-`tools/api.sh <path>` (reads `BNXT_API_KEY` from `.env`), `tools/fetch.py` (snapshot the season into `raw/`), `tools/build_data.py`
+`tools/record_live.py` records game nights (below), `tools/api.sh <path>` (reads `BNXT_API_KEY` from `.env`), `tools/fetch.py` (snapshot the season into `raw/`), `tools/build_data.py`
 (prototype `data.js`), `tools/quant.py` (shrink PNGs). Run them from `.tmp/` so outputs stay out of git:
 
 ```bash
 mkdir -p .tmp/data && cd .tmp/data && python3 ../../tools/fetch.py && python3 ../../tools/build_data.py
 ```
+
+### Recording a game night
+
+`tools/record_live.py` polls `schedule/find`, `boxscore/game` (every 10 s) and `schedule/overview` (every 30 s) for each game from 20 min
+before tip-off until 30 min after the final, plus `schedule/game-slider` every minute. It saves a snapshot only when a response changes,
+logs every poll with its rate-limit headers to `log.jsonl`, and writes `summary.md`: status values seen, update cadence per endpoint
+while live, and whether `X-RateLimit-Remaining` falls faster than our own requests (which would mean the limit is shared per key, §7.15).
+
+```bash
+caffeinate -i python3 tools/record_live.py --date 2026-11-05          # → .tmp/live/2026-11-05/
+python3 tools/record_live.py --date 2026-11-05 --fiba                 # also the FIBA feed (research only)
+python3 tools/record_live.py --summarize .tmp/live/2026-11-05         # rebuild the summary
+```
+
+Dry run (4 Nov 2026, finished game 11323): all endpoints answered in ~200–350 ms; `X-RateLimit-Remaining` fell by exactly our own
+request count and didn't reset within 40 s, so the window is at least a minute.

@@ -36,3 +36,6 @@ ios/.bundle/
 raw/
 img_dl/
 img_sm/
+
+# Build-time secrets (the repo is public)
+ios/Config/Secrets.xcconfig

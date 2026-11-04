@@ -48,7 +48,9 @@ by `accessibilityIdentifier`, but query the tab bar by index. Dismiss a focused 
 
 ## Data and secrets
 
-- The upstream key is the website's public client key, in `.env` only (git-ignored). Never commit it, never print it in full, never put it in the app (§7.17).
+- The upstream key is the website's public client key, used by the app for now (§7.15). It lives only in `.env`, `ios/Config/Secrets.xcconfig` (both git-ignored) and the `BNXT_API_KEY` Actions secret. Never commit it, never print it, never hard-code it in Swift; read it through `APIConfiguration`.
+- Display type uses the bundled Archivo faces via `Theme.display/score/compactNumber` (§7.10). A new face needs the file, a `UIAppFonts` entry in project.yml and a `DisplayFace` case.
+- The GitHub repo is **public** (`peteriron/bnxt-mobile-app`): everything committed is published. BNXT permission covers logos/photos/data (§7.17), not secrets.
 - Never decode players' `facebook` / `twitter` / `instagram` or `description`; show age, never the birth date (§7.16).
 - No analytics, advertising or tracking SDKs (§7.16).
 

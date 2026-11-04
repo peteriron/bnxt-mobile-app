@@ -9,8 +9,10 @@ opt_in_rules:
   - first_where
   - force_unwrapping
   - sorted_imports
-  - unused_import
   - vertical_whitespace_closing_braces
+
+analyzer_rules:   # run with `swiftlint analyze`
+  - unused_import
 
 disabled_rules:
   - todo   # TODOs reference REQUIREMENTS.md phases

@@ -1,4 +1,5 @@
 @testable import BNXT
+import UIKit
 import XCTest
 
 final class ThemeTests: XCTestCase {
@@ -25,5 +26,14 @@ final class ThemeTests: XCTestCase {
                 XCTAssertGreaterThanOrEqual(text.contrast(with: background), 4.5, "\(name) fails AA on \(background)")
             }
         }
+    }
+
+    /// A face missing from UIAppFonts or the bundle makes SwiftUI fall back to the system font silently.
+    func testEveryDisplayFaceIsBundledAndRegistered() {
+        for face in DisplayFace.allCases {
+            XCTAssertNotNil(UIFont(name: face.rawValue, size: 17), "\(face.rawValue) isn't registered")
+        }
+        let registered = Bundle.main.object(forInfoDictionaryKey: "UIAppFonts") as? [String] ?? []
+        XCTAssertEqual(Set(registered).count, DisplayFace.allCases.count, "UIAppFonts and DisplayFace disagree")
     }
 }

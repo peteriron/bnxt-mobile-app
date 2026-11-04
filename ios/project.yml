@@ -17,7 +17,7 @@ settings:
     SWIFT_VERSION: "6.0"
     SWIFT_STRICT_CONCURRENCY: complete
     ENABLE_USER_SCRIPT_SANDBOXING: YES
-    DEVELOPMENT_TEAM: ""              # TODO: Apple Developer Team ID (ios/SETUP.md, "Signing")
+    DEVELOPMENT_TEAM: 92HC396B37      # Peter Jans (paid team); see ios/SETUP.md, "Signing"
     CODE_SIGN_STYLE: Automatic
 
 targets:
@@ -26,6 +26,9 @@ targets:
     platform: iOS
     sources:
       - path: BNXT
+    configFiles:                       # BNXT_API_KEY comes from Config/Secrets.xcconfig (git-ignored)
+      Debug: Config/App.xcconfig
+      Release: Config/App.xcconfig
     info:
       path: BNXT/App/Info.plist
       properties:
@@ -37,9 +40,14 @@ targets:
         UIUserInterfaceStyle: Dark
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
         ITSAppUsesNonExemptEncryption: false
+        BNXTAPIKey: $(BNXT_API_KEY)    # read by APIConfiguration.main (§7.15)
+        UIAppFonts:                    # Archivo, SIL OFL (§7.10); keep in sync with DisplayFace
+          - ArchivoExpanded-BlackItalic.ttf
+          - ArchivoExpanded-ExtraBoldItalic.ttf
+          - ArchivoSemiExpanded-ExtraBoldItalic.ttf
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.pjproductions.bnxt   # TODO: confirm before the first upload (§7.17)
+        PRODUCT_BUNDLE_IDENTIFIER: com.pjproductions.bnxt   # confirmed 4 Nov 2026 (§7.17)
         TARGETED_DEVICE_FAMILY: "1"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
