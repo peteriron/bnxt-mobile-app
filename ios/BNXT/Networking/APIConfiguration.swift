@@ -8,9 +8,7 @@ import Foundation
 struct APIConfiguration: Equatable, Sendable {
     static let infoPlistKey = "BNXTAPIKey"
 
-    // swiftlint:disable:next force_unwrapping
     static let defaultBaseURL = URL(string: "https://bnxt.sportpress.info/api/v1/")!
-    // swiftlint:disable:next force_unwrapping
     static let defaultLiveStatsURL = URL(string: "https://fibalivestats.dcd.shared.geniussports.com/data/")!
 
     let baseURL: URL

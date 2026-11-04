@@ -50,20 +50,13 @@ enum DisplayFace: String, CaseIterable {
     case compactNumber = "ArchivoSemiExpanded-ExtraBoldItalic"
 
     /// Apple's default point sizes per text style at the standard Dynamic Type setting.
+    private static let baseSizes: [Font.TextStyle: CGFloat] = [
+        .largeTitle: 34, .title: 28, .title2: 22, .title3: 20, .headline: 17, .body: 17,
+        .callout: 16, .subheadline: 15, .footnote: 13, .caption: 12, .caption2: 11
+    ]
+
     static func baseSize(_ style: Font.TextStyle) -> CGFloat {
-        switch style {
-        case .largeTitle: 34
-        case .title: 28
-        case .title2: 22
-        case .title3: 20
-        case .headline, .body: 17
-        case .callout: 16
-        case .subheadline: 15
-        case .footnote: 13
-        case .caption: 12
-        case .caption2: 11
-        @unknown default: 17
-        }
+        baseSizes[style] ?? 17
     }
 }
 
