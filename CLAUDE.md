@@ -34,7 +34,10 @@ Two test targets: `ios/BNXTTests/` (XCTest unit tests: models, persistence, API 
 
 **Unit tests:** view models and stores take their dependencies (API client, stores, `now`) via injectable initializers. Keep new code following
 that pattern instead of reaching for `.shared` inside a type you'll want to test. View models are `@MainActor @Observable final class` (§7.13).
-`BNXTTests/Support/MockURLProtocol.swift` (arrives with the API client) intercepts network calls; reuse it rather than writing a second mock.
+`BNXTTests/Support/MockURLProtocol.swift` intercepts network calls (stub by API path with a fixture, fail a path, assert on requests made);
+reuse it rather than writing a second mock. `BNXTAPIClient` takes its session, cache and clock in `init`; tests pass `MockURLProtocol.session()`,
+a temp-directory `ResponseCache` and a fixed `now`. Models decode leniently (`LenientDecoding.swift`): use `container.text/number/integer/lossyArray`
+so one odd field or record never drops a list.
 
 **UI tests:** black-box against the real app, no mocking. `UITestCase` resets on-device state at launch via `--uitest-reset-state`. Query content
 by `accessibilityIdentifier`, but query the tab bar by index. Dismiss a focused search field's keyboard before the next tap. Give containers
@@ -45,6 +48,8 @@ by `accessibilityIdentifier`, but query the tab bar by index. Dismiss a focused 
 - The repo sits in iCloud-synced `~/Documents`: anything built *inside* the repo (SwiftPM `.build`) fails codesigning. Xcode's DerivedData is fine. Don't add a local Swift package without solving this first.
 - `-destination 'name=iPhone 14 Plus'` resolves to the newest runtime and fails; pin `OS=26.5`.
 - Strict concurrency: XCTest base classes that touch `XCUIApplication` must be `@MainActor`.
+- Tests must not reuse the production constant they guard: a privacy test looping over `PrivacyFilter.neverStoredKeys` still passed with the
+  filter emptied. Use a fixed expected list in the test. Break the code on purpose once to see a new test fail.
 
 ## Data and secrets
 

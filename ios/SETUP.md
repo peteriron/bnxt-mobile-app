@@ -80,9 +80,12 @@ xcodebuild -project BNXT.xcodeproj -scheme BNXT \
 - `-collect-test-diagnostics never` stops a failing run from spending up to 10 minutes in `simctl diagnose`. The `.xcresult` still has the failures.
 - Or `cd ios && bundle exec fastlane test`.
 
-**Unit tests:** dependencies (API client, stores, `now`, debounce intervals) are injected through initializers. Network tests use one shared
-`MockURLProtocol` (in `BNXTTests/Support/`, added with the API client in Phase 1). Reuse it and never write a second one.
+**Unit tests:** dependencies (API client, stores, `now`, debounce intervals) are injected through initializers. Network tests use the one shared
+`MockURLProtocol` (`BNXTTests/Support/`): `router.stub(path, fixture:)`, `router.fail(path)`, `router.requests(to:)`. Reuse it; never write a second one.
 Golden fixtures are real responses of finished games, in `BNXTTests/Fixtures/`, with never-decode fields stripped (REQUIREMENTS §7.16).
+
+**Fixtures:** `tools/make_fixtures.py` captures them from the live API into `BNXTTests/Fixtures/` (BNXT_API_KEY in `.env`), stripping the never-decode
+fields and trimming big lists. They pin game 11323 and team 537, which are finished and won't change. Regenerate the project after adding one.
 
 **UI tests:** subclass `UITestCase`, which launches with `--uitest-reset-state` (stores skip loading for that launch).
 - Query content by `accessibilityIdentifier`, never by visible text. Query **the tab bar by index** (`tab(0)` … `tab(4)`).

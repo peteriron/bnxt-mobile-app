@@ -43,7 +43,7 @@ Competition-team IDs (new every season): 537 CHA, 539 OOS, 541 ANT, 543 MON, 545
 | Game | `schedule/find/{gameId}` | competitors + `period_scores`, `period`, `round` (name empty), phase, `arena{name}`, referees (empty) |
 | Game overview | `schedule/overview/{gameId}` | `team_totals`, `top_performer`, `game_leaders` |
 | Box score | `boxscore/game/{cid}/{gameId}` | per team `{team, is_home, players[], total}` |
-| Player game log | `boxscore/player/season-games/{rosterId}` | ⚠️ **roster** id; a player id gives "Roster player not found." |
+| Player game log | `boxscore/player/season-games/{rosterId}` | ⚠️ **roster** id. An unknown id answers HTTP 200 with `{"data":[],"error":"Roster player not found."}`; a player id may silently match some other roster entry (id 1 is a 2021 player). No `plusminus` in these lines |
 | Player career | `player/career-averages/{rosterId}` | ⚠️ roster id; per season and competition |
 | Player leaders | `player/average-rankings/{cid}?phase_id={phaseId}` | keys `efficiency, points, total_rebound, block, assist, steal, two_point_percent, three_point_percent, free_throw_percent`; entries `{player, team, roster_id, value}`, ~160 each |
 | Team leaders | `competition-team/average-rankings/{cid}?phase_id={phaseId}` | same shape |
@@ -69,7 +69,7 @@ Competition-team IDs (new every season): 537 CHA, 539 OOS, 541 ANT, 543 MON, 545
 | `plusminus` | filled for ~80 % of player lines; show the column only if any line is non-zero |
 | `player_position.name` | `point_guard`, `shooting_guard`, `small_forward`, `power_forward`, `center`, or combos joined with `-`; can be null |
 | `nationality_code` | IOC-style (`NED`, `SUI`, `ANG`…), can be empty |
-| `jersey` | a string |
+| `jersey` | a string in rosters (and often `""` there, e.g. all of Spirou's), an int in box scores and game logs: take the number from those |
 | Team names | include sponsors ("Partena Professional Okapi Aalst"). We use display names from config. The website strips "playoff" from names and appends `*` |
 | `round.name` | always empty: group by date |
 | `staffs`, `referees` | always empty |

@@ -1,0 +1,759 @@
+{
+ "data": [
+  {
+   "id": 11279,
+   "game_time": "2026-10-03 20:30:00",
+   "status": "finished",
+   "competitors": [
+    {
+     "side": 1,
+     "finalScore": 69,
+     "competition_team": {
+      "id": 559,
+      "name": "AB InBev Leuven Bears",
+      "short_name": "LEU",
+      "ticket_url": "https://leuvenbears.ordering.be/o/2",
+      "club": {
+       "id": 1,
+       "name": "Belgium"
+      },
+      "team_logo": {
+       "name": "Leuven",
+       "alt": null,
+       "keywords": null,
+       "public_url": "https://bnxt.sportpress.info/storage/L/f/Lf4ijAEkcAiQ983piyEx4UmvV1786710794.png",
+       "thumbnails": {
+        "small": "https://bnxt.sportpress.info/storage/L/f/small-Lf4ijAEkcAiQ983piyEx4UmvV1786710794.png",
+        "medium": "https://bnxt.sportpress.info/storage/L/f/medium-Lf4ijAEkcAiQ983piyEx4UmvV1786710794.png"
+       }
+      },
+      "created_at": "2026-07-24"
+     },
+     "period_scores": [
+      {
+       "period_id": 1,
+       "score": 20
+      },
+      {
+       "period_id": 2,
+       "score": 25
+      },
+      {
+       "period_id": 3,
+       "score": 16
+      },
+      {
+       "period_id": 4,
+       "score": 8
+      }
+     ]
+    },
+    {
+     "side": 2,
+     "finalScore": 65,
+     "competition_team": {
+      "id": 537,
+      "name": "Val-Dieu Spirou Basket",
+      "short_name": "CHA",
+      "ticket_url": "https://shop.utick.be/?pos=SPIROUBASKET&module=ACTIVITYSERIEDETAILS&s=966F953A-5AB6-F8A5-8065-22C274230F12",
+      "club": {
+       "id": 1,
+       "name": "Belgium"
+      },
+      "team_logo": {
+       "name": "Spirou Basket",
+       "alt": null,
+       "keywords": null,
+       "public_url": "https://bnxt.sportpress.info/storage/3/G/3GsvRCSQNq5oeb3QinpVy3p4H1785845088.png",
+       "thumbnails": {
+        "small": "https://bnxt.sportpress.info/storage/3/G/small-3GsvRCSQNq5oeb3QinpVy3p4H1785845088.png",
+        "medium": "https://bnxt.sportpress.info/storage/3/G/medium-3GsvRCSQNq5oeb3QinpVy3p4H1785845088.png"
+       }
+      },
+      "created_at": "2026-07-24"
+     },
+     "period_scores": [
+      {
+       "period_id": 1,
+       "score": 15
+      },
+      {
+       "period_id": 2,
+       "score": 17
+      },
+      {
+       "period_id": 3,
+       "score": 18
+      },
+      {
+       "period_id": 4,
+       "score": 15
+      }
+     ]
+    }
+   ],
+   "period": {
+    "name": "Q4"
+   },
+   "round": null,
+   "phase": {
+    "id": 183,
+    "name": "Regular season 2026-27",
+    "standings_visible": true
+   },
+   "competition": {
+    "id": 25,
+    "season": 2027,
+    "visible": true,
+    "standings_visible": true,
+    "simple_team_view": false,
+    "summer_season": false,
+    "name": "BNXT League 2026-2027",
+    "logo": null,
+    "ticket_url": null,
+    "video_url": null,
+    "created_at": "2026-07-24"
+   },
+   "arena": {
+    "name": "SportOase"
+   },
+   "referees": [],
+   "total": {
+    "minute": 200,
+    "starter": true,
+    "foul": 23,
+    "defensive_foul": 21,
+    "dunk_made": 0,
+    "dunk_all": 0,
+    "dunk_percent": 0,
+    "two_point_made": 17,
+    "two_point_all": 40,
+    "two_point_percent": 42.5,
+    "three_point_made": 6,
+    "three_point_all": 27,
+    "three_point_percent": 22.22,
+    "throw_made": 23,
+    "throw_all": 67,
+    "throw_percent": 34.33,
+    "free_throw_made": 13,
+    "free_throw_all": 20,
+    "free_throw_percent": 65,
+    "offensive_rebound": 16,
+    "defensive_rebound": 26,
+    "total_rebound": 42,
+    "block": 3,
+    "block_against": 3,
+    "turnover": 13,
+    "steal": 7,
+    "assist": 14,
+    "points": 65,
+    "value": 88,
+    "plusminus": -2
+   }
+  },
+  {
+   "id": 11293,
+   "game_time": "2026-10-09 20:30:00",
+   "status": "finished",
+   "competitors": [
+    {
+     "side": 1,
+     "finalScore": 98,
+     "competition_team": {
+      "id": 537,
+      "name": "Val-Dieu Spirou Basket",
+      "short_name": "CHA",
+      "ticket_url": "https://shop.utick.be/?pos=SPIROUBASKET&module=ACTIVITYSERIEDETAILS&s=966F953A-5AB6-F8A5-8065-22C274230F12",
+      "club": {
+       "id": 1,
+       "name": "Belgium"
+      },
+      "team_logo": {
+       "name": "Spirou Basket",
+       "alt": null,
+       "keywords": null,
+       "public_url": "https://bnxt.sportpress.info/storage/3/G/3GsvRCSQNq5oeb3QinpVy3p4H1785845088.png",
+       "thumbnails": {
+        "small": "https://bnxt.sportpress.info/storage/3/G/small-3GsvRCSQNq5oeb3QinpVy3p4H1785845088.png",
+        "medium": "https://bnxt.sportpress.info/storage/3/G/medium-3GsvRCSQNq5oeb3QinpVy3p4H1785845088.png"
+       }
+      },
+      "created_at": "2026-07-24"
+     },
+     "period_scores": [
+      {
+       "period_id": 1,
+       "score": 26
+      },
+      {
+       "period_id": 2,
+       "score": 24
+      },
+      {
+       "period_id": 3,
+       "score": 25
+      },
+      {
+       "period_id": 4,
+       "score": 23
+      }
+     ]
+    },
+    {
+     "side": 2,
+     "finalScore": 60,
+     "competition_team": {
+      "id": 543,
+      "name": "CityX Mons",
+      "short_name": "MON",
+      "ticket_url": "https://shop.monshainaut.be",
+      "club": {
+       "id": 1,
+       "name": "Belgium"
+      },
+      "team_logo": {
+       "name": "Mons",
+       "alt": null,
+       "keywords": null,
+       "public_url": "https://bnxt.sportpress.info/storage/b/t/bt3TLIdQmf3JGqHKQP6cJHii81786374757.png",
+       "thumbnails": {
+        "small": "https://bnxt.sportpress.info/storage/b/t/small-bt3TLIdQmf3JGqHKQP6cJHii81786374757.png",
+        "medium": "https://bnxt.sportpress.info/storage/b/t/medium-bt3TLIdQmf3JGqHKQP6cJHii81786374757.png"
+       }
+      },
+      "created_at": "2026-07-24"
+     },
+     "period_scores": [
+      {
+       "period_id": 1,
+       "score": 22
+      },
+      {
+       "period_id": 2,
+       "score": 8
+      },
+      {
+       "period_id": 3,
+       "score": 15
+      },
+      {
+       "period_id": 4,
+       "score": 15
+      }
+     ]
+    }
+   ],
+   "period": {
+    "name": "Q4"
+   },
+   "round": null,
+   "phase": {
+    "id": 183,
+    "name": "Regular season 2026-27",
+    "standings_visible": true
+   },
+   "competition": {
+    "id": 25,
+    "season": 2027,
+    "visible": true,
+    "standings_visible": true,
+    "simple_team_view": false,
+    "summer_season": false,
+    "name": "BNXT League 2026-2027",
+    "logo": null,
+    "ticket_url": null,
+    "video_url": null,
+    "created_at": "2026-07-24"
+   },
+   "arena": {
+    "name": "Dôme"
+   },
+   "referees": [],
+   "total": {
+    "minute": 200,
+    "starter": true,
+    "foul": 19,
+    "defensive_foul": 21,
+    "dunk_made": 0,
+    "dunk_all": 0,
+    "dunk_percent": 0,
+    "two_point_made": 23,
+    "two_point_all": 37,
+    "two_point_percent": 62.16,
+    "three_point_made": 13,
+    "three_point_all": 30,
+    "three_point_percent": 43.33,
+    "throw_made": 36,
+    "throw_all": 67,
+    "throw_percent": 53.73,
+    "free_throw_made": 13,
+    "free_throw_all": 19,
+    "free_throw_percent": 68.42,
+    "offensive_rebound": 14,
+    "defensive_rebound": 25,
+    "total_rebound": 39,
+    "block": 9,
+    "block_against": 0,
+    "turnover": 19,
+    "steal": 14,
+    "assist": 28,
+    "points": 98,
+    "value": 153,
+    "plusminus": 44
+   }
+  },
+  {
+   "id": 11303,
+   "game_time": "2026-10-14 19:30:00",
+   "status": "finished",
+   "competitors": [
+    {
+     "side": 1,
+     "finalScore": 63,
+     "competition_team": {
+      "id": 547,
+      "name": "Donar Groningen",
+      "short_name": "GRO",
+      "ticket_url": "https://www.donar.nl/tickets",
+      "club": {
+       "id": 2,
+       "name": "Netherlands"
+      },
+      "team_logo": {
+       "name": "Groningen",
+       "alt": null,
+       "keywords": null,
+       "public_url": "https://bnxt.sportpress.info/storage/5/b/5bYE12yxtfijCQAKU2RhtMieX1785845195.png",
+       "thumbnails": {
+        "small": "https://bnxt.sportpress.info/storage/5/b/small-5bYE12yxtfijCQAKU2RhtMieX1785845195.png",
+        "medium": "https://bnxt.sportpress.info/storage/5/b/medium-5bYE12yxtfijCQAKU2RhtMieX1785845195.png"
+       }
+      },
+      "created_at": "2026-07-24"
+     },
+     "period_scores": [
+      {
+       "period_id": 1,
+       "score": 19
+      },
+      {
+       "period_id": 2,
+       "score": 11
+      },
+      {
+       "period_id": 3,
+       "score": 13
+      },
+      {
+       "period_id": 4,
+       "score": 20
+      }
+     ]
+    },
+    {
+     "side": 2,
+     "finalScore": 90,
+     "competition_team": {
+      "id": 537,
+      "name": "Val-Dieu Spirou Basket",
+      "short_name": "CHA",
+      "ticket_url": "https://shop.utick.be/?pos=SPIROUBASKET&module=ACTIVITYSERIEDETAILS&s=966F953A-5AB6-F8A5-8065-22C274230F12",
+      "club": {
+       "id": 1,
+       "name": "Belgium"
+      },
+      "team_logo": {
+       "name": "Spirou Basket",
+       "alt": null,
+       "keywords": null,
+       "public_url": "https://bnxt.sportpress.info/storage/3/G/3GsvRCSQNq5oeb3QinpVy3p4H1785845088.png",
+       "thumbnails": {
+        "small": "https://bnxt.sportpress.info/storage/3/G/small-3GsvRCSQNq5oeb3QinpVy3p4H1785845088.png",
+        "medium": "https://bnxt.sportpress.info/storage/3/G/medium-3GsvRCSQNq5oeb3QinpVy3p4H1785845088.png"
+       }
+      },
+      "created_at": "2026-07-24"
+     },
+     "period_scores": [
+      {
+       "period_id": 1,
+       "score": 27
+      },
+      {
+       "period_id": 2,
+       "score": 28
+      },
+      {
+       "period_id": 3,
+       "score": 20
+      },
+      {
+       "period_id": 4,
+       "score": 15
+      }
+     ]
+    }
+   ],
+   "period": {
+    "name": "Q4"
+   },
+   "round": null,
+   "phase": {
+    "id": 183,
+    "name": "Regular season 2026-27",
+    "standings_visible": true
+   },
+   "competition": {
+    "id": 25,
+    "season": 2027,
+    "visible": true,
+    "standings_visible": true,
+    "simple_team_view": false,
+    "summer_season": false,
+    "name": "BNXT League 2026-2027",
+    "logo": null,
+    "ticket_url": null,
+    "video_url": null,
+    "created_at": "2026-07-24"
+   },
+   "arena": {
+    "name": "MartiniPlaza"
+   },
+   "referees": [],
+   "total": {
+    "minute": 200,
+    "starter": true,
+    "foul": 20,
+    "defensive_foul": 20,
+    "dunk_made": 0,
+    "dunk_all": 0,
+    "dunk_percent": 0,
+    "two_point_made": 21,
+    "two_point_all": 39,
+    "two_point_percent": 53.85,
+    "three_point_made": 12,
+    "three_point_all": 32,
+    "three_point_percent": 37.5,
+    "throw_made": 33,
+    "throw_all": 71,
+    "throw_percent": 46.48,
+    "free_throw_made": 12,
+    "free_throw_all": 23,
+    "free_throw_percent": 52.17,
+    "offensive_rebound": 20,
+    "defensive_rebound": 35,
+    "total_rebound": 55,
+    "block": 3,
+    "block_against": 0,
+    "turnover": 18,
+    "steal": 5,
+    "assist": 19,
+    "points": 90,
+    "value": 125,
+    "plusminus": 22
+   }
+  },
+  {
+   "id": 11323,
+   "game_time": "2026-10-23 20:30:00",
+   "status": "finished",
+   "competitors": [
+    {
+     "side": 1,
+     "finalScore": 65,
+     "competition_team": {
+      "id": 537,
+      "name": "Val-Dieu Spirou Basket",
+      "short_name": "CHA",
+      "ticket_url": "https://shop.utick.be/?pos=SPIROUBASKET&module=ACTIVITYSERIEDETAILS&s=966F953A-5AB6-F8A5-8065-22C274230F12",
+      "club": {
+       "id": 1,
+       "name": "Belgium"
+      },
+      "team_logo": {
+       "name": "Spirou Basket",
+       "alt": null,
+       "keywords": null,
+       "public_url": "https://bnxt.sportpress.info/storage/3/G/3GsvRCSQNq5oeb3QinpVy3p4H1785845088.png",
+       "thumbnails": {
+        "small": "https://bnxt.sportpress.info/storage/3/G/small-3GsvRCSQNq5oeb3QinpVy3p4H1785845088.png",
+        "medium": "https://bnxt.sportpress.info/storage/3/G/medium-3GsvRCSQNq5oeb3QinpVy3p4H1785845088.png"
+       }
+      },
+      "created_at": "2026-07-24"
+     },
+     "period_scores": [
+      {
+       "period_id": 1,
+       "score": 21
+      },
+      {
+       "period_id": 2,
+       "score": 12
+      },
+      {
+       "period_id": 3,
+       "score": 12
+      },
+      {
+       "period_id": 4,
+       "score": 20
+      }
+     ]
+    },
+    {
+     "side": 2,
+     "finalScore": 70,
+     "competition_team": {
+      "id": 539,
+      "name": "Coretec Oostende",
+      "short_name": "OOS",
+      "ticket_url": "https://www.bcoostende.be/tickets/tickets",
+      "club": {
+       "id": 1,
+       "name": "Belgium"
+      },
+      "team_logo": {
+       "name": "Oostende",
+       "alt": null,
+       "keywords": null,
+       "public_url": "https://bnxt.sportpress.info/storage/W/e/WeBMRLIogJuvtJmZrFZMsvxhj1786710770.png",
+       "thumbnails": {
+        "small": "https://bnxt.sportpress.info/storage/W/e/small-WeBMRLIogJuvtJmZrFZMsvxhj1786710770.png",
+        "medium": "https://bnxt.sportpress.info/storage/W/e/medium-WeBMRLIogJuvtJmZrFZMsvxhj1786710770.png"
+       }
+      },
+      "created_at": "2026-07-24"
+     },
+     "period_scores": [
+      {
+       "period_id": 1,
+       "score": 14
+      },
+      {
+       "period_id": 2,
+       "score": 18
+      },
+      {
+       "period_id": 3,
+       "score": 23
+      },
+      {
+       "period_id": 4,
+       "score": 15
+      }
+     ]
+    }
+   ],
+   "period": {
+    "name": "Q4"
+   },
+   "round": null,
+   "phase": {
+    "id": 183,
+    "name": "Regular season 2026-27",
+    "standings_visible": true
+   },
+   "competition": {
+    "id": 25,
+    "season": 2027,
+    "visible": true,
+    "standings_visible": true,
+    "simple_team_view": false,
+    "summer_season": false,
+    "name": "BNXT League 2026-2027",
+    "logo": null,
+    "ticket_url": null,
+    "video_url": null,
+    "created_at": "2026-07-24"
+   },
+   "arena": {
+    "name": "Dôme"
+   },
+   "referees": [],
+   "total": {
+    "minute": 200,
+    "starter": true,
+    "foul": 21,
+    "defensive_foul": 20,
+    "dunk_made": 0,
+    "dunk_all": 0,
+    "dunk_percent": 0,
+    "two_point_made": 22,
+    "two_point_all": 43,
+    "two_point_percent": 51.16,
+    "three_point_made": 3,
+    "three_point_all": 27,
+    "three_point_percent": 11.11,
+    "throw_made": 25,
+    "throw_all": 70,
+    "throw_percent": 35.71,
+    "free_throw_made": 12,
+    "free_throw_all": 13,
+    "free_throw_percent": 92.31,
+    "offensive_rebound": 13,
+    "defensive_rebound": 20,
+    "total_rebound": 33,
+    "block": 2,
+    "block_against": 2,
+    "turnover": 14,
+    "steal": 10,
+    "assist": 12,
+    "points": 65,
+    "value": 82,
+    "plusminus": 0
+   }
+  },
+  {
+   "id": 11339,
+   "game_time": "2026-10-30 20:30:00",
+   "status": "finished",
+   "competitors": [
+    {
+     "side": 1,
+     "finalScore": 66,
+     "competition_team": {
+      "id": 561,
+      "name": "Brussels Basketball",
+      "short_name": "BRU",
+      "ticket_url": "https://www.brusselsbasketball.be/tickets",
+      "club": {
+       "id": 1,
+       "name": "Belgium"
+      },
+      "team_logo": {
+       "name": "Brussels",
+       "alt": null,
+       "keywords": null,
+       "public_url": "https://bnxt.sportpress.info/storage/y/n/ynqjUETIfJkJMUbOllRCow4rX1785845117.png",
+       "thumbnails": {
+        "small": "https://bnxt.sportpress.info/storage/y/n/small-ynqjUETIfJkJMUbOllRCow4rX1785845117.png",
+        "medium": "https://bnxt.sportpress.info/storage/y/n/medium-ynqjUETIfJkJMUbOllRCow4rX1785845117.png"
+       }
+      },
+      "created_at": "2026-07-24"
+     },
+     "period_scores": [
+      {
+       "period_id": 1,
+       "score": 18
+      },
+      {
+       "period_id": 2,
+       "score": 10
+      },
+      {
+       "period_id": 3,
+       "score": 20
+      },
+      {
+       "period_id": 4,
+       "score": 18
+      }
+     ]
+    },
+    {
+     "side": 2,
+     "finalScore": 81,
+     "competition_team": {
+      "id": 537,
+      "name": "Val-Dieu Spirou Basket",
+      "short_name": "CHA",
+      "ticket_url": "https://shop.utick.be/?pos=SPIROUBASKET&module=ACTIVITYSERIEDETAILS&s=966F953A-5AB6-F8A5-8065-22C274230F12",
+      "club": {
+       "id": 1,
+       "name": "Belgium"
+      },
+      "team_logo": {
+       "name": "Spirou Basket",
+       "alt": null,
+       "keywords": null,
+       "public_url": "https://bnxt.sportpress.info/storage/3/G/3GsvRCSQNq5oeb3QinpVy3p4H1785845088.png",
+       "thumbnails": {
+        "small": "https://bnxt.sportpress.info/storage/3/G/small-3GsvRCSQNq5oeb3QinpVy3p4H1785845088.png",
+        "medium": "https://bnxt.sportpress.info/storage/3/G/medium-3GsvRCSQNq5oeb3QinpVy3p4H1785845088.png"
+       }
+      },
+      "created_at": "2026-07-24"
+     },
+     "period_scores": [
+      {
+       "period_id": 1,
+       "score": 24
+      },
+      {
+       "period_id": 2,
+       "score": 21
+      },
+      {
+       "period_id": 3,
+       "score": 20
+      },
+      {
+       "period_id": 4,
+       "score": 16
+      }
+     ]
+    }
+   ],
+   "period": {
+    "name": "Q4"
+   },
+   "round": null,
+   "phase": {
+    "id": 183,
+    "name": "Regular season 2026-27",
+    "standings_visible": true
+   },
+   "competition": {
+    "id": 25,
+    "season": 2027,
+    "visible": true,
+    "standings_visible": true,
+    "simple_team_view": false,
+    "summer_season": false,
+    "name": "BNXT League 2026-2027",
+    "logo": null,
+    "ticket_url": null,
+    "video_url": null,
+    "created_at": "2026-07-24"
+   },
+   "arena": {
+    "name": "Complexe Sportif Neder-Over-Heembeek"
+   },
+   "referees": [],
+   "total": {
+    "minute": 200,
+    "starter": true,
+    "foul": 25,
+    "defensive_foul": 24,
+    "dunk_made": 0,
+    "dunk_all": 0,
+    "dunk_percent": 0,
+    "two_point_made": 23,
+    "two_point_all": 36,
+    "two_point_percent": 63.89,
+    "three_point_made": 5,
+    "three_point_all": 15,
+    "three_point_percent": 33.33,
+    "throw_made": 28,
+    "throw_all": 51,
+    "throw_percent": 54.9,
+    "free_throw_made": 20,
+    "free_throw_all": 27,
+    "free_throw_percent": 74.07,
+    "offensive_rebound": 7,
+    "defensive_rebound": 29,
+    "total_rebound": 36,
+    "block": 3,
+    "block_against": 1,
+    "turnover": 20,
+    "steal": 5,
+    "assist": 14,
+    "points": 81,
+    "value": 113,
+    "plusminus": 11
+   }
+  }
+ ]
+}

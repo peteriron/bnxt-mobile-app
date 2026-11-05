@@ -1,0 +1,45 @@
+{
+ "data": {
+  "id": 537,
+  "competition_id": 25,
+  "uu_team_id": 1,
+  "name": "Val-Dieu Spirou Basket",
+  "short_name": "CHA",
+  "ticket_url": "https://shop.utick.be/?pos=SPIROUBASKET&module=ACTIVITYSERIEDETAILS&s=966F953A-5AB6-F8A5-8065-22C274230F12",
+  "club": {
+   "id": 1,
+   "name": "Belgium"
+  },
+  "team_logo": {
+   "name": "Spirou Basket",
+   "alt": null,
+   "keywords": null,
+   "public_url": "https://bnxt.sportpress.info/storage/3/G/3GsvRCSQNq5oeb3QinpVy3p4H1785845088.png",
+   "thumbnails": {
+    "small": "https://bnxt.sportpress.info/storage/3/G/small-3GsvRCSQNq5oeb3QinpVy3p4H1785845088.png",
+    "medium": "https://bnxt.sportpress.info/storage/3/G/medium-3GsvRCSQNq5oeb3QinpVy3p4H1785845088.png"
+   }
+  },
+  "team_image": null,
+  "competition": {
+   "id": 25,
+   "season": 2027,
+   "visible": true,
+   "standings_visible": true,
+   "simple_team_view": false,
+   "summer_season": false,
+   "name": "BNXT League 2026-2027",
+   "logo": null,
+   "ticket_url": null,
+   "video_url": null,
+   "created_at": "2026-07-24"
+  },
+  "staffs": [],
+  "statistics": {
+   "average_score_for": 79.8,
+   "average_score_against": 65.6,
+   "field_goal_percent": 44.48
+  },
+  "created_at": "2026-07-24"
+ }
+}

@@ -1,0 +1,628 @@
+{
+ "data": [
+  {
+   "id": 537,
+   "competition_id": 25,
+   "uu_team_id": 1,
+   "name": "Val-Dieu Spirou Basket",
+   "short_name": "CHA",
+   "ticket_url": "https://shop.utick.be/?pos=SPIROUBASKET&module=ACTIVITYSERIEDETAILS&s=966F953A-5AB6-F8A5-8065-22C274230F12",
+   "club": {
+    "id": 1,
+    "name": "Belgium"
+   },
+   "team_logo": {
+    "name": "Spirou Basket",
+    "alt": null,
+    "keywords": null,
+    "public_url": "https://bnxt.sportpress.info/storage/3/G/3GsvRCSQNq5oeb3QinpVy3p4H1785845088.png",
+    "thumbnails": {
+     "small": "https://bnxt.sportpress.info/storage/3/G/small-3GsvRCSQNq5oeb3QinpVy3p4H1785845088.png",
+     "medium": "https://bnxt.sportpress.info/storage/3/G/medium-3GsvRCSQNq5oeb3QinpVy3p4H1785845088.png"
+    }
+   },
+   "team_image": null,
+   "competition": {
+    "id": 25,
+    "season": 2027,
+    "visible": true,
+    "standings_visible": true,
+    "simple_team_view": false,
+    "summer_season": false,
+    "name": "BNXT League 2026-2027",
+    "logo": null,
+    "ticket_url": null,
+    "video_url": null,
+    "created_at": "2026-07-24"
+   },
+   "staffs": [],
+   "statistics": [],
+   "created_at": "2026-07-24"
+  },
+  {
+   "id": 539,
+   "competition_id": 25,
+   "uu_team_id": 2,
+   "name": "Coretec Oostende",
+   "short_name": "OOS",
+   "ticket_url": "https://www.bcoostende.be/tickets/tickets",
+   "club": {
+    "id": 1,
+    "name": "Belgium"
+   },
+   "team_logo": {
+    "name": "Oostende",
+    "alt": null,
+    "keywords": null,
+    "public_url": "https://bnxt.sportpress.info/storage/W/e/WeBMRLIogJuvtJmZrFZMsvxhj1786710770.png",
+    "thumbnails": {
+     "small": "https://bnxt.sportpress.info/storage/W/e/small-WeBMRLIogJuvtJmZrFZMsvxhj1786710770.png",
+     "medium": "https://bnxt.sportpress.info/storage/W/e/medium-WeBMRLIogJuvtJmZrFZMsvxhj1786710770.png"
+    }
+   },
+   "team_image": null,
+   "competition": {
+    "id": 25,
+    "season": 2027,
+    "visible": true,
+    "standings_visible": true,
+    "simple_team_view": false,
+    "summer_season": false,
+    "name": "BNXT League 2026-2027",
+    "logo": null,
+    "ticket_url": null,
+    "video_url": null,
+    "created_at": "2026-07-24"
+   },
+   "staffs": [],
+   "statistics": [],
+   "created_at": "2026-07-24"
+  },
+  {
+   "id": 541,
+   "competition_id": 25,
+   "uu_team_id": 3,
+   "name": "Windrose Giants Antwerp",
+   "short_name": "ANT",
+   "ticket_url": "https://www.ticketmaster.be/artist/telenet-giants-antwerp-tickets/1272224?language=nl-be",
+   "club": {
+    "id": 1,
+    "name": "Belgium"
+   },
+   "team_logo": {
+    "name": "Antwerp",
+    "alt": null,
+    "keywords": null,
+    "public_url": "https://bnxt.sportpress.info/storage/9/R/9RqRyVjfwOCfzZAoYGKXREj7t1785845391.png",
+    "thumbnails": {
+     "small": "https://bnxt.sportpress.info/storage/9/R/small-9RqRyVjfwOCfzZAoYGKXREj7t1785845391.png",
+     "medium": "https://bnxt.sportpress.info/storage/9/R/medium-9RqRyVjfwOCfzZAoYGKXREj7t1785845391.png"
+    }
+   },
+   "team_image": null,
+   "competition": {
+    "id": 25,
+    "season": 2027,
+    "visible": true,
+    "standings_visible": true,
+    "simple_team_view": false,
+    "summer_season": false,
+    "name": "BNXT League 2026-2027",
+    "logo": null,
+    "ticket_url": null,
+    "video_url": null,
+    "created_at": "2026-07-24"
+   },
+   "staffs": [],
+   "statistics": [],
+   "created_at": "2026-07-24"
+  },
+  {
+   "id": 543,
+   "competition_id": 25,
+   "uu_team_id": 4,
+   "name": "CityX Mons",
+   "short_name": "MON",
+   "ticket_url": "https://shop.monshainaut.be",
+   "club": {
+    "id": 1,
+    "name": "Belgium"
+   },
+   "team_logo": {
+    "name": "Mons",
+    "alt": null,
+    "keywords": null,
+    "public_url": "https://bnxt.sportpress.info/storage/b/t/bt3TLIdQmf3JGqHKQP6cJHii81786374757.png",
+    "thumbnails": {
+     "small": "https://bnxt.sportpress.info/storage/b/t/small-bt3TLIdQmf3JGqHKQP6cJHii81786374757.png",
+     "medium": "https://bnxt.sportpress.info/storage/b/t/medium-bt3TLIdQmf3JGqHKQP6cJHii81786374757.png"
+    }
+   },
+   "team_image": null,
+   "competition": {
+    "id": 25,
+    "season": 2027,
+    "visible": true,
+    "standings_visible": true,
+    "simple_team_view": false,
+    "summer_season": false,
+    "name": "BNXT League 2026-2027",
+    "logo": null,
+    "ticket_url": null,
+    "video_url": null,
+    "created_at": "2026-07-24"
+   },
+   "staffs": [],
+   "statistics": [],
+   "created_at": "2026-07-24"
+  },
+  {
+   "id": 545,
+   "competition_id": 25,
+   "uu_team_id": 5,
+   "name": "Hubo Limburg United",
+   "short_name": "LIM",
+   "ticket_url": "https://shop.twelveticketing.eu/seller/hubo-limburg-united-y42n",
+   "club": {
+    "id": 1,
+    "name": "Belgium"
+   },
+   "team_logo": {
+    "name": "Limburg",
+    "alt": null,
+    "keywords": null,
+    "public_url": "https://bnxt.sportpress.info/storage/I/p/IpEkrEru9R3Ed8vUHWlFkR4rZ1785845246.png",
+    "thumbnails": {
+     "small": "https://bnxt.sportpress.info/storage/I/p/small-IpEkrEru9R3Ed8vUHWlFkR4rZ1785845246.png",
+     "medium": "https://bnxt.sportpress.info/storage/I/p/medium-IpEkrEru9R3Ed8vUHWlFkR4rZ1785845246.png"
+    }
+   },
+   "team_image": null,
+   "competition": {
+    "id": 25,
+    "season": 2027,
+    "visible": true,
+    "standings_visible": true,
+    "simple_team_view": false,
+    "summer_season": false,
+    "name": "BNXT League 2026-2027",
+    "logo": null,
+    "ticket_url": null,
+    "video_url": null,
+    "created_at": "2026-07-24"
+   },
+   "staffs": [],
+   "statistics": [],
+   "created_at": "2026-07-24"
+  },
+  {
+   "id": 547,
+   "competition_id": 25,
+   "uu_team_id": 7,
+   "name": "Donar Groningen",
+   "short_name": "GRO",
+   "ticket_url": "https://www.donar.nl/tickets",
+   "club": {
+    "id": 2,
+    "name": "Netherlands"
+   },
+   "team_logo": {
+    "name": "Groningen",
+    "alt": null,
+    "keywords": null,
+    "public_url": "https://bnxt.sportpress.info/storage/5/b/5bYE12yxtfijCQAKU2RhtMieX1785845195.png",
+    "thumbnails": {
+     "small": "https://bnxt.sportpress.info/storage/5/b/small-5bYE12yxtfijCQAKU2RhtMieX1785845195.png",
+     "medium": "https://bnxt.sportpress.info/storage/5/b/medium-5bYE12yxtfijCQAKU2RhtMieX1785845195.png"
+    }
+   },
+   "team_image": null,
+   "competition": {
+    "id": 25,
+    "season": 2027,
+    "visible": true,
+    "standings_visible": true,
+    "simple_team_view": false,
+    "summer_season": false,
+    "name": "BNXT League 2026-2027",
+    "logo": null,
+    "ticket_url": null,
+    "video_url": null,
+    "created_at": "2026-07-24"
+   },
+   "staffs": [],
+   "statistics": [],
+   "created_at": "2026-07-24"
+  },
+  {
+   "id": 549,
+   "competition_id": 25,
+   "uu_team_id": 9,
+   "name": "Landstede Hammers",
+   "short_name": "ZWO",
+   "ticket_url": "https://shop.ticketing.cm.com/82ab5cc7-f55f-40d1-b9e6-c7d61918aac1/eebd7e65-0414-4f4e-a23b-559e14507dc9",
+   "club": {
+    "id": 2,
+    "name": "Netherlands"
+   },
+   "team_logo": {
+    "name": "Landstede Hammers",
+    "alt": null,
+    "keywords": null,
+    "public_url": "https://bnxt.sportpress.info/storage/R/J/RJmkimeHoVO5gxw3dXfhx2eEx1785847130.png",
+    "thumbnails": {
+     "small": "https://bnxt.sportpress.info/storage/R/J/small-RJmkimeHoVO5gxw3dXfhx2eEx1785847130.png",
+     "medium": "https://bnxt.sportpress.info/storage/R/J/medium-RJmkimeHoVO5gxw3dXfhx2eEx1785847130.png"
+    }
+   },
+   "team_image": null,
+   "competition": {
+    "id": 25,
+    "season": 2027,
+    "visible": true,
+    "standings_visible": true,
+    "simple_team_view": false,
+    "summer_season": false,
+    "name": "BNXT League 2026-2027",
+    "logo": null,
+    "ticket_url": null,
+    "video_url": null,
+    "created_at": "2026-07-24"
+   },
+   "staffs": [],
+   "statistics": [],
+   "created_at": "2026-07-24"
+  },
+  {
+   "id": 551,
+   "competition_id": 25,
+   "uu_team_id": 10,
+   "name": "Zeeuw & Zeeuw Rotterdam City",
+   "short_name": "RCB",
+   "ticket_url": "https://rcb.nl/tickets/",
+   "club": {
+    "id": 2,
+    "name": "Netherlands"
+   },
+   "team_logo": {
+    "name": "Rotterdam",
+    "alt": null,
+    "keywords": null,
+    "public_url": "https://bnxt.sportpress.info/storage/q/4/q4i5E06VYpXgnghlcSWgMilEC1785845412.png",
+    "thumbnails": {
+     "small": "https://bnxt.sportpress.info/storage/q/4/small-q4i5E06VYpXgnghlcSWgMilEC1785845412.png",
+     "medium": "https://bnxt.sportpress.info/storage/q/4/medium-q4i5E06VYpXgnghlcSWgMilEC1785845412.png"
+    }
+   },
+   "team_image": null,
+   "competition": {
+    "id": 25,
+    "season": 2027,
+    "visible": true,
+    "standings_visible": true,
+    "simple_team_view": false,
+    "summer_season": false,
+    "name": "BNXT League 2026-2027",
+    "logo": null,
+    "ticket_url": null,
+    "video_url": null,
+    "created_at": "2026-07-24"
+   },
+   "staffs": [],
+   "statistics": [],
+   "created_at": "2026-07-24"
+  },
+  {
+   "id": 553,
+   "competition_id": 25,
+   "uu_team_id": 12,
+   "name": "Zorg en Zekerheid Leiden",
+   "short_name": "LEI",
+   "ticket_url": "https://www.eredivisiebasketballleiden.nl/tickets/e-tickets",
+   "club": {
+    "id": 2,
+    "name": "Netherlands"
+   },
+   "team_logo": {
+    "name": "Leiden",
+    "alt": null,
+    "keywords": null,
+    "public_url": "https://bnxt.sportpress.info/storage/y/z/yzL6PScJRcREGP6UsfXz6sIPb1785845435.png",
+    "thumbnails": {
+     "small": "https://bnxt.sportpress.info/storage/y/z/small-yzL6PScJRcREGP6UsfXz6sIPb1785845435.png",
+     "medium": "https://bnxt.sportpress.info/storage/y/z/medium-yzL6PScJRcREGP6UsfXz6sIPb1785845435.png"
+    }
+   },
+   "team_image": null,
+   "competition": {
+    "id": 25,
+    "season": 2027,
+    "visible": true,
+    "standings_visible": true,
+    "simple_team_view": false,
+    "summer_season": false,
+    "name": "BNXT League 2026-2027",
+    "logo": null,
+    "ticket_url": null,
+    "video_url": null,
+    "created_at": "2026-07-24"
+   },
+   "staffs": [],
+   "statistics": [],
+   "created_at": "2026-07-24"
+  },
+  {
+   "id": 555,
+   "competition_id": 25,
+   "uu_team_id": 18,
+   "name": "Heroes Den Bosch",
+   "short_name": "DBO",
+   "ticket_url": "https://heroes.shop.eventgoose.com",
+   "club": {
+    "id": 2,
+    "name": "Netherlands"
+   },
+   "team_logo": {
+    "name": "Den Bosch",
+    "alt": null,
+    "keywords": null,
+    "public_url": "https://bnxt.sportpress.info/storage/u/i/uigcaAinqi5d3dn2POyaMZAiK1785845220.png",
+    "thumbnails": {
+     "small": "https://bnxt.sportpress.info/storage/u/i/small-uigcaAinqi5d3dn2POyaMZAiK1785845220.png",
+     "medium": "https://bnxt.sportpress.info/storage/u/i/medium-uigcaAinqi5d3dn2POyaMZAiK1785845220.png"
+    }
+   },
+   "team_image": null,
+   "competition": {
+    "id": 25,
+    "season": 2027,
+    "visible": true,
+    "standings_visible": true,
+    "simple_team_view": false,
+    "summer_season": false,
+    "name": "BNXT League 2026-2027",
+    "logo": null,
+    "ticket_url": null,
+    "video_url": null,
+    "created_at": "2026-07-24"
+   },
+   "staffs": [],
+   "statistics": [],
+   "created_at": "2026-07-24"
+  },
+  {
+   "id": 557,
+   "competition_id": 25,
+   "uu_team_id": 19,
+   "name": "Partena Professional Okapi Aalst",
+   "short_name": "AAL",
+   "ticket_url": "https://shop.ticket.monster/seller/okapi-aalst-mheh",
+   "club": {
+    "id": 1,
+    "name": "Belgium"
+   },
+   "team_logo": {
+    "name": "Aalst",
+    "alt": null,
+    "keywords": null,
+    "public_url": "https://bnxt.sportpress.info/storage/0/j/0jJNXOYfAzMPS1sgPDxG4wSUM1785845350.png",
+    "thumbnails": {
+     "small": "https://bnxt.sportpress.info/storage/0/j/small-0jJNXOYfAzMPS1sgPDxG4wSUM1785845350.png",
+     "medium": "https://bnxt.sportpress.info/storage/0/j/medium-0jJNXOYfAzMPS1sgPDxG4wSUM1785845350.png"
+    }
+   },
+   "team_image": null,
+   "competition": {
+    "id": 25,
+    "season": 2027,
+    "visible": true,
+    "standings_visible": true,
+    "simple_team_view": false,
+    "summer_season": false,
+    "name": "BNXT League 2026-2027",
+    "logo": null,
+    "ticket_url": null,
+    "video_url": null,
+    "created_at": "2026-07-24"
+   },
+   "staffs": [],
+   "statistics": [],
+   "created_at": "2026-07-24"
+  },
+  {
+   "id": 559,
+   "competition_id": 25,
+   "uu_team_id": 20,
+   "name": "AB InBev Leuven Bears",
+   "short_name": "LEU",
+   "ticket_url": "https://leuvenbears.ordering.be/o/2",
+   "club": {
+    "id": 1,
+    "name": "Belgium"
+   },
+   "team_logo": {
+    "name": "Leuven",
+    "alt": null,
+    "keywords": null,
+    "public_url": "https://bnxt.sportpress.info/storage/L/f/Lf4ijAEkcAiQ983piyEx4UmvV1786710794.png",
+    "thumbnails": {
+     "small": "https://bnxt.sportpress.info/storage/L/f/small-Lf4ijAEkcAiQ983piyEx4UmvV1786710794.png",
+     "medium": "https://bnxt.sportpress.info/storage/L/f/medium-Lf4ijAEkcAiQ983piyEx4UmvV1786710794.png"
+    }
+   },
+   "team_image": null,
+   "competition": {
+    "id": 25,
+    "season": 2027,
+    "visible": true,
+    "standings_visible": true,
+    "simple_team_view": false,
+    "summer_season": false,
+    "name": "BNXT League 2026-2027",
+    "logo": null,
+    "ticket_url": null,
+    "video_url": null,
+    "created_at": "2026-07-24"
+   },
+   "staffs": [],
+   "statistics": [],
+   "created_at": "2026-07-24"
+  },
+  {
+   "id": 561,
+   "competition_id": 25,
+   "uu_team_id": 21,
+   "name": "Brussels Basketball",
+   "short_name": "BRU",
+   "ticket_url": "https://www.brusselsbasketball.be/tickets",
+   "club": {
+    "id": 1,
+    "name": "Belgium"
+   },
+   "team_logo": {
+    "name": "Brussels",
+    "alt": null,
+    "keywords": null,
+    "public_url": "https://bnxt.sportpress.info/storage/y/n/ynqjUETIfJkJMUbOllRCow4rX1785845117.png",
+    "thumbnails": {
+     "small": "https://bnxt.sportpress.info/storage/y/n/small-ynqjUETIfJkJMUbOllRCow4rX1785845117.png",
+     "medium": "https://bnxt.sportpress.info/storage/y/n/medium-ynqjUETIfJkJMUbOllRCow4rX1785845117.png"
+    }
+   },
+   "team_image": null,
+   "competition": {
+    "id": 25,
+    "season": 2027,
+    "visible": true,
+    "standings_visible": true,
+    "simple_team_view": false,
+    "summer_season": false,
+    "name": "BNXT League 2026-2027",
+    "logo": null,
+    "ticket_url": null,
+    "video_url": null,
+    "created_at": "2026-07-24"
+   },
+   "staffs": [],
+   "statistics": [],
+   "created_at": "2026-07-24"
+  },
+  {
+   "id": 563,
+   "competition_id": 25,
+   "uu_team_id": 22,
+   "name": "Kangoeroes Basket Mechelen",
+   "short_name": "MEC",
+   "ticket_url": "https://kangoeroes-mannen.ordering.be/o/7%C2%A0%C2%A0%C2%A0",
+   "club": {
+    "id": 1,
+    "name": "Belgium"
+   },
+   "team_logo": {
+    "name": "Mechelen",
+    "alt": null,
+    "keywords": null,
+    "public_url": "https://bnxt.sportpress.info/storage/P/1/P1CAfeaMcbepHMFRHSXcktt6k1785845272.png",
+    "thumbnails": {
+     "small": "https://bnxt.sportpress.info/storage/P/1/small-P1CAfeaMcbepHMFRHSXcktt6k1785845272.png",
+     "medium": "https://bnxt.sportpress.info/storage/P/1/medium-P1CAfeaMcbepHMFRHSXcktt6k1785845272.png"
+    }
+   },
+   "team_image": null,
+   "competition": {
+    "id": 25,
+    "season": 2027,
+    "visible": true,
+    "standings_visible": true,
+    "simple_team_view": false,
+    "summer_season": false,
+    "name": "BNXT League 2026-2027",
+    "logo": null,
+    "ticket_url": null,
+    "video_url": null,
+    "created_at": "2026-07-24"
+   },
+   "staffs": [],
+   "statistics": [],
+   "created_at": "2026-07-24"
+  },
+  {
+   "id": 565,
+   "competition_id": 25,
+   "uu_team_id": 32,
+   "name": "House of Talents Spurs Kortrijk",
+   "short_name": "KOR",
+   "ticket_url": "https://shop.ticket.monster/seller/hot-spurs-kortrijk-h2r9",
+   "club": {
+    "id": 1,
+    "name": "Belgium"
+   },
+   "team_logo": {
+    "name": "Kortrijk",
+    "alt": null,
+    "keywords": null,
+    "public_url": "https://bnxt.sportpress.info/storage/W/Z/WZW7QcAreIiPReoaGtc8B3YYK1785845053.png",
+    "thumbnails": {
+     "small": "https://bnxt.sportpress.info/storage/W/Z/small-WZW7QcAreIiPReoaGtc8B3YYK1785845053.png",
+     "medium": "https://bnxt.sportpress.info/storage/W/Z/medium-WZW7QcAreIiPReoaGtc8B3YYK1785845053.png"
+    }
+   },
+   "team_image": null,
+   "competition": {
+    "id": 25,
+    "season": 2027,
+    "visible": true,
+    "standings_visible": true,
+    "simple_team_view": false,
+    "summer_season": false,
+    "name": "BNXT League 2026-2027",
+    "logo": null,
+    "ticket_url": null,
+    "video_url": null,
+    "created_at": "2026-07-24"
+   },
+   "staffs": [],
+   "statistics": [],
+   "created_at": "2026-07-24"
+  },
+  {
+   "id": 567,
+   "competition_id": 25,
+   "uu_team_id": 33,
+   "name": "CB Liège",
+   "short_name": "LIE",
+   "ticket_url": "https://www.cb-liege.be/division1/calendrier",
+   "club": {
+    "id": 1,
+    "name": "Belgium"
+   },
+   "team_logo": {
+    "name": "CB Liege",
+    "alt": null,
+    "keywords": null,
+    "public_url": "https://bnxt.sportpress.info/storage/D/f/DfcFx9PZMrLfpGplwmyGc8GTM1785844306.png",
+    "thumbnails": {
+     "small": "https://bnxt.sportpress.info/storage/D/f/small-DfcFx9PZMrLfpGplwmyGc8GTM1785844306.png",
+     "medium": "https://bnxt.sportpress.info/storage/D/f/medium-DfcFx9PZMrLfpGplwmyGc8GTM1785844306.png"
+    }
+   },
+   "team_image": null,
+   "competition": {
+    "id": 25,
+    "season": 2027,
+    "visible": true,
+    "standings_visible": true,
+    "simple_team_view": false,
+    "summer_season": false,
+    "name": "BNXT League 2026-2027",
+    "logo": null,
+    "ticket_url": null,
+    "video_url": null,
+    "created_at": "2026-07-24"
+   },
+   "staffs": [],
+   "statistics": [],
+   "created_at": "2026-08-03"
+  }
+ ]
+}

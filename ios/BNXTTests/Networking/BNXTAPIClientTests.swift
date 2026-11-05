@@ -1,0 +1,253 @@
+@testable import BNXT
+import XCTest
+
+final class BNXTAPIClientTests: XCTestCase {
+    private var cacheDirectory: URL!
+    private let fixedNow = Date(timeIntervalSince1970: 1_793_750_400) // 4 Nov 2026
+
+    override func setUpWithError() throws {
+        MockURLProtocol.router.reset()
+        cacheDirectory = FileManager.default.temporaryDirectory.appending(path: "BNXTAPIClientTests-\(UUID().uuidString)")
+    }
+
+    override func tearDown() {
+        try? FileManager.default.removeItem(at: cacheDirectory)
+        MockURLProtocol.router.reset()
+    }
+
+    private func client(key: String? = "test-key", cache: Bool = true) -> BNXTAPIClient {
+        let now = fixedNow
+        return BNXTAPIClient(configuration: key.map { APIConfiguration(apiKey: $0) },
+                             session: MockURLProtocol.session(),
+                             cache: cache ? ResponseCache(directory: cacheDirectory) : nil,
+                             now: { now })
+    }
+
+    private var router: MockURLProtocol.Router { MockURLProtocol.router }
+
+    // MARK: Requests
+
+    func testSendsTheWebsitesHeadersAndLanguage() async throws {
+        try router.stub("standings/competition/25/phase/183", fixture: "standings")
+
+        _ = try await client().standings()
+
+        let request = try XCTUnwrap(router.requests.first)
+        XCTAssertEqual(request.value(forHTTPHeaderField: "X-Authorization"), "test-key")
+        XCTAssertEqual(request.value(forHTTPHeaderField: "X-Localization"), "en")
+        XCTAssertEqual(request.value(forHTTPHeaderField: "Accept"), "application/json")
+        XCTAssertEqual(request.url?.absoluteString, "https://bnxt.sportpress.info/api/v1/standings/competition/25/phase/183?lang=en")
+    }
+
+    /// Every endpoint hits the documented path and decodes its fixture (docs/bnxt-api.md).
+    func testEveryEndpointHitsItsPathAndDecodes() async throws {
+        let api = client()
+        try router.stub("competition-team/all", fixture: "teams")
+        try router.stub("competition-team/find/537", fixture: "team_537")
+        try router.stub("standings/competition/25/phase/183", fixture: "standings")
+        try router.stub("roster/team-players/537", fixture: "roster_537")
+        try router.stub("competition-team/player-averages/537", fixture: "player_averages_537")
+        try router.stub("competition-team/statistics-by-game/total/537", fixture: "team_games_537")
+        try router.stub("schedule/game-slider/25", fixture: "game_slider")
+        try router.stub("schedule/find/11323", fixture: "game_11323")
+        try router.stub("boxscore/game/25/11323", fixture: "box_score_11323")
+        try router.stub("boxscore/player/season-games/11173", fixture: "player_game_log_11173")
+        try router.stub("player/average-rankings/25", fixture: "player_leaders")
+
+        let teams = try await api.teams().value.count
+        let team = try await api.team(id: 537).value.statistics?.pointsFor
+        let standings = try await api.standings().value.count
+        let roster = try await api.roster(teamId: 537).value.count
+        let averages = try await api.playerAverages(teamId: 537).value.count
+        let teamGames = try await api.teamGames(teamId: 537).value.count
+        let slider = try await api.gameSlider().value.count
+        let game = try await api.game(id: 11323).value.away.score
+        let box = try await api.boxScore(gameId: 11323, isFinal: true).value.home?.totals.points
+        let log = try await api.playerGameLog(rosterId: 11173).value.count
+        let leaders = try await api.playerLeaders().value[.points].count
+
+        XCTAssertEqual(teams, 16)
+        XCTAssertEqual(team, 79.8)
+        XCTAssertEqual(standings, 16)
+        XCTAssertEqual(roster, 13)
+        XCTAssertEqual(averages, 12)
+        XCTAssertEqual(teamGames, 5)
+        XCTAssertEqual(slider, 6)
+        XCTAssertEqual(game, 70)
+        XCTAssertEqual(box, 65)
+        XCTAssertEqual(log, 5)
+        XCTAssertEqual(leaders, 5)
+        XCTAssertEqual(router.requests.count, 11)
+        XCTAssertEqual(router.requests(to: "roster/team-players/537").first?.url?.query(), "competition_id=25&lang=en")
+        XCTAssertEqual(router.requests(to: "player/average-rankings/25").first?.url?.query(), "phase_id=183&lang=en")
+    }
+
+    // MARK: Errors
+
+    func testMissingKeyFailsWithoutARequest() async {
+        await assertThrows(APIError.missingConfiguration) { try await self.client(key: nil).standings() }
+        XCTAssertTrue(router.requests.isEmpty)
+    }
+
+    func testMapsHTTPErrors() async {
+        router.stub("standings/competition/25/phase/183", status: 401, body: Data())
+        await assertThrows(APIError.unauthorized) { try await self.client(cache: false).standings() }
+
+        router.stub("standings/competition/25/phase/183", status: 429, body: Data(), headers: ["Retry-After": "30"])
+        await assertThrows(APIError.rateLimited(retryAfter: 30)) { try await self.client(cache: false).standings() }
+
+        router.stub("standings/competition/25/phase/183", status: 503, body: Data())
+        await assertThrows(APIError.http(status: 503)) { try await self.client(cache: false).standings() }
+
+        router.fail("standings/competition/25/phase/183", with: .timedOut)
+        await assertThrows(APIError.network(.timedOut)) { try await self.client(cache: false).standings() }
+    }
+
+    func testUnexpectedShapeIsADecodingError() async {
+        router.stub("schedule/find/11323", body: Data(#"{"data":{"id":11323}}"#.utf8))
+        do {
+            _ = try await client(cache: false).game(id: 11323)
+            XCTFail("Expected a decoding error")
+        } catch let APIError.decoding(endpoint, _) {
+            XCTAssertEqual(endpoint, "schedule/find/11323")
+        } catch {
+            XCTFail("Unexpected \(error)")
+        }
+    }
+
+    // MARK: Cache and offline
+
+    func testNetworkFailureServesTheCachedCopy() async throws {
+        let api = client()
+        try router.stub("standings/competition/25/phase/183", fixture: "standings")
+        let fresh = try await api.standings()
+        XCTAssertEqual(fresh.source, .network)
+        XCTAssertEqual(fresh.fetchedAt, fixedNow)
+
+        router.fail("standings/competition/25/phase/183")
+        let offline = try await api.standings()
+
+        XCTAssertEqual(offline.source, .cache)
+        XCTAssertEqual(offline.value, fresh.value)
+        XCTAssertEqual(offline.fetchedAt.timeIntervalSince1970, fixedNow.timeIntervalSince1970, accuracy: 1)
+    }
+
+    func testUnauthorizedAlsoFallsBackToCache() async throws {
+        let api = client()
+        try router.stub("standings/competition/25/phase/183", fixture: "standings")
+        _ = try await api.standings()
+
+        router.stub("standings/competition/25/phase/183", status: 401, body: Data()) // e.g. the website rotated its key
+        let result = try await api.standings()
+        XCTAssertEqual(result.source, .cache)
+    }
+
+    func testNoCacheAndNoNetworkThrows() async {
+        router.fail("standings/competition/25/phase/183")
+        await assertThrows(APIError.network(.notConnectedToInternet)) { try await self.client().standings() }
+    }
+
+    /// A finished game's box score never changes: the second open costs no request.
+    func testFinishedBoxScoreIsServedFromCacheWithoutARequest() async throws {
+        let api = client()
+        try router.stub("boxscore/game/25/11323", fixture: "box_score_11323")
+
+        _ = try await api.boxScore(gameId: 11323, isFinal: true)
+        let second = try await api.boxScore(gameId: 11323, isFinal: true)
+
+        XCTAssertEqual(second.source, .cache)
+        XCTAssertEqual(router.requests(to: "boxscore/game/25/11323").count, 1)
+    }
+
+    /// An empty cached box score may still be filled in, so it's not trusted.
+    func testEmptyCachedBoxScoreIsRefetched() async throws {
+        let api = client()
+        router.stub("boxscore/game/25/11323", body: Data(#"{"data":[]}"#.utf8))
+        _ = try await api.boxScore(gameId: 11323, isFinal: true)
+
+        try router.stub("boxscore/game/25/11323", fixture: "box_score_11323")
+        let refreshed = try await api.boxScore(gameId: 11323, isFinal: true)
+
+        XCTAssertEqual(refreshed.source, .network)
+        XCTAssertFalse(refreshed.value.isEmpty)
+        XCTAssertEqual(router.requests(to: "boxscore/game/25/11323").count, 2)
+    }
+
+    func testLiveBoxScoreAlwaysAsksTheNetwork() async throws {
+        let api = client()
+        try router.stub("boxscore/game/25/11323", fixture: "box_score_11323")
+        _ = try await api.boxScore(gameId: 11323, isFinal: false)
+        _ = try await api.boxScore(gameId: 11323, isFinal: false)
+        XCTAssertEqual(router.requests(to: "boxscore/game/25/11323").count, 2)
+    }
+
+    /// §7.16: the cache must not hold fields we never decode, even if the API starts filling them in.
+    func testCacheNeverStoresForbiddenFields() async throws {
+        let player = #"{"id":2,"first_name":"A","last_name":"B","facebook":"fb.com/x","instagram":"@x","twitter":"@x","description":"bio"}"#
+        let body = #"{"data":[{"id":1,"jersey":"5","player":"# + player + "}]}"
+        router.stub("roster/team-players/537", body: Data(body.utf8))
+
+        _ = try await client().roster(teamId: 537)
+
+        let files = try FileManager.default.contentsOfDirectory(at: cacheDirectory, includingPropertiesForKeys: nil)
+        XCTAssertEqual(files.count, 1)
+        let cached = try String(contentsOf: files[0], encoding: .utf8)
+        XCTAssertTrue(cached.contains("\"last_name\""))
+        // A fixed list, not PrivacyFilter.neverStoredKeys: emptying the filter must fail this test.
+        for key in ["facebook", "twitter", "instagram", "description"] {
+            XCTAssertFalse(cached.contains(key), "cache holds \(key)")
+        }
+    }
+
+    func testFilterCoversEveryNeverDecodedField() {
+        XCTAssertEqual(PrivacyFilter.neverStoredKeys, ["facebook", "twitter", "instagram", "description"])
+    }
+
+    func testCacheKeyIgnoresTheAPIKey() {
+        XCTAssertEqual(BNXTAPIClient.Endpoint("a", ["z": "1", "b": "2"]).cacheKey, "a?b=2&z=1")
+        XCTAssertFalse(BNXTAPIClient.Endpoint("a").cacheKey.contains("test-key"))
+    }
+
+    // MARK: Helpers
+
+    private func assertThrows<T>(_ expected: APIError, file: StaticString = #filePath, line: UInt = #line,
+                                 _ body: @escaping () async throws -> T) async {
+        do {
+            _ = try await body()
+            XCTFail("Expected \(expected)", file: file, line: line)
+        } catch let error as APIError {
+            XCTAssertEqual(error, expected, file: file, line: line)
+        } catch {
+            XCTFail("Unexpected \(error)", file: file, line: line)
+        }
+    }
+}
+
+final class ResponseCacheTests: XCTestCase {
+    func testRoundTripsDataAndDate() throws {
+        let directory = FileManager.default.temporaryDirectory.appending(path: "ResponseCacheTests-\(UUID().uuidString)")
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let cache = ResponseCache(directory: directory)
+        let date = Date(timeIntervalSince1970: 1_700_000_000)
+
+        XCTAssertNil(cache.read("a"))
+        cache.write(Data("one".utf8), for: "a", at: date)
+        cache.write(Data("two".utf8), for: "b", at: date)
+
+        XCTAssertEqual(cache.read("a")?.data, Data("one".utf8))
+        XCTAssertEqual(try XCTUnwrap(cache.read("a")?.storedAt).timeIntervalSince1970, date.timeIntervalSince1970, accuracy: 1)
+        XCTAssertNotEqual(cache.fileURL(for: "a"), cache.fileURL(for: "b"))
+        cache.removeAll()
+        XCTAssertNil(cache.read("b"))
+    }
+
+    func testPrivacyFilterStripsNestedKeysAndRejectsNonJSON() throws {
+        let input = Data(#"{"a":{"facebook":"x","keep":[{"description":"y","b":1}]}}"#.utf8)
+        let output = try XCTUnwrap(PrivacyFilter.sanitized(input))
+        let object = try XCTUnwrap(JSONSerialization.jsonObject(with: output) as? [String: Any])
+        let nested = try XCTUnwrap(object["a"] as? [String: Any])
+        XCTAssertNil(nested["facebook"])
+        XCTAssertEqual((nested["keep"] as? [[String: Any]])?.first?.keys.sorted(), ["b"])
+        XCTAssertNil(PrivacyFilter.sanitized(Data("<html>".utf8)))
+    }
+}

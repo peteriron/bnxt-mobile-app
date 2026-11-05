@@ -269,6 +269,7 @@ data requests themselves. Crash data only via Apple's opt-in reporting (Xcode Or
 Player data shown is the league's public profile: name, photo, jersey, position, height, nationality, **age** (computed from
 birth date; the date itself is never shown). **Never decoded:** players' `facebook` / `twitter` / `instagram` fields and the free-text
 `description`; staff personal fields if they ever appear. Enforced by `Decodable` types without those properties and a `Mirror` test.
+The response cache stores raw JSON only after `PrivacyFilter` has removed those keys, so they never reach disk either (tested).
 The favourite club is stored in `UserDefaults` only.
 
 **§7.17 Permission and branding.** *Granted 4 Nov 2026:* BNXT League gave permission to use its data, club logos, player photos and the
@@ -320,9 +321,14 @@ then go back to the playbook's branch + PR flow and require `local-tests` and `l
 - [x] Set `DEVELOPMENT_TEAM` (92HC396B37)
 - [x] Brand font: Archivo, bundled (§7.10); App ID `com.pjproductions.bnxt` confirmed (§7.17)
 
-### Phase 1: data layer
-API client (one method per endpoint) + lenient DTOs + golden fixtures; file cache with offline fallback; remote config;
-**version checker** (§3.9) with tests; privacy `Mirror` tests (§7.16); proxy only if §7.15 says so.
+### Phase 1: data layer (in progress)
+- [x] API client `BNXTAPIClient`: one method per endpoint (11), lenient models, `Fetched` values with source and time
+- [x] File cache with offline fallback, cache-first for finished box scores (empty ones refetched), privacy-filtered (§7.16)
+- [x] Golden fixtures from game 11323 / team 537 (`tools/make_fixtures.py`), shared `MockURLProtocol`, privacy `Mirror` tests
+- [ ] FIBA LiveStats client for live play-by-play (§7.4), once the game-night recording shows the feed's shape and cadence
+- [ ] Full-season schedule endpoint (still unknown; `gameSlider` + `teamGames` cover today's needs)
+- [ ] Remote config (season IDs, zones, display names, club colours, key override, feature flags)
+- [ ] **Version checker** (§3.9) with tests
 
 ### Phase 2: design system & shell
 Theme components (game row, live card, segmented control, chips, stat ring, sparkline, box score table, club logo with

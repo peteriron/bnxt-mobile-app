@@ -1,0 +1,398 @@
+{
+ "data": [
+  {
+   "id": 11173,
+   "competition_team_id": 537,
+   "jersey": "",
+   "weight": 81,
+   "height": 188,
+   "active": true,
+   "player_position": {
+    "id": 1,
+    "name": "point_guard"
+   },
+   "player": {
+    "id": 212,
+    "birthdate": "1994-12-28",
+    "first_name": "Joshua",
+    "last_name": "Heath",
+    "nationality_code": "USA",
+    "profile_image": {
+     "name": "Heath",
+     "alt": null,
+     "keywords": null,
+     "public_url": "https://bnxt.sportpress.info/storage/p/B/pBpSre7bxTjEAjY9D6r6E8YlV1788858198.png",
+     "thumbnails": {
+      "small": "https://bnxt.sportpress.info/storage/p/B/small-pBpSre7bxTjEAjY9D6r6E8YlV1788858198.png",
+      "medium": "https://bnxt.sportpress.info/storage/p/B/medium-pBpSre7bxTjEAjY9D6r6E8YlV1788858198.png"
+     }
+    },
+    "created_at": "2022-08-10"
+   },
+   "created_at": "2026-09-02"
+  },
+  {
+   "id": 11175,
+   "competition_team_id": 537,
+   "jersey": "",
+   "weight": 127,
+   "height": 190,
+   "active": true,
+   "player_position": {
+    "id": 1,
+    "name": "point_guard"
+   },
+   "player": {
+    "id": 4132,
+    "birthdate": "2000-07-12",
+    "first_name": "Sam",
+    "last_name": "Hofman",
+    "nationality_code": "BEL",
+    "profile_image": {
+     "name": "Hofman",
+     "alt": null,
+     "keywords": null,
+     "public_url": "https://bnxt.sportpress.info/storage/5/q/5q6iHGhWWQMrBaTTJ46ecZyM11788858217.png",
+     "thumbnails": {
+      "small": "https://bnxt.sportpress.info/storage/5/q/small-5q6iHGhWWQMrBaTTJ46ecZyM11788858217.png",
+      "medium": "https://bnxt.sportpress.info/storage/5/q/medium-5q6iHGhWWQMrBaTTJ46ecZyM11788858217.png"
+     }
+    },
+    "created_at": "2024-08-28"
+   },
+   "created_at": "2026-09-02"
+  },
+  {
+   "id": 11177,
+   "competition_team_id": 537,
+   "jersey": "",
+   "weight": 98,
+   "height": 206,
+   "active": true,
+   "player_position": {
+    "id": 5,
+    "name": "center"
+   },
+   "player": {
+    "id": 5559,
+    "birthdate": "2001-04-22",
+    "first_name": "Luukas",
+    "last_name": "Vaara",
+    "nationality_code": "FIN",
+    "profile_image": {
+     "name": "Vaara",
+     "alt": null,
+     "keywords": null,
+     "public_url": "https://bnxt.sportpress.info/storage/c/E/cEL11P2BQx66TsdNV5K9FGACr1788858239.png",
+     "thumbnails": {
+      "small": "https://bnxt.sportpress.info/storage/c/E/small-cEL11P2BQx66TsdNV5K9FGACr1788858239.png",
+      "medium": "https://bnxt.sportpress.info/storage/c/E/medium-cEL11P2BQx66TsdNV5K9FGACr1788858239.png"
+     }
+    },
+    "created_at": "2026-09-02"
+   },
+   "created_at": "2026-09-02"
+  },
+  {
+   "id": 11179,
+   "competition_team_id": 537,
+   "jersey": "",
+   "weight": 113,
+   "height": 207,
+   "active": true,
+   "player_position": {
+    "id": 5,
+    "name": "center"
+   },
+   "player": {
+    "id": 5561,
+    "birthdate": "2001-05-17",
+    "first_name": "Eduardo",
+    "last_name": "Andre",
+    "nationality_code": "ANG",
+    "profile_image": {
+     "name": "Andre",
+     "alt": null,
+     "keywords": null,
+     "public_url": "https://bnxt.sportpress.info/storage/z/b/zb1j1lRZcjaf2wubSAfArN6iE1788858635.png",
+     "thumbnails": {
+      "small": "https://bnxt.sportpress.info/storage/z/b/small-zb1j1lRZcjaf2wubSAfArN6iE1788858635.png",
+      "medium": "https://bnxt.sportpress.info/storage/z/b/medium-zb1j1lRZcjaf2wubSAfArN6iE1788858635.png"
+     }
+    },
+    "created_at": "2026-09-02"
+   },
+   "created_at": "2026-09-02"
+  },
+  {
+   "id": 11181,
+   "competition_team_id": 537,
+   "jersey": "",
+   "weight": 93,
+   "height": 198,
+   "active": true,
+   "player_position": {
+    "id": 1,
+    "name": "point_guard"
+   },
+   "player": {
+    "id": 5563,
+    "birthdate": null,
+    "first_name": "Douglas",
+    "last_name": "Konieczny Jr",
+    "nationality_code": "USA",
+    "profile_image": {
+     "name": "Konieczny",
+     "alt": null,
+     "keywords": null,
+     "public_url": "https://bnxt.sportpress.info/storage/D/w/Dwn2nIiwfoimUojq59nXsFyk61788858177.png",
+     "thumbnails": {
+      "small": "https://bnxt.sportpress.info/storage/D/w/small-Dwn2nIiwfoimUojq59nXsFyk61788858177.png",
+      "medium": "https://bnxt.sportpress.info/storage/D/w/medium-Dwn2nIiwfoimUojq59nXsFyk61788858177.png"
+     }
+    },
+    "created_at": "2026-09-02"
+   },
+   "created_at": "2026-09-02"
+  },
+  {
+   "id": 11183,
+   "competition_team_id": 537,
+   "jersey": "",
+   "weight": null,
+   "height": 192,
+   "active": true,
+   "player_position": {
+    "id": 3,
+    "name": "small_forward"
+   },
+   "player": {
+    "id": 301,
+    "birthdate": "2000-07-17",
+    "first_name": "Lucas",
+    "last_name": "Kruithof",
+    "nationality_code": "NED",
+    "profile_image": {
+     "name": "Kruithof",
+     "alt": null,
+     "keywords": null,
+     "public_url": "https://bnxt.sportpress.info/storage/i/e/ieCoVm6eJzNhSoZIOvvyqjuJp1788858275.png",
+     "thumbnails": {
+      "small": "https://bnxt.sportpress.info/storage/i/e/small-ieCoVm6eJzNhSoZIOvvyqjuJp1788858275.png",
+      "medium": "https://bnxt.sportpress.info/storage/i/e/medium-ieCoVm6eJzNhSoZIOvvyqjuJp1788858275.png"
+     }
+    },
+    "created_at": "2022-08-10"
+   },
+   "created_at": "2026-09-02"
+  },
+  {
+   "id": 11185,
+   "competition_team_id": 537,
+   "jersey": "",
+   "weight": null,
+   "height": 181,
+   "active": true,
+   "player_position": {
+    "id": 2,
+    "name": "shooting_guard"
+   },
+   "player": {
+    "id": 5247,
+    "birthdate": "2006-01-03",
+    "first_name": "Malcolm",
+    "last_name": "Makwa",
+    "nationality_code": "BEL",
+    "profile_image": {
+     "name": "Makwa",
+     "alt": null,
+     "keywords": null,
+     "public_url": "https://bnxt.sportpress.info/storage/C/M/CM3Vx4ORC7Y24CyWBQ5Zp2Yop1788858294.png",
+     "thumbnails": {
+      "small": "https://bnxt.sportpress.info/storage/C/M/small-CM3Vx4ORC7Y24CyWBQ5Zp2Yop1788858294.png",
+      "medium": "https://bnxt.sportpress.info/storage/C/M/medium-CM3Vx4ORC7Y24CyWBQ5Zp2Yop1788858294.png"
+     }
+    },
+    "created_at": "2025-08-21"
+   },
+   "created_at": "2026-09-02"
+  },
+  {
+   "id": 11187,
+   "competition_team_id": 537,
+   "jersey": "",
+   "weight": null,
+   "height": 202,
+   "active": true,
+   "player_position": {
+    "id": 5,
+    "name": "center"
+   },
+   "player": {
+    "id": 5249,
+    "birthdate": "2005-05-22",
+    "first_name": "Ilan",
+    "last_name": "Mbessang",
+    "nationality_code": "BEL",
+    "profile_image": null,
+    "created_at": "2025-08-21"
+   },
+   "created_at": "2026-09-02"
+  },
+  {
+   "id": 11189,
+   "competition_team_id": 537,
+   "jersey": "",
+   "weight": 87,
+   "height": 192,
+   "active": true,
+   "player_position": {
+    "id": 2,
+    "name": "shooting_guard"
+   },
+   "player": {
+    "id": 5565,
+    "birthdate": "2000-04-10",
+    "first_name": "Nigel",
+    "last_name": "Hawkins",
+    "nationality_code": "USA",
+    "profile_image": {
+     "name": "Hawkins",
+     "alt": null,
+     "keywords": null,
+     "public_url": "https://bnxt.sportpress.info/storage/6/F/6FEdUvonf1Ulwu88hMdiKyE6C1788858315.png",
+     "thumbnails": {
+      "small": "https://bnxt.sportpress.info/storage/6/F/small-6FEdUvonf1Ulwu88hMdiKyE6C1788858315.png",
+      "medium": "https://bnxt.sportpress.info/storage/6/F/medium-6FEdUvonf1Ulwu88hMdiKyE6C1788858315.png"
+     }
+    },
+    "created_at": "2026-09-02"
+   },
+   "created_at": "2026-09-02"
+  },
+  {
+   "id": 11261,
+   "competition_team_id": 537,
+   "jersey": "",
+   "weight": null,
+   "height": 203,
+   "active": true,
+   "player_position": {
+    "id": 3,
+    "name": "small_forward"
+   },
+   "player": {
+    "id": 2462,
+    "birthdate": "2005-06-15",
+    "first_name": "Lukijan",
+    "last_name": "Zecevic",
+    "nationality_code": "BEL",
+    "profile_image": {
+     "name": "Zecevic",
+     "alt": null,
+     "keywords": null,
+     "public_url": "https://bnxt.sportpress.info/storage/H/H/HHG894Hojj13xIKpyOpRyDJbT1788858339.png",
+     "thumbnails": {
+      "small": "https://bnxt.sportpress.info/storage/H/H/small-HHG894Hojj13xIKpyOpRyDJbT1788858339.png",
+      "medium": "https://bnxt.sportpress.info/storage/H/H/medium-HHG894Hojj13xIKpyOpRyDJbT1788858339.png"
+     }
+    },
+    "created_at": "2023-08-31"
+   },
+   "created_at": "2026-09-03"
+  },
+  {
+   "id": 11263,
+   "competition_team_id": 537,
+   "jersey": "",
+   "weight": null,
+   "height": 188,
+   "active": true,
+   "player_position": {
+    "id": 2,
+    "name": "shooting_guard"
+   },
+   "player": {
+    "id": 2472,
+    "birthdate": "2005-07-01",
+    "first_name": "Adedayo",
+    "last_name": "Polet",
+    "nationality_code": "BEL",
+    "profile_image": {
+     "name": "Polet",
+     "alt": null,
+     "keywords": null,
+     "public_url": "https://bnxt.sportpress.info/storage/Y/T/YTDqSf1aAeO20Wuy7UdOHboDE1788858359.png",
+     "thumbnails": {
+      "small": "https://bnxt.sportpress.info/storage/Y/T/small-YTDqSf1aAeO20Wuy7UdOHboDE1788858359.png",
+      "medium": "https://bnxt.sportpress.info/storage/Y/T/medium-YTDqSf1aAeO20Wuy7UdOHboDE1788858359.png"
+     }
+    },
+    "created_at": "2023-08-31"
+   },
+   "created_at": "2026-09-03"
+  },
+  {
+   "id": 11265,
+   "competition_team_id": 537,
+   "jersey": "",
+   "weight": null,
+   "height": null,
+   "active": true,
+   "player_position": {
+    "id": 5,
+    "name": "center"
+   },
+   "player": {
+    "id": 3441,
+    "birthdate": "2005-05-25",
+    "first_name": "Mohammed",
+    "last_name": "Tlarhi Amrani",
+    "nationality_code": "BEL",
+    "profile_image": {
+     "name": "Tlarhi",
+     "alt": null,
+     "keywords": null,
+     "public_url": "https://bnxt.sportpress.info/storage/c/y/cya1MBsLp6syYd02RA4QYB1P11788858384.png",
+     "thumbnails": {
+      "small": "https://bnxt.sportpress.info/storage/c/y/small-cya1MBsLp6syYd02RA4QYB1P11788858384.png",
+      "medium": "https://bnxt.sportpress.info/storage/c/y/medium-cya1MBsLp6syYd02RA4QYB1P11788858384.png"
+     }
+    },
+    "created_at": "2024-01-17"
+   },
+   "created_at": "2026-09-03"
+  },
+  {
+   "id": 11267,
+   "competition_team_id": 537,
+   "jersey": "",
+   "weight": null,
+   "height": 188,
+   "active": true,
+   "player_position": {
+    "id": 1,
+    "name": "point_guard"
+   },
+   "player": {
+    "id": 5011,
+    "birthdate": null,
+    "first_name": "Jules",
+    "last_name": "Rotsaert",
+    "nationality_code": "BEL",
+    "profile_image": {
+     "name": "Rotsaert",
+     "alt": null,
+     "keywords": null,
+     "public_url": "https://bnxt.sportpress.info/storage/u/y/uy9qL1TktrSdNyKf1ypcVRM1q1788858403.png",
+     "thumbnails": {
+      "small": "https://bnxt.sportpress.info/storage/u/y/small-uy9qL1TktrSdNyKf1ypcVRM1q1788858403.png",
+      "medium": "https://bnxt.sportpress.info/storage/u/y/medium-uy9qL1TktrSdNyKf1ypcVRM1q1788858403.png"
+     }
+    },
+    "created_at": "2025-02-02"
+   },
+   "created_at": "2026-09-03"
+  }
+ ]
+}

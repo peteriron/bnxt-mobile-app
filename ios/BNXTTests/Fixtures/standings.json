@@ -1,0 +1,852 @@
+{
+ "data": [
+  {
+   "team": {
+    "id": 541,
+    "name": "Windrose Giants Antwerp",
+    "short_name": "ANT",
+    "ticket_url": "https://www.ticketmaster.be/artist/telenet-giants-antwerp-tickets/1272224?language=nl-be",
+    "club": {
+     "id": 1,
+     "name": "Belgium"
+    },
+    "team_logo": {
+     "name": "Antwerp",
+     "alt": null,
+     "keywords": null,
+     "public_url": "https://bnxt.sportpress.info/storage/9/R/9RqRyVjfwOCfzZAoYGKXREj7t1785845391.png",
+     "thumbnails": {
+      "small": "https://bnxt.sportpress.info/storage/9/R/small-9RqRyVjfwOCfzZAoYGKXREj7t1785845391.png",
+      "medium": "https://bnxt.sportpress.info/storage/9/R/medium-9RqRyVjfwOCfzZAoYGKXREj7t1785845391.png"
+     }
+    },
+    "created_at": "2026-07-24"
+   },
+   "win": 5,
+   "loss": 0,
+   "even": 0,
+   "score": 535,
+   "against": 410,
+   "percent": 100,
+   "score_difference": 125,
+   "point": 10,
+   "position": 1,
+   "played": 5,
+   "point_percent": 1,
+   "win_loss": {
+    "home": {
+     "win": 3,
+     "loss": 0
+    },
+    "away": {
+     "win": 2,
+     "loss": 0
+    }
+   },
+   "last5": {
+    "win": 5,
+    "loss": 0
+   },
+   "streak": {
+    "is_win": true,
+    "count": 5
+   },
+   "group": null
+  },
+  {
+   "team": {
+    "id": 561,
+    "name": "Brussels Basketball",
+    "short_name": "BRU",
+    "ticket_url": "https://www.brusselsbasketball.be/tickets",
+    "club": {
+     "id": 1,
+     "name": "Belgium"
+    },
+    "team_logo": {
+     "name": "Brussels",
+     "alt": null,
+     "keywords": null,
+     "public_url": "https://bnxt.sportpress.info/storage/y/n/ynqjUETIfJkJMUbOllRCow4rX1785845117.png",
+     "thumbnails": {
+      "small": "https://bnxt.sportpress.info/storage/y/n/small-ynqjUETIfJkJMUbOllRCow4rX1785845117.png",
+      "medium": "https://bnxt.sportpress.info/storage/y/n/medium-ynqjUETIfJkJMUbOllRCow4rX1785845117.png"
+     }
+    },
+    "created_at": "2026-07-24"
+   },
+   "win": 4,
+   "loss": 1,
+   "even": 0,
+   "score": 407,
+   "against": 341,
+   "percent": 80,
+   "score_difference": 66,
+   "point": 9,
+   "position": 2,
+   "played": 5,
+   "point_percent": 0.9,
+   "win_loss": {
+    "home": {
+     "win": 2,
+     "loss": 1
+    },
+    "away": {
+     "win": 2,
+     "loss": 0
+    }
+   },
+   "last5": {
+    "win": 4,
+    "loss": 1
+   },
+   "streak": {
+    "is_win": false,
+    "count": 1
+   },
+   "group": null
+  },
+  {
+   "team": {
+    "id": 557,
+    "name": "Partena Professional Okapi Aalst",
+    "short_name": "AAL",
+    "ticket_url": "https://shop.ticket.monster/seller/okapi-aalst-mheh",
+    "club": {
+     "id": 1,
+     "name": "Belgium"
+    },
+    "team_logo": {
+     "name": "Aalst",
+     "alt": null,
+     "keywords": null,
+     "public_url": "https://bnxt.sportpress.info/storage/0/j/0jJNXOYfAzMPS1sgPDxG4wSUM1785845350.png",
+     "thumbnails": {
+      "small": "https://bnxt.sportpress.info/storage/0/j/small-0jJNXOYfAzMPS1sgPDxG4wSUM1785845350.png",
+      "medium": "https://bnxt.sportpress.info/storage/0/j/medium-0jJNXOYfAzMPS1sgPDxG4wSUM1785845350.png"
+     }
+    },
+    "created_at": "2026-07-24"
+   },
+   "win": 4,
+   "loss": 1,
+   "even": 0,
+   "score": 463,
+   "against": 417,
+   "percent": 80,
+   "score_difference": 46,
+   "point": 9,
+   "position": 3,
+   "played": 5,
+   "point_percent": 0.9,
+   "win_loss": {
+    "home": {
+     "win": 3,
+     "loss": 0
+    },
+    "away": {
+     "win": 1,
+     "loss": 1
+    }
+   },
+   "last5": {
+    "win": 4,
+    "loss": 1
+   },
+   "streak": {
+    "is_win": true,
+    "count": 2
+   },
+   "group": null
+  },
+  {
+   "team": {
+    "id": 537,
+    "name": "Val-Dieu Spirou Basket",
+    "short_name": "CHA",
+    "ticket_url": "https://shop.utick.be/?pos=SPIROUBASKET&module=ACTIVITYSERIEDETAILS&s=966F953A-5AB6-F8A5-8065-22C274230F12",
+    "club": {
+     "id": 1,
+     "name": "Belgium"
+    },
+    "team_logo": {
+     "name": "Spirou Basket",
+     "alt": null,
+     "keywords": null,
+     "public_url": "https://bnxt.sportpress.info/storage/3/G/3GsvRCSQNq5oeb3QinpVy3p4H1785845088.png",
+     "thumbnails": {
+      "small": "https://bnxt.sportpress.info/storage/3/G/small-3GsvRCSQNq5oeb3QinpVy3p4H1785845088.png",
+      "medium": "https://bnxt.sportpress.info/storage/3/G/medium-3GsvRCSQNq5oeb3QinpVy3p4H1785845088.png"
+     }
+    },
+    "created_at": "2026-07-24"
+   },
+   "win": 3,
+   "loss": 2,
+   "even": 0,
+   "score": 399,
+   "against": 328,
+   "percent": 60,
+   "score_difference": 71,
+   "point": 8,
+   "position": 4,
+   "played": 5,
+   "point_percent": 0.8,
+   "win_loss": {
+    "home": {
+     "win": 1,
+     "loss": 1
+    },
+    "away": {
+     "win": 2,
+     "loss": 1
+    }
+   },
+   "last5": {
+    "win": 3,
+    "loss": 2
+   },
+   "streak": {
+    "is_win": true,
+    "count": 1
+   },
+   "group": null
+  },
+  {
+   "team": {
+    "id": 545,
+    "name": "Hubo Limburg United",
+    "short_name": "LIM",
+    "ticket_url": "https://shop.twelveticketing.eu/seller/hubo-limburg-united-y42n",
+    "club": {
+     "id": 1,
+     "name": "Belgium"
+    },
+    "team_logo": {
+     "name": "Limburg",
+     "alt": null,
+     "keywords": null,
+     "public_url": "https://bnxt.sportpress.info/storage/I/p/IpEkrEru9R3Ed8vUHWlFkR4rZ1785845246.png",
+     "thumbnails": {
+      "small": "https://bnxt.sportpress.info/storage/I/p/small-IpEkrEru9R3Ed8vUHWlFkR4rZ1785845246.png",
+      "medium": "https://bnxt.sportpress.info/storage/I/p/medium-IpEkrEru9R3Ed8vUHWlFkR4rZ1785845246.png"
+     }
+    },
+    "created_at": "2026-07-24"
+   },
+   "win": 3,
+   "loss": 2,
+   "even": 0,
+   "score": 456,
+   "against": 433,
+   "percent": 60,
+   "score_difference": 23,
+   "point": 8,
+   "position": 5,
+   "played": 5,
+   "point_percent": 0.8,
+   "win_loss": {
+    "home": {
+     "win": 1,
+     "loss": 1
+    },
+    "away": {
+     "win": 2,
+     "loss": 1
+    }
+   },
+   "last5": {
+    "win": 3,
+    "loss": 2
+   },
+   "streak": {
+    "is_win": false,
+    "count": 1
+   },
+   "group": null
+  },
+  {
+   "team": {
+    "id": 539,
+    "name": "Coretec Oostende",
+    "short_name": "OOS",
+    "ticket_url": "https://www.bcoostende.be/tickets/tickets",
+    "club": {
+     "id": 1,
+     "name": "Belgium"
+    },
+    "team_logo": {
+     "name": "Oostende",
+     "alt": null,
+     "keywords": null,
+     "public_url": "https://bnxt.sportpress.info/storage/W/e/WeBMRLIogJuvtJmZrFZMsvxhj1786710770.png",
+     "thumbnails": {
+      "small": "https://bnxt.sportpress.info/storage/W/e/small-WeBMRLIogJuvtJmZrFZMsvxhj1786710770.png",
+      "medium": "https://bnxt.sportpress.info/storage/W/e/medium-WeBMRLIogJuvtJmZrFZMsvxhj1786710770.png"
+     }
+    },
+    "created_at": "2026-07-24"
+   },
+   "win": 3,
+   "loss": 2,
+   "even": 0,
+   "score": 385,
+   "against": 365,
+   "percent": 60,
+   "score_difference": 20,
+   "point": 8,
+   "position": 6,
+   "played": 5,
+   "point_percent": 0.8,
+   "win_loss": {
+    "home": {
+     "win": 2,
+     "loss": 0
+    },
+    "away": {
+     "win": 1,
+     "loss": 2
+    }
+   },
+   "last5": {
+    "win": 3,
+    "loss": 2
+   },
+   "streak": {
+    "is_win": true,
+    "count": 2
+   },
+   "group": null
+  },
+  {
+   "team": {
+    "id": 549,
+    "name": "Landstede Hammers",
+    "short_name": "ZWO",
+    "ticket_url": "https://shop.ticketing.cm.com/82ab5cc7-f55f-40d1-b9e6-c7d61918aac1/eebd7e65-0414-4f4e-a23b-559e14507dc9",
+    "club": {
+     "id": 2,
+     "name": "Netherlands"
+    },
+    "team_logo": {
+     "name": "Landstede Hammers",
+     "alt": null,
+     "keywords": null,
+     "public_url": "https://bnxt.sportpress.info/storage/R/J/RJmkimeHoVO5gxw3dXfhx2eEx1785847130.png",
+     "thumbnails": {
+      "small": "https://bnxt.sportpress.info/storage/R/J/small-RJmkimeHoVO5gxw3dXfhx2eEx1785847130.png",
+      "medium": "https://bnxt.sportpress.info/storage/R/J/medium-RJmkimeHoVO5gxw3dXfhx2eEx1785847130.png"
+     }
+    },
+    "created_at": "2026-07-24"
+   },
+   "win": 3,
+   "loss": 2,
+   "even": 0,
+   "score": 352,
+   "against": 374,
+   "percent": 60,
+   "score_difference": -22,
+   "point": 8,
+   "position": 7,
+   "played": 5,
+   "point_percent": 0.8,
+   "win_loss": {
+    "home": {
+     "win": 2,
+     "loss": 1
+    },
+    "away": {
+     "win": 1,
+     "loss": 1
+    }
+   },
+   "last5": {
+    "win": 3,
+    "loss": 2
+   },
+   "streak": {
+    "is_win": true,
+    "count": 1
+   },
+   "group": null
+  },
+  {
+   "team": {
+    "id": 555,
+    "name": "Heroes Den Bosch",
+    "short_name": "DBO",
+    "ticket_url": "https://heroes.shop.eventgoose.com",
+    "club": {
+     "id": 2,
+     "name": "Netherlands"
+    },
+    "team_logo": {
+     "name": "Den Bosch",
+     "alt": null,
+     "keywords": null,
+     "public_url": "https://bnxt.sportpress.info/storage/u/i/uigcaAinqi5d3dn2POyaMZAiK1785845220.png",
+     "thumbnails": {
+      "small": "https://bnxt.sportpress.info/storage/u/i/small-uigcaAinqi5d3dn2POyaMZAiK1785845220.png",
+      "medium": "https://bnxt.sportpress.info/storage/u/i/medium-uigcaAinqi5d3dn2POyaMZAiK1785845220.png"
+     }
+    },
+    "created_at": "2026-07-24"
+   },
+   "win": 3,
+   "loss": 2,
+   "even": 0,
+   "score": 399,
+   "against": 402,
+   "percent": 60,
+   "score_difference": -3,
+   "point": 8,
+   "position": 8,
+   "played": 5,
+   "point_percent": 0.8,
+   "win_loss": {
+    "home": {
+     "win": 2,
+     "loss": 1
+    },
+    "away": {
+     "win": 1,
+     "loss": 1
+    }
+   },
+   "last5": {
+    "win": 3,
+    "loss": 2
+   },
+   "streak": {
+    "is_win": true,
+    "count": 2
+   },
+   "group": null
+  },
+  {
+   "team": {
+    "id": 559,
+    "name": "AB InBev Leuven Bears",
+    "short_name": "LEU",
+    "ticket_url": "https://leuvenbears.ordering.be/o/2",
+    "club": {
+     "id": 1,
+     "name": "Belgium"
+    },
+    "team_logo": {
+     "name": "Leuven",
+     "alt": null,
+     "keywords": null,
+     "public_url": "https://bnxt.sportpress.info/storage/L/f/Lf4ijAEkcAiQ983piyEx4UmvV1786710794.png",
+     "thumbnails": {
+      "small": "https://bnxt.sportpress.info/storage/L/f/small-Lf4ijAEkcAiQ983piyEx4UmvV1786710794.png",
+      "medium": "https://bnxt.sportpress.info/storage/L/f/medium-Lf4ijAEkcAiQ983piyEx4UmvV1786710794.png"
+     }
+    },
+    "created_at": "2026-07-24"
+   },
+   "win": 3,
+   "loss": 2,
+   "even": 0,
+   "score": 340,
+   "against": 345,
+   "percent": 60,
+   "score_difference": -5,
+   "point": 8,
+   "position": 9,
+   "played": 5,
+   "point_percent": 0.8,
+   "win_loss": {
+    "home": {
+     "win": 3,
+     "loss": 0
+    },
+    "away": {
+     "win": 0,
+     "loss": 2
+    }
+   },
+   "last5": {
+    "win": 3,
+    "loss": 2
+   },
+   "streak": {
+    "is_win": false,
+    "count": 1
+   },
+   "group": null
+  },
+  {
+   "team": {
+    "id": 547,
+    "name": "Donar Groningen",
+    "short_name": "GRO",
+    "ticket_url": "https://www.donar.nl/tickets",
+    "club": {
+     "id": 2,
+     "name": "Netherlands"
+    },
+    "team_logo": {
+     "name": "Groningen",
+     "alt": null,
+     "keywords": null,
+     "public_url": "https://bnxt.sportpress.info/storage/5/b/5bYE12yxtfijCQAKU2RhtMieX1785845195.png",
+     "thumbnails": {
+      "small": "https://bnxt.sportpress.info/storage/5/b/small-5bYE12yxtfijCQAKU2RhtMieX1785845195.png",
+      "medium": "https://bnxt.sportpress.info/storage/5/b/medium-5bYE12yxtfijCQAKU2RhtMieX1785845195.png"
+     }
+    },
+    "created_at": "2026-07-24"
+   },
+   "win": 3,
+   "loss": 2,
+   "even": 0,
+   "score": 415,
+   "against": 441,
+   "percent": 60,
+   "score_difference": -26,
+   "point": 8,
+   "position": 10,
+   "played": 5,
+   "point_percent": 0.8,
+   "win_loss": {
+    "home": {
+     "win": 1,
+     "loss": 1
+    },
+    "away": {
+     "win": 2,
+     "loss": 1
+    }
+   },
+   "last5": {
+    "win": 3,
+    "loss": 2
+   },
+   "streak": {
+    "is_win": true,
+    "count": 1
+   },
+   "group": null
+  },
+  {
+   "team": {
+    "id": 553,
+    "name": "Zorg en Zekerheid Leiden",
+    "short_name": "LEI",
+    "ticket_url": "https://www.eredivisiebasketballleiden.nl/tickets/e-tickets",
+    "club": {
+     "id": 2,
+     "name": "Netherlands"
+    },
+    "team_logo": {
+     "name": "Leiden",
+     "alt": null,
+     "keywords": null,
+     "public_url": "https://bnxt.sportpress.info/storage/y/z/yzL6PScJRcREGP6UsfXz6sIPb1785845435.png",
+     "thumbnails": {
+      "small": "https://bnxt.sportpress.info/storage/y/z/small-yzL6PScJRcREGP6UsfXz6sIPb1785845435.png",
+      "medium": "https://bnxt.sportpress.info/storage/y/z/medium-yzL6PScJRcREGP6UsfXz6sIPb1785845435.png"
+     }
+    },
+    "created_at": "2026-07-24"
+   },
+   "win": 2,
+   "loss": 3,
+   "even": 0,
+   "score": 376,
+   "against": 388,
+   "percent": 40,
+   "score_difference": -12,
+   "point": 7,
+   "position": 11,
+   "played": 5,
+   "point_percent": 0.7,
+   "win_loss": {
+    "home": {
+     "win": 1,
+     "loss": 2
+    },
+    "away": {
+     "win": 1,
+     "loss": 1
+    }
+   },
+   "last5": {
+    "win": 2,
+    "loss": 3
+   },
+   "streak": {
+    "is_win": false,
+    "count": 2
+   },
+   "group": null
+  },
+  {
+   "team": {
+    "id": 551,
+    "name": "Zeeuw & Zeeuw Rotterdam City",
+    "short_name": "RCB",
+    "ticket_url": "https://rcb.nl/tickets/",
+    "club": {
+     "id": 2,
+     "name": "Netherlands"
+    },
+    "team_logo": {
+     "name": "Rotterdam",
+     "alt": null,
+     "keywords": null,
+     "public_url": "https://bnxt.sportpress.info/storage/q/4/q4i5E06VYpXgnghlcSWgMilEC1785845412.png",
+     "thumbnails": {
+      "small": "https://bnxt.sportpress.info/storage/q/4/small-q4i5E06VYpXgnghlcSWgMilEC1785845412.png",
+      "medium": "https://bnxt.sportpress.info/storage/q/4/medium-q4i5E06VYpXgnghlcSWgMilEC1785845412.png"
+     }
+    },
+    "created_at": "2026-07-24"
+   },
+   "win": 2,
+   "loss": 3,
+   "even": 0,
+   "score": 381,
+   "against": 404,
+   "percent": 40,
+   "score_difference": -23,
+   "point": 7,
+   "position": 12,
+   "played": 5,
+   "point_percent": 0.7,
+   "win_loss": {
+    "home": {
+     "win": 2,
+     "loss": 1
+    },
+    "away": {
+     "win": 0,
+     "loss": 2
+    }
+   },
+   "last5": {
+    "win": 2,
+    "loss": 3
+   },
+   "streak": {
+    "is_win": true,
+    "count": 2
+   },
+   "group": null
+  },
+  {
+   "team": {
+    "id": 563,
+    "name": "Kangoeroes Basket Mechelen",
+    "short_name": "MEC",
+    "ticket_url": "https://kangoeroes-mannen.ordering.be/o/7%C2%A0%C2%A0%C2%A0",
+    "club": {
+     "id": 1,
+     "name": "Belgium"
+    },
+    "team_logo": {
+     "name": "Mechelen",
+     "alt": null,
+     "keywords": null,
+     "public_url": "https://bnxt.sportpress.info/storage/P/1/P1CAfeaMcbepHMFRHSXcktt6k1785845272.png",
+     "thumbnails": {
+      "small": "https://bnxt.sportpress.info/storage/P/1/small-P1CAfeaMcbepHMFRHSXcktt6k1785845272.png",
+      "medium": "https://bnxt.sportpress.info/storage/P/1/medium-P1CAfeaMcbepHMFRHSXcktt6k1785845272.png"
+     }
+    },
+    "created_at": "2026-07-24"
+   },
+   "win": 2,
+   "loss": 3,
+   "even": 0,
+   "score": 445,
+   "against": 476,
+   "percent": 40,
+   "score_difference": -31,
+   "point": 7,
+   "position": 13,
+   "played": 5,
+   "point_percent": 0.7,
+   "win_loss": {
+    "home": {
+     "win": 1,
+     "loss": 1
+    },
+    "away": {
+     "win": 1,
+     "loss": 2
+    }
+   },
+   "last5": {
+    "win": 2,
+    "loss": 3
+   },
+   "streak": {
+    "is_win": false,
+    "count": 2
+   },
+   "group": null
+  },
+  {
+   "team": {
+    "id": 565,
+    "name": "House of Talents Spurs Kortrijk",
+    "short_name": "KOR",
+    "ticket_url": "https://shop.ticket.monster/seller/hot-spurs-kortrijk-h2r9",
+    "club": {
+     "id": 1,
+     "name": "Belgium"
+    },
+    "team_logo": {
+     "name": "Kortrijk",
+     "alt": null,
+     "keywords": null,
+     "public_url": "https://bnxt.sportpress.info/storage/W/Z/WZW7QcAreIiPReoaGtc8B3YYK1785845053.png",
+     "thumbnails": {
+      "small": "https://bnxt.sportpress.info/storage/W/Z/small-WZW7QcAreIiPReoaGtc8B3YYK1785845053.png",
+      "medium": "https://bnxt.sportpress.info/storage/W/Z/medium-WZW7QcAreIiPReoaGtc8B3YYK1785845053.png"
+     }
+    },
+    "created_at": "2026-07-24"
+   },
+   "win": 0,
+   "loss": 5,
+   "even": 0,
+   "score": 405,
+   "against": 431,
+   "percent": 0,
+   "score_difference": -26,
+   "point": 5,
+   "position": 14,
+   "played": 5,
+   "point_percent": 0.5,
+   "win_loss": {
+    "home": {
+     "win": 0,
+     "loss": 2
+    },
+    "away": {
+     "win": 0,
+     "loss": 3
+    }
+   },
+   "last5": {
+    "win": 0,
+    "loss": 5
+   },
+   "streak": {
+    "is_win": false,
+    "count": 5
+   },
+   "group": null
+  },
+  {
+   "team": {
+    "id": 567,
+    "name": "CB Liège",
+    "short_name": "LIE",
+    "ticket_url": "https://www.cb-liege.be/division1/calendrier",
+    "club": {
+     "id": 1,
+     "name": "Belgium"
+    },
+    "team_logo": {
+     "name": "CB Liege",
+     "alt": null,
+     "keywords": null,
+     "public_url": "https://bnxt.sportpress.info/storage/D/f/DfcFx9PZMrLfpGplwmyGc8GTM1785844306.png",
+     "thumbnails": {
+      "small": "https://bnxt.sportpress.info/storage/D/f/small-DfcFx9PZMrLfpGplwmyGc8GTM1785844306.png",
+      "medium": "https://bnxt.sportpress.info/storage/D/f/medium-DfcFx9PZMrLfpGplwmyGc8GTM1785844306.png"
+     }
+    },
+    "created_at": "2026-08-03"
+   },
+   "win": 0,
+   "loss": 5,
+   "even": 0,
+   "score": 377,
+   "against": 462,
+   "percent": 0,
+   "score_difference": -85,
+   "point": 5,
+   "position": 15,
+   "played": 5,
+   "point_percent": 0.5,
+   "win_loss": {
+    "home": {
+     "win": 0,
+     "loss": 2
+    },
+    "away": {
+     "win": 0,
+     "loss": 3
+    }
+   },
+   "last5": {
+    "win": 0,
+    "loss": 5
+   },
+   "streak": {
+    "is_win": false,
+    "count": 5
+   },
+   "group": null
+  },
+  {
+   "team": {
+    "id": 543,
+    "name": "CityX Mons",
+    "short_name": "MON",
+    "ticket_url": "https://shop.monshainaut.be",
+    "club": {
+     "id": 1,
+     "name": "Belgium"
+    },
+    "team_logo": {
+     "name": "Mons",
+     "alt": null,
+     "keywords": null,
+     "public_url": "https://bnxt.sportpress.info/storage/b/t/bt3TLIdQmf3JGqHKQP6cJHii81786374757.png",
+     "thumbnails": {
+      "small": "https://bnxt.sportpress.info/storage/b/t/small-bt3TLIdQmf3JGqHKQP6cJHii81786374757.png",
+      "medium": "https://bnxt.sportpress.info/storage/b/t/medium-bt3TLIdQmf3JGqHKQP6cJHii81786374757.png"
+     }
+    },
+    "created_at": "2026-07-24"
+   },
+   "win": 0,
+   "loss": 5,
+   "even": 0,
+   "score": 326,
+   "against": 444,
+   "percent": 0,
+   "score_difference": -118,
+   "point": 5,
+   "position": 16,
+   "played": 5,
+   "point_percent": 0.5,
+   "win_loss": {
+    "home": {
+     "win": 0,
+     "loss": 2
+    },
+    "away": {
+     "win": 0,
+     "loss": 3
+    }
+   },
+   "last5": {
+    "win": 0,
+    "loss": 5
+   },
+   "streak": {
+    "is_win": false,
+    "count": 5
+   },
+   "group": null
+  }
+ ]
+}
