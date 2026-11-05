@@ -88,7 +88,7 @@ struct RootView: View {
     private func root(for tab: AppTab) -> some View {
         switch tab {
         case .home:
-            PlaceholderScreen(title: tab.title) { homeHeader }
+            HomeScreen(appModel: appModel, favorites: favorites, onSelect: { router.push($0) }, onSelectTab: { router.selectedTab = $0 })
                 .accessibilityElement(children: .contain) // identifier must not leak onto children
                 .accessibilityIdentifier("screen.home")
                 .safeAreaInset(edge: .top) { updateBanner }
@@ -115,30 +115,6 @@ struct RootView: View {
             ClubsScreen(appModel: appModel, favorites: favorites) { router.push(.club(id: $0)) }
                 .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("screen.clubs")
-        }
-    }
-
-    @ViewBuilder private var homeHeader: some View {
-        if let club = favorites.resolve(in: appModel.clubs) {
-            Button { router.push(.club(id: club.id)) } label: {
-                HStack(spacing: 12) {
-                    ClubLogo(club: club, size: 46)
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("My club")
-                            .font(.caption.weight(.bold))
-                            .textCase(.uppercase)
-                            .foregroundStyle(Theme.lime)
-                        Text(verbatim: club.displayName)
-                            .font(Theme.display(.title2))
-                            .foregroundStyle(Theme.textPrimary)
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.7)
-                    }
-                }
-            }
-            .buttonStyle(.plain)
-            .accessibilityElement(children: .combine)
-            .accessibilityIdentifier("home.myClub")
         }
     }
 

@@ -59,7 +59,7 @@ Competition-team IDs (new every season): 537 CHA, 539 OOS, 541 ANT, 543 MON, 545
 | Field | Meaning / quirk |
 |---|---|
 | `competitors[].side` | **1 = home, 2 = away** (confirmed against the box score's `is_home`) |
-| `status` | `ready` (scheduled), `finished`. **Live value not yet observed** |
+| `status` | `ready` (scheduled), `live` (seen 5 Nov 2026 at tip-off: `period` null, scores 0, box score `[]` for the first minutes), `finished` |
 | `game_time` | `"YYYY-MM-DD HH:mm:ss"`, Brussels local time with no zone → `GameTime.parse` |
 | `throw_made/all/percent` | **Field goals** (2PT + 3PT) |
 | `free_throw_*` · `two_point_*` · `three_point_*` | FT · 2PT · 3PT |

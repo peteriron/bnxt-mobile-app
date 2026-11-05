@@ -16,7 +16,9 @@ final class GamesUITests: UITestCase {
         }
         firstRow.tap()
         XCTAssertTrue(element("game.tabs").waitForExistence(timeout: 15))
-        XCTAssertTrue(element("game.preview").waitForExistence(timeout: 5) || element("game.boxScore").exists,
+        // Right after tip-off the API says "live" but sends an empty box score (seen 5 Nov 2026): the note shows instead.
+        XCTAssertTrue(element("game.preview").waitForExistence(timeout: 5) || element("game.boxScore").exists
+                      || element("game.noBoxScore").exists,
                       "upcoming games open on Preview (or Box score if one went live)")
     }
 

@@ -341,7 +341,7 @@ A player listed by two clubs keeps the entry with more games. *Trade-off:* the l
 
 ## 8. Release status & roadmap
 
-**Live:** nothing yet. **On `main`:** app shell 0.1.0 (5 placeholder tabs, Archivo display type, theme tokens, API key plumbing, test targets, local CI), live recorder.
+**Live:** nothing yet. **On `main`:** app shell 0.1.0 (Home, Games, Standings, Stats, Clubs, Archivo display type, theme tokens, API key plumbing, test targets, local CI), live recorder.
 **Prototype:** v0.1 (HTML, data snapshot 3 Nov 2026).
 
 ### Phase 0: foundations & permission (in progress)
@@ -389,7 +389,9 @@ One slice per commit, each with its unit and UI tests. Standings comes first bec
 - [x] Stats and compare (§3.6, §3.7): Players (league leaders, hero + ranks 2–20 with bars) · Teams (summed from each club's
   game list totals, loaded only when shown); Compare from the Stats toolbar and the player page, picker searchable by player or club,
   defaults per §7.28. The 16-request bursts run at most 4 at a time and are reused for an hour (pull to refresh asks again)
-- [ ] Home (§3.2)
+- [x] Home (§3.2): header, live card (score and period; clock and last play come with Phase 4), next game and last result,
+  standing card with national rank, playoff status and a 5-row snippet, club leaders (PTS REB AST VAL), around the league
+  (last 4 days with results), league VAL top 3. Reloads when the favourite changes. The Search button comes with Search (§3.8)
 - [ ] Search (§3.8)
 
 ### Phase 4: live
