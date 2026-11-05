@@ -24,6 +24,24 @@ enum Format {
         }
     }
 
+    /// Games list headers (§3.3): "Today", "Tomorrow", "Yesterday", else the full weekday and date ("Thursday 5 November").
+    static func dayHeader(_ date: Date, now: Date, locale: Locale = .current) -> String {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = GameTime.leagueTimeZone
+        let days = calendar.dateComponents([.day], from: calendar.startOfDay(for: now), to: calendar.startOfDay(for: date)).day ?? 0
+        switch days {
+        case 0: return String(localized: "Today")
+        case 1: return String(localized: "Tomorrow")
+        case -1: return String(localized: "Yesterday")
+        default: return longDate(date, locale: locale)
+        }
+    }
+
+    /// "Thursday 5 November" in league time.
+    static func longDate(_ date: Date, locale: Locale = .current) -> String {
+        date.formatted(Date.FormatStyle(locale: locale, timeZone: GameTime.leagueTimeZone).weekday(.wide).day().month(.wide))
+    }
+
     /// A per-game average: one decimal ("7.8").
     static func average(_ value: Double) -> String {
         value.formatted(.number.precision(.fractionLength(1)))

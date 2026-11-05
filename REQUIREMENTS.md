@@ -376,7 +376,9 @@ One slice per commit, each with its unit and UI tests. Standings comes first bec
 - [x] Player page (§3.8): hero, bio, averages from the game log with top-10 league-rank badges, shooting rings, points chart,
   game log; `roster/find` for the bio. The leaders response (~1.4 MB, ~10 s) loads after the page and is reused for an hour
   (`CachePolicy.maxAge`). "Compare with another player" comes with Compare
-- [ ] Games and game detail, final + upcoming (§3.3, §3.4)
+- [x] Games and game detail, final + upcoming (§3.3, §3.4): Upcoming / Results with my-club filter and live pinned; header,
+  quarters, Summary · Box score · Info (final), Preview · Info (upcoming; team REB/AST/3P% summed from player averages),
+  Add to Calendar via the system editor (no calendar permission). Live games get Box score · Summary · Info until Phase 4 adds play-by-play
 - [ ] Stats and compare (§3.6, §3.7)
 - [ ] Home (§3.2)
 - [ ] Search (§3.8)

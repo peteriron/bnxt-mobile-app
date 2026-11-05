@@ -103,6 +103,10 @@ struct RootView: View {
             StandingsScreen(appModel: appModel, favorites: favorites) { router.push(.club(id: $0)) }
                 .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("screen.standings")
+        case .games:
+            GamesScreen(appModel: appModel, favorites: favorites) { router.push(.game(id: $0)) }
+                .accessibilityElement(children: .contain)
+                .accessibilityIdentifier("screen.games")
         case .clubs:
             ClubsScreen(appModel: appModel, favorites: favorites) { router.push(.club(id: $0)) }
                 .accessibilityElement(children: .contain)

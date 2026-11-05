@@ -63,7 +63,7 @@ final class ClubViewModel {
 
         let all: [(any FetchedInfo)?] = [fetched.team, fetched.standings, fetched.roster, fetched.averages, fetched.finished, fetched.slider]
         let got = all.compactMap { $0 }
-        cachedAt = got.contains { $0.isFromCache } ? got.filter(\.isFromCache).map(\.fetchedAt).min() : nil
+        cachedAt = got.filter(\.isFallback).map(\.fetchedAt).min()
         if got.isEmpty {
             state = self.team == nil && rosterRows.isEmpty ? .failed : .loaded
         } else {
@@ -81,7 +81,7 @@ final class ClubViewModel {
 
 /// Lets a screen ask any `Fetched` value where it came from without knowing its type.
 protocol FetchedInfo {
-    var isFromCache: Bool { get }
+    var isFallback: Bool { get }
     var fetchedAt: Date { get }
 }
 

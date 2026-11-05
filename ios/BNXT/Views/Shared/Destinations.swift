@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// What each `Route` shows. Phase 3 replaces the placeholders with the real screens.
+/// What each `Route` shows.
 struct RouteDestination: View {
     let route: Route
     let appModel: AppModel
@@ -12,9 +12,7 @@ struct RouteDestination: View {
         case let .club(id):
             ClubScreen(clubId: id, appModel: appModel, favorites: favorites, onSelect: onSelect)
         case let .game(id):
-            PlaceholderScreen(title: "Game")
-                .accessibilityElement(children: .contain)
-                .accessibilityIdentifier("screen.game.\(id)")
+            GameScreen(gameId: id, appModel: appModel, onSelect: onSelect)
         case let .player(rosterId):
             PlayerScreen(rosterId: rosterId, appModel: appModel, onSelect: onSelect)
         #if DEBUG

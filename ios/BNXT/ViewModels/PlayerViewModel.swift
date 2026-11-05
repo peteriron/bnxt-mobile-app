@@ -48,7 +48,7 @@ final class PlayerViewModel {
         if let value = fetched.entry?.value { self.entry = value }
         if let value = fetched.log?.value { lines = value }
         let all: [(any FetchedInfo)?] = [fetched.entry, fetched.log]
-        cachedAt = all.compactMap { $0 }.filter(\.isFromCache).map(\.fetchedAt).min()
+        cachedAt = all.compactMap { $0 }.filter(\.isFallback).map(\.fetchedAt).min()
         state = self.entry == nil && lines.isEmpty ? .failed : .loaded
 
         if let value = await leaders?.value { self.leaders = value }

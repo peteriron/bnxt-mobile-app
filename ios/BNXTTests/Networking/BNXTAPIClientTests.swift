@@ -133,6 +133,7 @@ final class BNXTAPIClientTests: XCTestCase {
         let offline = try await api.standings()
 
         XCTAssertEqual(offline.source, .cache)
+        XCTAssertTrue(offline.isFallback)
         XCTAssertEqual(offline.value, fresh.value)
         XCTAssertEqual(offline.fetchedAt.timeIntervalSince1970, fixedNow.timeIntervalSince1970, accuracy: 1)
     }
@@ -160,7 +161,8 @@ final class BNXTAPIClientTests: XCTestCase {
         _ = try await api.boxScore(gameId: 11323, isFinal: true)
         let second = try await api.boxScore(gameId: 11323, isFinal: true)
 
-        XCTAssertEqual(second.source, .cache)
+        XCTAssertEqual(second.source, .stored, "served on purpose, not as an offline fallback")
+        XCTAssertFalse(second.isFallback)
         XCTAssertEqual(router.requests(to: "boxscore/game/25/11323").count, 1)
     }
 
@@ -197,7 +199,7 @@ final class BNXTAPIClientTests: XCTestCase {
         XCTAssertEqual(first.source, .network)
 
         let young = try await client(at: fixedNow.addingTimeInterval(1800)).playerLeaders(cachePolicy: .maxAge(3600))
-        XCTAssertEqual(young.source, .cache)
+        XCTAssertEqual(young.source, .stored)
         XCTAssertEqual(router.requests(to: "player/average-rankings/25").count, 1, "no request for a 30-minute-old copy")
 
         let old = try await client(at: fixedNow.addingTimeInterval(7200)).playerLeaders(cachePolicy: .maxAge(3600))

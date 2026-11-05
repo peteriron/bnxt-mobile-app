@@ -71,6 +71,11 @@ extension StatLine {
         combined(with: other, +)
     }
 
+    /// Every number multiplied by `factor` (per-game averages × games = totals).
+    func scaled(by factor: Double) -> StatLine {
+        combined(with: self) { value, _ in value * factor }
+    }
+
     func divided(by divisor: Double) -> StatLine {
         guard divisor > 0 else { return self }
         return combined(with: self) { value, _ in value / divisor }

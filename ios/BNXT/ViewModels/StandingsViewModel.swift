@@ -39,7 +39,7 @@ final class StandingsViewModel {
         do {
             let fetched = try await api.standings(competitionId: season.competitionId, phaseId: season.phaseIds.first ?? 0)
             standings = fetched.value
-            cachedAt = fetched.isFromCache ? fetched.fetchedAt : nil
+            cachedAt = fetched.isFallback ? fetched.fetchedAt : nil
             state = .loaded
         } catch {
             // A failed refresh keeps what's on screen.

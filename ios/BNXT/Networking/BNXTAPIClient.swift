@@ -2,20 +2,26 @@ import Foundation
 
 /// A value plus where it came from, so screens can show "last updated" when it's from the cache.
 struct Fetched<Value: Sendable>: Sendable {
+    /// `.cache`: the network failed and a cached copy was served instead (show "Offline · updated …").
+    /// `.stored`: a cached copy served on purpose, without asking the network (an immutable finished game, or a copy
+    /// younger than `.maxAge`). Not offline, so no note.
     /// `.bundled`: shipped inside the app (remote config's offline fallback).
-    enum Source: Sendable, Equatable { case network, cache, bundled }
+    enum Source: Sendable, Equatable { case network, cache, stored, bundled }
 
     let value: Value
     let source: Source
     let fetchedAt: Date
 
     var isFromCache: Bool { source != .network }
+    /// The network failed and this is the best we had: screens say they're offline.
+    var isFallback: Bool { source == .cache || source == .bundled }
 }
 
 /// The BNXT League API client: one method per endpoint (docs/bnxt-api.md), returning decoded models.
 ///
 /// - Every successful response is cached (never-decode fields stripped first, §7.16). On any failure the
-///   cached copy is served instead, marked `.cache`; with nothing cached the error is thrown.
+///   cached copy is served instead, marked `.cache`; with nothing cached the error is thrown. Deliberate cache hits
+///   (`.cacheFirst`, `.maxAge`) are marked `.stored`.
 /// - Immutable data (a finished game's box score) is served cache-first without a request. An empty
 ///   cached result isn't trusted, because it may still be filled in later.
 /// - Dependencies are injected (playbook 02): tests pass a `MockURLProtocol` session, a temp-directory
@@ -148,9 +154,10 @@ struct BNXTAPIClient: Sendable {
             return Fetched(value: map(payload), source: .cache, fetchedAt: entry.storedAt)
         }
         if let cached, isUsable(cached.value) {
+            let stored = Fetched(value: cached.value, source: .stored, fetchedAt: cached.fetchedAt)
             switch policy {
-            case .cacheFirst: return cached
-            case let .maxAge(age) where now().timeIntervalSince(cached.fetchedAt) < age: return cached
+            case .cacheFirst: return stored
+            case let .maxAge(age) where now().timeIntervalSince(cached.fetchedAt) < age: return stored
             default: break
             }
         }
