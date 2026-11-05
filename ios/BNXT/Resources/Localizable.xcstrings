@@ -20,6 +20,12 @@
         }
       }
     },
+    "%@ of the Belgian clubs" : {
+
+    },
+    "%@ of the Dutch clubs" : {
+
+    },
     "%@ points per game" : {
 
     },
@@ -69,10 +75,26 @@
         }
       }
     },
+    "%lld–%lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld–%2$lld"
+          }
+        }
+      }
+    },
     "2-point %" : {
 
     },
     "2PT" : {
+
+    },
+    "2PT made" : {
+
+    },
+    "2PT missed" : {
 
     },
     "3-point %" : {
@@ -90,6 +112,12 @@
     "3PT" : {
 
     },
+    "3PT made" : {
+
+    },
+    "3PT missed" : {
+
+    },
     "A new version is available" : {
 
     },
@@ -105,7 +133,16 @@
     "All clubs" : {
 
     },
+    "All games" : {
+
+    },
     "Arena to be confirmed" : {
+
+    },
+    "Around the league" : {
+
+    },
+    "Assist" : {
 
     },
     "Assists" : {
@@ -129,13 +166,13 @@
     "Belgium and the Netherlands, 16 clubs, one league. Live scores, box scores and stats for every game." : {
 
     },
+    "Block" : {
+
+    },
     "Blocks" : {
 
     },
     "BNXT League · Regular season" : {
-
-    },
-    "BNXT League %@" : {
 
     },
     "Box score" : {
@@ -172,6 +209,9 @@
 
     },
     "Club" : {
+
+    },
+    "Club leaders" : {
 
     },
     "Clubs" : {
@@ -234,10 +274,19 @@
     "Follow %@" : {
 
     },
+    "Foul" : {
+
+    },
     "Français" : {
 
     },
     "Free throw %" : {
+
+    },
+    "Free throw made" : {
+
+    },
+    "Free throw missed" : {
 
     },
     "Free throws" : {
@@ -247,6 +296,9 @@
 
     },
     "FT%" : {
+
+    },
+    "Full table" : {
 
     },
     "Game" : {
@@ -279,6 +331,12 @@
     "How the season works" : {
 
     },
+    "In %lld days" : {
+
+    },
+    "in a playoff place" : {
+
+    },
     "Info" : {
 
     },
@@ -291,10 +349,16 @@
     "Last 5" : {
 
     },
+    "Last result" : {
+
+    },
     "Last results, oldest first" : {
 
     },
     "League" : {
+
+    },
+    "League leaders" : {
 
     },
     "Level" : {
@@ -307,6 +371,12 @@
 
     },
     "Live and on demand on BNXT.tv" : {
+
+    },
+    "Live box score: FIBA LiveStats. The official one replaces it after the game." : {
+
+    },
+    "Live data: FIBA LiveStats." : {
 
     },
     "Live now" : {
@@ -339,6 +409,9 @@
     "Netherlands" : {
 
     },
+    "Next game" : {
+
+    },
     "No games played yet this season." : {
 
     },
@@ -349,6 +422,9 @@
 
     },
     "No relegation this season" : {
+
+    },
+    "No results" : {
 
     },
     "No results yet" : {
@@ -367,6 +443,9 @@
 
     },
     "None" : {
+
+    },
+    "Nothing matches “%@”. Try a surname or a city." : {
 
     },
     "number %lld in the league" : {
@@ -390,7 +469,10 @@
     "Other" : {
 
     },
-    "Per-game averages, regular season %@. VAL is the FIBA efficiency rating. Shooting percentages need a minimum number of attempts." : {
+    "outside the playoff places" : {
+
+    },
+    "Per-game averages, regular season %@. VAL is FIBA efficiency. Percentages need minimum attempts." : {
 
     },
     "Per-game averages. Tap a column heading to sort by it." : {
@@ -400,6 +482,9 @@
 
     },
     "Pick your club" : {
+
+    },
+    "Play-by-play isn't available for this game right now." : {
 
     },
     "Player 1" : {
@@ -414,6 +499,12 @@
     "Players" : {
 
     },
+    "Players and clubs" : {
+
+    },
+    "Players can't be searched until the rosters load. Check your connection." : {
+
+    },
     "Players to watch" : {
 
     },
@@ -421,6 +512,9 @@
 
     },
     "Playoffs" : {
+
+    },
+    "Plays" : {
 
     },
     "point difference %@" : {
@@ -456,6 +550,9 @@
     "Projected" : {
 
     },
+    "Rebound" : {
+
+    },
     "Rebounds" : {
 
     },
@@ -487,7 +584,13 @@
     "Scores, stats, logos and photos: BNXT League, used with permission." : {
 
     },
+    "Search" : {
+
+    },
     "Search by player or club" : {
+
+    },
+    "Search by player, club or city." : {
 
     },
     "Search clubs" : {
@@ -500,6 +603,9 @@
 
     },
     "Section" : {
+
+    },
+    "See all" : {
 
     },
     "Seed %lld, %@, %lld–%lld" : {
@@ -527,6 +633,12 @@
     "Sort by %@" : {
 
     },
+    "Standing" : {
+
+    },
+    "Standing: %@ in the league" : {
+
+    },
     "Standings" : {
 
     },
@@ -537,6 +649,9 @@
 
     },
     "Stats" : {
+
+    },
+    "Steal" : {
 
     },
     "Steals" : {
@@ -572,13 +687,13 @@
     "This is how the brackets would look if the regular season ended today. The higher seed has home-court advantage." : {
 
     },
-    "This screen is coming soon." : {
-
-    },
     "This version of BNXT is no longer supported. Update the app to keep following your club." : {
 
     },
     "Tickets" : {
+
+    },
+    "Timeout" : {
 
     },
     "Tip-off %@ (%@)" : {
@@ -600,10 +715,16 @@
     "Tomorrow" : {
 
     },
+    "top of the league" : {
+
+    },
     "Top performers" : {
 
     },
     "Try again" : {
+
+    },
+    "Turnover" : {
 
     },
     "Turnovers" : {
