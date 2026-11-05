@@ -76,7 +76,7 @@ struct RootView: View {
                     NavigationStack(path: Binding(get: { router.path(for: tab) }, set: { router.setPath($0, for: tab) })) {
                         root(for: tab)
                             .navigationDestination(for: Route.self) { route in
-                                RouteDestination(route: route, appModel: appModel)
+                                RouteDestination(route: route, appModel: appModel, favorites: favorites) { router.push($0) }
                             }
                     }
                 }
@@ -103,6 +103,10 @@ struct RootView: View {
             StandingsScreen(appModel: appModel, favorites: favorites) { router.push(.club(id: $0)) }
                 .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("screen.standings")
+        case .clubs:
+            ClubsScreen(appModel: appModel, favorites: favorites) { router.push(.club(id: $0)) }
+                .accessibilityElement(children: .contain)
+                .accessibilityIdentifier("screen.clubs")
         default:
             PlaceholderScreen(title: tab.title)
                 .accessibilityElement(children: .contain)

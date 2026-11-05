@@ -51,6 +51,8 @@ by `accessibilityIdentifier`, but query the tab bar by index. Dismiss a focused 
 - A build reads the **published** config, not its bundled copy, so new config fields only work once pushed. UI tests pass
   `--uitest-bundled-config` so they test the build's own config. Ship config changes in the same commit as the code that needs them.
 - A "replace" behaviour needs a test that starts from a non-empty state: a deep-link test on an empty stack couldn't tell replace from append.
+- A `LazyVGrid` rendered empty (0×0) after `.searchable` filtering shrank its data, so the filtered tile never existed. Small fixed
+  sets (16 clubs) use a non-lazy `Grid` (`ClubsScreen`).
 - Tests must not reuse the production constant they guard: a privacy test looping over `PrivacyFilter.neverStoredKeys` still passed with the
   filter emptied. Use a fixed expected list in the test. Break the code on purpose once to see a new test fail.
 

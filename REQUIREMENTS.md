@@ -371,7 +371,8 @@ stack, so Back returns to the tab's root. Tapping the selected tab pops to its r
 One slice per commit, each with its unit and UI tests. Standings comes first because Clubs, the club page and Home use its ranks and zones.
 - [x] Standings (§3.5): League / Belgium / Netherlands tables, config zones, cut line, projected brackets; playoff format and
   "How the season works" text in the config (`playoffs`, `seasonExplainer`)
-- [ ] Clubs tab and club page (§3.8)
+- [x] Clubs tab and club page (§3.8): searchable 3-column grid with record and position; hero, facts, Make my club, Tickets;
+  Roster (jersey numbers from the latest box score, since rosters often send none) · Games (upcoming from the game slider) · Player stats
 - [ ] Player page (§3.8)
 - [ ] Games and game detail, final + upcoming (§3.3, §3.4)
 - [ ] Stats and compare (§3.6, §3.7)

@@ -45,6 +45,14 @@ enum Format {
         "\(Int(made))-\(Int(attempted))"
     }
 
+    /// "1st", "4th", "11th" (localised ordinal).
+    static func ordinal(_ value: Int, locale: Locale = .current) -> String {
+        let formatter = NumberFormatter()
+        formatter.locale = locale
+        formatter.numberStyle = .ordinal
+        return formatter.string(from: NSNumber(value: value)) ?? "\(value)"
+    }
+
     /// "W5", "L2"
     static func streak(_ streak: Streak) -> String {
         "\(streak.isWinning ? "W" : "L")\(streak.count)"

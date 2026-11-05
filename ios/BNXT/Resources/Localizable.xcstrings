@@ -1,37 +1,303 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%@ points per game" : {
+
+    },
+    "%@, best of %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@, best of %2$lld"
+          }
+        }
+      }
+    },
+    "%lld clubs" : {
+
+    },
+    "%lld wins, %lld losses" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld wins, %2$lld losses"
+          }
+        }
+      }
+    },
+    "%lld wins, %lld losses, %@ in the league" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld wins, %2$lld losses, %3$@ in the league"
+          }
+        }
+      }
+    },
     "A new version is available" : {
+
+    },
+    "About" : {
+
+    },
+    "Average" : {
+
+    },
+    "Belgium" : {
+
+    },
+    "Belgium and the Netherlands, 16 clubs, one league. Live scores, box scores and stats for every game." : {
 
     },
     "BNXT League %@" : {
 
     },
+    "Can't load league data" : {
+
+    },
+    "Change" : {
+
+    },
+    "Check your connection and try again." : {
+
+    },
+    "Choose a club to continue" : {
+
+    },
+    "Choose your club" : {
+
+    },
+    "Club" : {
+
+    },
     "Clubs" : {
+
+    },
+    "Coming later" : {
 
     },
     "Dismiss" : {
 
     },
+    "Done" : {
+
+    },
+    "English" : {
+
+    },
+    "final" : {
+
+    },
+    "Final" : {
+
+    },
+    "Follow %@" : {
+
+    },
+    "Français" : {
+
+    },
+    "Game" : {
+
+    },
     "Games" : {
+
+    },
+    "Get started" : {
 
     },
     "Home" : {
 
     },
+    "Home will show your club's games, standing and leaders. You can change it any time." : {
+
+    },
+    "How the season works" : {
+
+    },
+    "L" : {
+
+    },
+    "Language" : {
+
+    },
+    "Last results, oldest first" : {
+
+    },
+    "League" : {
+
+    },
+    "live" : {
+
+    },
+    "LIVE" : {
+
+    },
+    "lost %lld in a row" : {
+
+    },
+    "Make my club" : {
+
+    },
+    "My club" : {
+
+    },
+    "Nederlands" : {
+
+    },
+    "Netherlands" : {
+
+    },
+    "No games scheduled" : {
+
+    },
+    "No relegation this season" : {
+
+    },
+    "No results yet" : {
+
+    },
+    "No roster published yet." : {
+
+    },
+    "None" : {
+
+    },
+    "Offline · updated %@" : {
+
+    },
     "Open the App Store and update BNXT." : {
+
+    },
+    "Opp PPG" : {
+
+    },
+    "Other" : {
+
+    },
+    "Per-game averages. Tap a column heading to sort by it." : {
+
+    },
+    "Pick your club" : {
+
+    },
+    "Player" : {
+
+    },
+    "Player stats" : {
+
+    },
+    "Playoff cut line" : {
+
+    },
+    "Playoffs" : {
+
+    },
+    "point difference %@" : {
+
+    },
+    "Points per game" : {
+
+    },
+    "Position n/a" : {
+
+    },
+    "PPG" : {
+
+    },
+    "Projected" : {
+
+    },
+    "Record" : {
+
+    },
+    "Regular season %@ · after %lld of %lld games" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Regular season %1$@ · after %2$lld of %3$lld games"
+          }
+        }
+      }
+    },
+    "Results" : {
+
+    },
+    "Roster" : {
+
+    },
+    "Scores, stats, logos and photos: BNXT League, used with permission." : {
+
+    },
+    "Search clubs" : {
+
+    },
+    "Section" : {
+
+    },
+    "Seed %lld, %@, %lld–%lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Seed %1$lld, %2$@, %3$lld–%4$lld"
+          }
+        }
+      }
+    },
+    "Settings" : {
+
+    },
+    "Show onboarding again" : {
+
+    },
+    "Sort by %@" : {
 
     },
     "Standings" : {
 
     },
+    "Starter" : {
+
+    },
     "Stats" : {
+
+    },
+    "Strk" : {
+
+    },
+    "Team" : {
+
+    },
+    "This is how the brackets would look if the regular season ended today. The higher seed has home-court advantage." : {
 
     },
     "This screen is coming soon." : {
 
     },
     "This version of BNXT is no longer supported. Update the app to keep following your club." : {
+
+    },
+    "Tickets" : {
+
+    },
+    "To be decided" : {
+
+    },
+    "Today" : {
+
+    },
+    "Tomorrow" : {
+
+    },
+    "Try again" : {
+
+    },
+    "Upcoming" : {
 
     },
     "Update" : {
@@ -43,7 +309,28 @@
     "Update required" : {
 
     },
+    "Value" : {
+
+    },
+    "Version" : {
+
+    },
     "Version %@" : {
+
+    },
+    "versus" : {
+
+    },
+    "View" : {
+
+    },
+    "W" : {
+
+    },
+    "won %lld in a row" : {
+
+    },
+    "Yesterday" : {
 
     }
   },
