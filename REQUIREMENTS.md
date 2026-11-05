@@ -194,7 +194,7 @@ personal-data inventory and polling policy are in [docs/bnxt-api.md](docs/bnxt-a
 |---|---|
 | Onboarding, Clubs | `competition-team/all`, `standings/…` |
 | Home | `standings/…`, `schedule/game-slider`, `competition-team/player-averages/{team}`, `player/average-rankings` |
-| Games | `schedule/game-slider` (+ full schedule, still to find: §8 Phase 0) |
+| Games | `schedule/game-slider` (+ full schedule `schedule/club/{season}`, not used yet) |
 | Game detail | `schedule/find/{game}`, `schedule/overview/{game}`, `boxscore/game/{cid}/{game}`, live: still to find (§7.4) |
 | Standings | `standings/competition/{cid}/phase/{phase}` + season config |
 | Stats | `player/average-rankings/{cid}`; Teams: `competition-team/statistics-by-game/total/{team}` × 16 (each game carries the club's totals); Compare: `competition-team/player-averages/{team}` × 16 |
@@ -369,7 +369,7 @@ and players can't be searched offline before a roster was ever cached (clubs sti
   FIBA every ~30 s. The final whistle is still unrecorded and moves to Phase 4's game nights
 - [x] Determine whether the rate limit is per key or per IP (game-night recording) → revisit §7.15 if shared.
   Per client IP, 200 per ~1-minute window: the extra decrements were this Mac's own test runs (docs/bnxt-api.md)
-- [ ] Find the full-season schedule call (the website's calendar page)
+- [x] Find the full-season schedule call (the website's calendar page): `schedule/club/{season}?…&month=-1`, found 5 Nov 2026 (docs/bnxt-api.md)
 - [x] Set `DEVELOPMENT_TEAM` (92HC396B37)
 - [x] Brand font: Archivo, bundled (§7.10); App ID `com.pjproductions.bnxt` confirmed (§7.17)
 
@@ -378,7 +378,7 @@ and players can't be searched offline before a roster was ever cached (clubs sti
 - [x] File cache with offline fallback, cache-first for finished box scores (empty ones refetched), privacy-filtered (§7.16)
 - [x] Golden fixtures from game 11323 / team 537 (`tools/make_fixtures.py`), shared `MockURLProtocol`, privacy `Mirror` tests
 - [x] FIBA LiveStats client for live play-by-play (§7.4): `LiveStatsClient`, `LiveFeed` (clock, period, score, quarters, plays), no key, no cache
-- [ ] Full-season schedule endpoint (still unknown; `gameSlider` + `teamGames` cover today's needs)
+- [ ] Full-season schedule in `BNXTAPIClient` (endpoint known, docs/bnxt-api.md; not added yet, `gameSlider` + `teamGames` cover today's needs)
 - [x] Remote config `config/v1/config.json` (§7.24): season, zones, display names, cities, features, version policy, key override; network → cache → bundled; pre-push validation hook
 - [x] **Version checker** (§3.9): rules, 6 h throttle, blocking screen, dismissable Home banner, UI tests via `--uitest-version-policy`
 - [x] Club colours in the config (§7.25), curated from logos with `tools/club_colours.py`

@@ -39,7 +39,7 @@ Competition-team IDs (new every season): 537 CHA, 539 OOS, 541 ANT, 543 MON, 545
 | Team player averages | `competition-team/player-averages/{teamId}` | per-game averages + `played_games` |
 | Team games | `competition-team/statistics-by-game/total/{teamId}` | finished games of one team; each has `total`, **that team's** box-score totals (not the home side's). Feeds the Stats tab's Teams table |
 | Game strip | `schedule/game-slider/{cid}` | ~30 games around today; includes `genius_id` |
-| Schedule by month | `schedule/club/{cid}?clubs[0]=1&clubs[1]=2&phase_id=&month=&monthCount=&competition_team_id=` | returned `[]` with every parameter set tried. **Still to figure out** |
+| Full schedule | `schedule/club/{season}?clubs[0]=1&clubs[1]=2&month=-1` | ⚠️ **season** (`2027`), not the competition id: `25` answers `[]`. The website's calendar call. Verified 5 Nov 2026: all 240 games (16 clubs × 30), ~450 KB, ~1 s. `month=-1` is all months, `month=11` one month (24 games); optional `phase_id=183` and `competition_team_id=537` (30 games). Same game shape as the slider, including `period_scores`, but **no `genius_id`**, so the live feed still needs the slider. One game has a 01:00 tip-off on 31 May 2027 (11749 ANT–GRO), which looks like a placeholder date. Earlier seasons untested |
 | Game | `schedule/find/{gameId}` | competitors + `period_scores`, `period`, `round` (name empty), phase, `arena{name}`, referees (empty) |
 | Game overview | `schedule/overview/{gameId}` | `team_totals`, `top_performer`, `game_leaders` |
 | Box score | `boxscore/game/{cid}/{gameId}` | per team `{team, is_home, players[], total}` |
