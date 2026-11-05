@@ -43,6 +43,9 @@ targets:
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
         ITSAppUsesNonExemptEncryption: false
         BNXTAPIKey: $(BNXT_API_KEY)    # read by APIConfiguration.main (§7.15)
+        CFBundleURLTypes:              # deep links bnxt://club/{id}, game/{id}, player/{rosterId} (§7.27)
+          - CFBundleURLName: com.pjproductions.bnxt
+            CFBundleURLSchemes: [bnxt]
         UIAppFonts:                    # Archivo, SIL OFL (§7.10); keep in sync with DisplayFace
           - ArchivoExpanded-BlackItalic.ttf
           - ArchivoExpanded-ExtraBoldItalic.ttf

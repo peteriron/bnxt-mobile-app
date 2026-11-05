@@ -25,6 +25,13 @@ struct TeamBoxScore: Hashable, Sendable, Decodable {
     let players: [PlayerBoxLine]
     let totals: StatLine
 
+    init(team: Team, isHome: Bool, players: [PlayerBoxLine], totals: StatLine) {
+        self.team = team
+        self.isHome = isHome
+        self.players = players
+        self.totals = totals
+    }
+
     private enum CodingKeys: String, CodingKey {
         case team, players
         case isHome = "is_home"
@@ -49,6 +56,15 @@ struct PlayerBoxLine: Identifiable, Hashable, Sendable, Decodable {
     let isStarter: Bool
     let jersey: String?
     let stats: StatLine
+
+    init(rosterId: Int, player: Player, position: PlayingPosition? = nil, isStarter: Bool, jersey: String?, stats: StatLine) {
+        self.rosterId = rosterId
+        self.player = player
+        self.position = position
+        self.isStarter = isStarter
+        self.jersey = jersey
+        self.stats = stats
+    }
 
     private enum CodingKeys: String, CodingKey {
         case player, position, jersey

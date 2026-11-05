@@ -1,14 +1,15 @@
 import SwiftUI
 
 /// Temporary content for tabs whose feature hasn't been built yet (REQUIREMENTS.md §8).
-struct PlaceholderScreen: View {
+struct PlaceholderScreen<Header: View>: View {
     let title: LocalizedStringKey
+    @ViewBuilder var header: Header
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 12) {
-                // Large title in the brand display face (the prototype's look). The nav bar keeps an
-                // inline title until nav-bar styling lands in Phase 2.
+                header
+                // Large title in the brand display face (the prototype's look).
                 Text(title)
                     .font(Theme.display(.largeTitle))
                     .foregroundStyle(Theme.textPrimary)
@@ -28,5 +29,11 @@ struct PlaceholderScreen: View {
         .background(Theme.ink)
         .navigationTitle(title)
         .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+extension PlaceholderScreen where Header == EmptyView {
+    init(title: LocalizedStringKey) {
+        self.init(title: title) { EmptyView() }
     }
 }

@@ -86,6 +86,31 @@ struct RGB: Hashable, Sendable {
 
     var color: Color { Color(.sRGB, red: red, green: green, blue: blue) }
 
+    /// Mixes towards white until the colour reaches `ratio` against `background` (WCAG non-text contrast is 3:1).
+    /// Colours that already reach it come back unchanged. Used for club colours in graphics (REQUIREMENTS §5.1).
+    func lifted(toContrast ratio: Double = 3, against background: RGB = .ink) -> RGB {
+        guard contrast(with: background) < ratio else { return self }
+        var low = 0.0, high = 1.0
+        for _ in 0..<20 { // binary search on the mix amount; 20 steps is far below one 8-bit step
+            let mid = (low + high) / 2
+            if mixed(with: .white, amount: mid).contrast(with: background) < ratio { low = mid } else { high = mid }
+        }
+        return mixed(with: .white, amount: high)
+    }
+
+    func mixed(with other: RGB, amount: Double) -> RGB {
+        RGB(red: red + (other.red - red) * amount, green: green + (other.green - green) * amount, blue: blue + (other.blue - blue) * amount)
+    }
+
+    init(red: Double, green: Double, blue: Double) {
+        self.red = red
+        self.green = green
+        self.blue = blue
+    }
+
+    static let white = RGB(hex: 0xFFFFFF)
+    static let violet = RGB(hex: 0x6441FF)
+
     /// WCAG 2.x relative luminance.
     var luminance: Double {
         func channel(_ value: Double) -> Double { value <= 0.039_28 ? value / 12.92 : pow((value + 0.055) / 1.055, 2.4) }

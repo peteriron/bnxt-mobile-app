@@ -38,7 +38,7 @@ final class RemoteConfigFileTests: XCTestCase {
         XCTAssertLessThanOrEqual(config.minimumDataSchema, RemoteConfig.dataSchema)
     }
 
-    /// §7.25: every club of the season has a display name, a city and a valid brand colour.
+    /// §7.25/§7.26: every club of the season has a display name, a city, its country and a valid brand colour.
     func testEveryClubHasNameCityAndColour() throws {
         let config = try bundledConfig()
         let clubs = try Fixture.list(Team.self, from: "teams")
@@ -46,6 +46,7 @@ final class RemoteConfigFileTests: XCTestCase {
         for (id, settings) in config.teams {
             XCTAssertNotNil(settings.displayName, "club \(id) has no displayName")
             XCTAssertNotNil(settings.city, "club \(id) has no city")
+            XCTAssertEqual(settings.country, clubs.first { $0.id == id }?.country, "club \(id) country differs from the API")
             XCTAssertNotNil(settings.rgb, "club \(id) colour \(settings.color ?? "nil") isn't #RRGGBB")
         }
     }
@@ -95,7 +96,7 @@ final class RemoteConfigClientTests: XCTestCase {
     private func client(bundled: RemoteConfig? = nil) -> RemoteConfigClient {
         let now = fixedNow
         return RemoteConfigClient(session: MockURLProtocol.session(), cache: ResponseCache(directory: cacheDirectory),
-                                  bundled: { bundled }, now: { now })
+                                  bundled: { bundled }, now: { now }, bundledOnly: false)
     }
 
     private func configJSON(latest: String) -> Data {

@@ -11,10 +11,13 @@ struct RemoteConfigClient: Sendable {
     let cache: ResponseCache?
     let bundled: @Sendable () -> RemoteConfig?
     let now: @Sendable () -> Date
+    /// Skip the network and the cache: UI tests use the config that ships in the build, not whatever is published.
+    let bundledOnly: Bool
 
     init(url: URL = Self.defaultURL, session: URLSession = .shared, cache: ResponseCache? = .default,
          bundled: @escaping @Sendable () -> RemoteConfig? = { RemoteConfig.bundled() },
-         now: @escaping @Sendable () -> Date = Date.init) {
+         now: @escaping @Sendable () -> Date = Date.init, bundledOnly: Bool = LaunchArguments.bundledConfigOnly()) {
+        self.bundledOnly = bundledOnly
         self.url = url
         self.session = session
         self.cache = cache
@@ -24,6 +27,7 @@ struct RemoteConfigClient: Sendable {
 
     /// nil only if the network, the cache and the bundle all fail (a broken build).
     func load() async -> Fetched<RemoteConfig>? {
+        if bundledOnly { return bundled().map { Fetched(value: $0, source: .bundled, fetchedAt: now()) } }
         if let fresh = await fetchFromNetwork() { return fresh }
         if let entry = cache?.read(Self.cacheKey), let config = try? JSONDecoder().decode(RemoteConfig.self, from: entry.data) {
             return Fetched(value: config, source: .cache, fetchedAt: entry.storedAt)

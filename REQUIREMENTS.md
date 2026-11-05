@@ -323,6 +323,15 @@ never automatic). Stored as the true brand colour, even when dark: 7 of 16 are b
 Oostende 1.7:1, Hammers 2.0:1, Antwerp 2.3:1, Mechelen 2.8:1), so graphics apply the 3:1 lift in §5.1. *Why in config, not code:*
 clubs rebrand between seasons. *Re-check* each summer with `tools/club_colours.py --check`.
 
+**§7.26 Logo plates and club countries are config.** *Decided 6 Nov 2026:* six logos are too dark for the UI (Brussels, Kortrijk,
+Den Bosch, Aalst, Oostende, Mechelen) and sit on a light circular plate (`teams[id].logoPlate`). They were chosen by eye on the card
+background; a brightness threshold alone misjudged Mechelen. Each club's `country` is in the config too, so onboarding can group clubs
+before the API answers. The favourite club is stored with its short name and re-linked by it when ids change at a new season.
+
+**§7.27 Deep links: `bnxt://club/{id}`, `bnxt://game/{id}`, `bnxt://player/{rosterId}`.** *Decided 6 Nov 2026:* a custom URL scheme
+(universal links need a website we don't run). A link selects its tab (club and player: Clubs; game: Games) and replaces that tab's
+stack, so Back returns to the tab's root. Tapping the selected tab pops to its root. Each tab has its own navigation stack (`Router`).
+
 ## 8. Release status & roadmap
 
 **Live:** nothing yet. **On `main`:** app shell 0.1.0 (5 placeholder tabs, Archivo display type, theme tokens, API key plumbing, test targets, local CI), live recorder.
@@ -349,9 +358,14 @@ clubs rebrand between seasons. *Re-check* each summer with `tools/club_colours.p
 - [x] **Version checker** (§3.9): rules, 6 h throttle, blocking screen, dismissable Home banner, UI tests via `--uitest-version-policy`
 - [x] Club colours in the config (§7.25), curated from logos with `tools/club_colours.py`
 
-### Phase 2: design system & shell
-Theme components (game row, live card, segmented control, chips, stat ring, sparkline, box score table, club logo with
-dark-plate); onboarding; settings; favourite-club store; deep links; version-checker UI.
+### Phase 2: design system & shell (done, 6 Nov 2026)
+- [x] Components: `ClubLogo` (plate, initials fallback), `GameRow`, `LiveCard`, `StatusPill`, `FormStrip`, `ChipBar`, `SectionHeader`,
+  `StatRing`, `Sparkline` (Swift Charts), `BoxScoreTable` (pinned player column); colour lift to 3:1 for graphics (§5.1)
+- [x] `Club` (API team + config), `AppModel` (config + clubs, config-only fallback), `FavoriteClubStore` (re-links after season change)
+- [x] Onboarding (§3.1), Settings (§3.8), Home header with my club, version-checker banner and blocking screen
+- [x] `Router`: tab selection, one stack per tab, deep links (§7.27); destination placeholders for club / game / player
+- [x] Debug component gallery (`bnxt://debug/gallery`) for on-screen review
+- [ ] Native segmented control styling: deferred to Phase 3, where the first screen needs one
 
 ### Phase 3: core screens
 Clubs, club page, player page, games, game detail (final + upcoming), standings, stats, compare, home, search. Each ships with its tests.

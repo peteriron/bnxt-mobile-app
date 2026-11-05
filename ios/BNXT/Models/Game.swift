@@ -23,6 +23,19 @@ struct Game: Identifiable, Hashable, Sendable, Decodable {
         return homeScore > awayScore ? home.team : away.team
     }
 
+    init(id: Int, tipOff: Date, status: GameStatus, home: GameSide, away: GameSide, period: String? = nil,
+         arena: String? = nil, geniusId: Int? = nil, phaseId: Int? = nil) {
+        self.id = id
+        self.tipOff = tipOff
+        self.status = status
+        self.home = home
+        self.away = away
+        self.period = period
+        self.arena = arena
+        self.geniusId = geniusId
+        self.phaseId = phaseId
+    }
+
     private enum CodingKeys: String, CodingKey {
         case id, status, competitors, period, arena, phase
         case tipOff = "game_time"

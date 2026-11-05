@@ -8,6 +8,41 @@ enum LaunchArguments {
     /// `--uitest-version-policy required|available|current`: a fixed version policy instead of the remote one (Debug only).
     static let versionPolicyFlag = "--uitest-version-policy"
 
+    /// `--uitest-favorite-club 537:CHA`: start with this favourite instead of onboarding (Debug only).
+    static let favoriteClubFlag = "--uitest-favorite-club"
+    /// `--uitest-open bnxt://club/537`: open a deep link on launch (Debug only; playbook 03).
+    static let openFlag = "--uitest-open"
+
+    static func presetFavoriteClub(_ arguments: [String] = ProcessInfo.processInfo.arguments) -> FavoriteClubStore.Saved? {
+        #if DEBUG
+        guard let value = value(of: favoriteClubFlag, in: arguments) else { return nil }
+        let parts = value.split(separator: ":")
+        guard parts.count == 2, let id = Int(parts[0]) else { return nil }
+        return FavoriteClubStore.Saved(teamId: id, shortName: String(parts[1]))
+        #else
+        return nil
+        #endif
+    }
+
+    static func openURL(_ arguments: [String] = ProcessInfo.processInfo.arguments) -> URL? {
+        #if DEBUG
+        return value(of: openFlag, in: arguments).flatMap(URL.init(string:))
+        #else
+        return nil
+        #endif
+    }
+
+    /// `--uitest-bundled-config`: use only the config bundled in the build (Debug only).
+    static let bundledConfigFlag = "--uitest-bundled-config"
+
+    static func bundledConfigOnly(_ arguments: [String] = ProcessInfo.processInfo.arguments) -> Bool {
+        #if DEBUG
+        return arguments.contains(bundledConfigFlag)
+        #else
+        return false
+        #endif
+    }
+
     static func resetState(_ arguments: [String] = ProcessInfo.processInfo.arguments) -> Bool {
         arguments.contains(resetStateFlag)
     }

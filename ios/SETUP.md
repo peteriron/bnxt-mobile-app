@@ -91,6 +91,12 @@ fields and trimming big lists. They pin game 11323 and team 537, which are finis
 **UI tests:** subclass `UITestCase`, which launches with `--uitest-reset-state` (stores skip loading for that launch).
 - Query content by `accessibilityIdentifier`, never by visible text. Query **the tab bar by index** (`tab(0)` … `tab(4)`).
 - Put `.accessibilityElement(children: .contain)` on a container before giving it an identifier, or the identifier is copied onto every child.
+- Launch arguments (Debug builds only), all set by `UITestCase`:
+  `--uitest-reset-state` (stores skip loading), `--uitest-bundled-config` (use the config in the build, not the published one),
+  `--uitest-favorite-club 537:CHA` (skip onboarding; override `favoriteClub` with nil to test it), `--uitest-open <deep link>`,
+  `--uitest-version-policy required|available|current`.
+- **Component gallery:** `bnxt://debug/gallery` (or `--uitest-open bnxt://debug/gallery`) shows every design-system component with
+  sample data. Use it, or a throwaway capture test, to look at components after changing them.
 - Dismiss a focused search field's keyboard before the next tap.
 
 **Look at the screens** after building UI: run `AppStoreScreenshotUITests` (or `bundle exec fastlane screenshots`) and open every image.

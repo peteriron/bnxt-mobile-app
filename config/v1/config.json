@@ -51,81 +51,103 @@
     "537": {
       "displayName": "Spirou Basket",
       "city": "Charleroi",
+      "country": "BE",
       "color": "#B41B1F"
     },
     "539": {
       "displayName": "Oostende",
       "city": "Ostend",
-      "color": "#043764"
+      "country": "BE",
+      "color": "#043764",
+      "logoPlate": true
     },
     "541": {
       "displayName": "Giants Antwerp",
       "city": "Antwerp",
+      "country": "BE",
       "color": "#91191E"
     },
     "543": {
       "displayName": "Mons",
       "city": "Mons",
+      "country": "BE",
       "color": "#3A0D16"
     },
     "545": {
       "displayName": "Limburg United",
       "city": "Hasselt",
+      "country": "BE",
       "color": "#4553A9"
     },
     "547": {
       "displayName": "Donar",
       "city": "Groningen",
+      "country": "NL",
       "color": "#0BA4E6"
     },
     "549": {
       "displayName": "Landstede Hammers",
       "city": "Zwolle",
+      "country": "NL",
       "color": "#25416C"
     },
     "551": {
       "displayName": "Rotterdam City",
       "city": "Rotterdam",
+      "country": "NL",
       "color": "#7FBE54"
     },
     "553": {
       "displayName": "ZZ Leiden",
       "city": "Leiden",
+      "country": "NL",
       "color": "#3B83B9"
     },
     "555": {
       "displayName": "Heroes Den Bosch",
       "city": "'s-Hertogenbosch",
-      "color": "#C61F3E"
+      "country": "NL",
+      "color": "#C61F3E",
+      "logoPlate": true
     },
     "557": {
       "displayName": "Okapi Aalst",
       "city": "Aalst",
-      "color": "#1D619B"
+      "country": "BE",
+      "color": "#1D619B",
+      "logoPlate": true
     },
     "559": {
       "displayName": "Leuven Bears",
       "city": "Leuven",
+      "country": "BE",
       "color": "#E19B33"
     },
     "561": {
       "displayName": "Brussels",
       "city": "Brussels",
-      "color": "#0E151B"
+      "country": "BE",
+      "color": "#0E151B",
+      "logoPlate": true
     },
     "563": {
       "displayName": "Kangoeroes Mechelen",
       "city": "Mechelen",
-      "color": "#0B58A4"
+      "country": "BE",
+      "color": "#0B58A4",
+      "logoPlate": true
     },
     "565": {
       "displayName": "Kortrijk Spurs",
       "city": "Kortrijk",
-      "color": "#E71B1C"
+      "country": "BE",
+      "color": "#E71B1C",
+      "logoPlate": true
     },
     "567": {
       "displayName": "CB Liège",
       "city": "Liège",
+      "country": "BE",
       "color": "#1A2952"
     }
   }

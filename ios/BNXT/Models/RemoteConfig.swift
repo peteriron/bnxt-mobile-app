@@ -29,6 +29,10 @@ struct RemoteConfig: Sendable, Equatable, Decodable {
     struct TeamSettings: Sendable, Equatable, Decodable {
         var displayName: String?
         var city: String?
+        /// Lets onboarding group clubs by country before (or without) the API.
+        var country: Country?
+        /// Dark logos that need a light plate on the dark UI (§7.26).
+        var logoPlate: Bool?
         /// The club's brand colour, "#RRGGBB", curated from its logo (§7.25). Many are dark: graphics must
         /// lift them to 3:1 against the background before use.
         var color: String?
