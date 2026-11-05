@@ -111,34 +111,8 @@ struct RemoteFeatures: Sendable, Equatable, Decodable {
 /// The playoff format per country (§3.5): how many clubs qualify follows from the rounds (a final is 2 clubs,
 /// each earlier round doubles it), so the config only lists the rounds.
 struct PlayoffSettings: Sendable, Equatable, Decodable {
-    struct Bracket: Sendable, Equatable, Decodable {
-        var country: Country
-        var label: String
-        var rounds: [Round]
-
-        /// Clubs in the first round: 2 for a final alone, 4 with semi-finals, 8 with quarter-finals.
-        var seeds: Int { rounds.isEmpty ? 0 : 1 << rounds.count }
-
-        private enum CodingKeys: String, CodingKey { case country, label, rounds }
-
-        init(country: Country, label: String, rounds: [Round]) {
-            self.country = country
-            self.label = label
-            self.rounds = rounds
-        }
-
-        init(from decoder: Decoder) throws {
-            let container = try decoder.container(keyedBy: CodingKeys.self)
-            country = try container.decode(Country.self, forKey: .country)
-            label = container.text(forKey: .label) ?? ""
-            rounds = container.lossyArray(Round.self, forKey: .rounds)
-        }
-    }
-
-    struct Round: Sendable, Equatable, Decodable {
-        var label: String
-        var bestOf: Int
-    }
+    typealias Bracket = PlayoffBracketFormat
+    typealias Round = PlayoffRound
 
     /// The first playoff day ("2027-05-14"), in league time.
     var startDate: String?
@@ -156,4 +130,34 @@ struct PlayoffSettings: Sendable, Equatable, Decodable {
         startDate = container.text(forKey: .startDate)
         brackets = container.lossyArray(Bracket.self, forKey: .brackets)
     }
+}
+
+/// One country's playoff bracket in the config.
+struct PlayoffBracketFormat: Sendable, Equatable, Decodable {
+    var country: Country
+    var label: String
+    var rounds: [PlayoffRound]
+
+    /// Clubs in the first round: 2 for a final alone, 4 with semi-finals, 8 with quarter-finals.
+    var seeds: Int { rounds.isEmpty ? 0 : 1 << rounds.count }
+
+    private enum CodingKeys: String, CodingKey { case country, label, rounds }
+
+    init(country: Country, label: String, rounds: [PlayoffRound]) {
+        self.country = country
+        self.label = label
+        self.rounds = rounds
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        country = try container.decode(Country.self, forKey: .country)
+        label = container.text(forKey: .label) ?? ""
+        rounds = container.lossyArray(PlayoffRound.self, forKey: .rounds)
+    }
+}
+
+struct PlayoffRound: Sendable, Equatable, Decodable {
+    var label: String
+    var bestOf: Int
 }

@@ -96,7 +96,8 @@ final class RemoteConfigFileTests: XCTestCase {
     }
 
     func testOneBadBracketDoesNotDropTheOthers() throws {
-        let json = #"{"playoffs": {"brackets": [{"country": "XX", "rounds": []}, {"country": "NL", "label": "NL", "rounds": [{"label": "F", "bestOf": 7}, {"label": 3}]}]}}"#
+        let json = #"{"playoffs": {"brackets": [{"country": "XX", "rounds": []}, "#
+            + #"{"country": "NL", "label": "NL", "rounds": [{"label": "F", "bestOf": 7}, {"label": 3}]}]}}"#
         let config = try JSONDecoder().decode(RemoteConfig.self, from: Data(json.utf8))
         let brackets = try XCTUnwrap(config.playoffs?.brackets)
         XCTAssertEqual(brackets.map(\.country), [.netherlands])
