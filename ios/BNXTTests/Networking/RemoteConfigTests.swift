@@ -25,6 +25,22 @@ final class RemoteConfigFileTests: XCTestCase {
         XCTAssertNil(config.apiKeyOverride, "apiKeyOverride publishes a key in the public repo: emergency use only (§7.15)")
     }
 
+    /// §3.5: the brackets must line up with the zones, or the Playoffs view and the table disagree.
+    func testPlayoffFormatMatchesThePlayoffZones() throws {
+        let config = try bundledConfig()
+        let playoffs = try XCTUnwrap(config.playoffs)
+        XCTAssertEqual(playoffs.brackets.map(\.country), [.belgium, .netherlands])
+        XCTAssertEqual(playoffs.brackets.map(\.seeds), [8, 4])
+        XCTAssertEqual(playoffs.brackets[0].rounds.map(\.bestOf), [3, 5, 5])
+        XCTAssertEqual(playoffs.brackets[1].rounds.map(\.bestOf), [5, 7])
+        for bracket in playoffs.brackets {
+            let zone = config.zones.first { $0.country == bracket.country }
+            XCTAssertEqual(zone?.nationalPositionAtMost, bracket.seeds, "\(bracket.country) zone and bracket size disagree")
+        }
+        XCTAssertEqual(config.seasonExplainer(for: "en").count, 2)
+        XCTAssertEqual(config.seasonExplainer(for: "nl"), config.seasonExplainer(for: "en"), "falls back to English")
+    }
+
     /// The published policy must be sound and must never block the build that ships it.
     func testRepoVersionPolicyIsSoundAndDoesNotBlockThisBuild() throws {
         let config = try bundledConfig()
@@ -75,6 +91,17 @@ final class RemoteConfigFileTests: XCTestCase {
         XCTAssertEqual(config.zones, [])
         XCTAssertTrue(config.teams.isEmpty)
         XCTAssertNil(config.versionPolicy)
+        XCTAssertNil(config.playoffs)
+        XCTAssertEqual(config.seasonExplainer(for: "en"), [])
+    }
+
+    func testOneBadBracketDoesNotDropTheOthers() throws {
+        let json = #"{"playoffs": {"brackets": [{"country": "XX", "rounds": []}, {"country": "NL", "label": "NL", "rounds": [{"label": "F", "bestOf": 7}, {"label": 3}]}]}}"#
+        let config = try JSONDecoder().decode(RemoteConfig.self, from: Data(json.utf8))
+        let brackets = try XCTUnwrap(config.playoffs?.brackets)
+        XCTAssertEqual(brackets.map(\.country), [.netherlands])
+        XCTAssertEqual(brackets[0].rounds.map(\.bestOf), [7])
+        XCTAssertEqual(brackets[0].seeds, 2)
     }
 }
 

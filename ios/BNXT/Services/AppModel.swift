@@ -12,7 +12,8 @@ final class AppModel {
     private(set) var clubsSource: Fetched<[Team]>.Source?
     private(set) var isLoading = false
 
-    @ObservationIgnored private let api: BNXTAPIClient
+    /// Shared with the screens' view models, so they all use one cache.
+    @ObservationIgnored let api: BNXTAPIClient
     @ObservationIgnored private let configClient: RemoteConfigClient
 
     init(api: BNXTAPIClient = BNXTAPIClient(), configClient: RemoteConfigClient = RemoteConfigClient(),
@@ -24,6 +25,9 @@ final class AppModel {
         clubs = Club.merge(teams: [], config: config)
         clubsSource = clubs.isEmpty ? nil : .bundled
     }
+
+    /// The season from the remote config, or the bundled fallback (§7.14).
+    var season: Season { config?.season ?? .current }
 
     func club(id: Int?) -> Club? {
         guard let id else { return nil }
@@ -43,7 +47,7 @@ final class AppModel {
         isLoading = true
         defer { isLoading = false }
         if let fetched = await configClient.load() { config = fetched.value }
-        let competitionId = config?.season?.competitionId ?? Season.current.competitionId
+        let competitionId = season.competitionId
         if let teams = try? await api.teams(competitionId: competitionId), !teams.value.isEmpty {
             clubs = Club.merge(teams: teams.value, config: config)
             clubsSource = teams.source

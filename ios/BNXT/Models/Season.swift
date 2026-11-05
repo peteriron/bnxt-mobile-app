@@ -21,6 +21,13 @@ enum Country: String, CaseIterable, Codable, Sendable {
     case belgium = "BE"
     case netherlands = "NL"
 
+    var flag: String {
+        switch self {
+        case .belgium: "🇧🇪"
+        case .netherlands: "🇳🇱"
+        }
+    }
+
     /// The upstream API models countries as "clubs": 1 = Belgium, 2 = Netherlands.
     init?(upstreamClubId: Int) {
         switch upstreamClubId {

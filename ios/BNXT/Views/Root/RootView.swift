@@ -99,6 +99,10 @@ struct RootView: View {
                             .accessibilityIdentifier("home.settings")
                     }
                 }
+        case .standings:
+            StandingsScreen(appModel: appModel, favorites: favorites) { router.push(.club(id: $0)) }
+                .accessibilityElement(children: .contain)
+                .accessibilityIdentifier("screen.standings")
         default:
             PlaceholderScreen(title: tab.title)
                 .accessibilityElement(children: .contain)

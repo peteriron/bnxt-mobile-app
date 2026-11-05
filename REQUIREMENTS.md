@@ -99,7 +99,7 @@ In this order:
 - Belgium and Netherlands show national ranks with a dashed **cut line** after the last playoff place.
 - **Playoffs:** projected brackets "if the season ended today", labelled *Projected*. BE quarter-finals 1v8, 4v5, 2v7, 3v6 → semi-finals → final;
   NL semi-finals 1v4, 2v3 → final. Series lengths are shown.
-- A legend and a "How the season works" explainer, both driven by config.
+- A legend and a "How the season works" explainer, both driven by config (`zones`, `playoffs`, `seasonExplainer`).
 
 ### 3.6 Stats
 - Segmented **Players / Teams**.
@@ -310,7 +310,7 @@ there's nothing to merge; `ci-local.sh` runs after every push instead. *Revisit 
 then go back to the playbook's branch + PR flow and require `local-tests` and `lint` on `main` again. (The PR template stays for that.)
 
 **§7.24 Remote config is a static file in this repo.** *Decided 5 Nov 2026:* `config/v1/config.json` (season IDs, standings zones,
-display names and cities, feature flags, version policy, an emergency API-key override) is served from
+playoff format and season explainer, display names and cities, feature flags, version policy, an emergency API-key override) is served from
 `https://raw.githubusercontent.com/peteriron/bnxt-mobile-app/main/config/v1/config.json` and bundled into every build as the offline
 fallback. *Why:* no backend (§7.15), reviewed in git like code, one source for the remote and bundled copies.
 *Consequences:* pushing a change to `main` publishes it within minutes (GitHub's CDN caches ~5 min), so the `tools/hooks/pre-push` hook
@@ -365,10 +365,18 @@ stack, so Back returns to the tab's root. Tapping the selected tab pops to its r
 - [x] Onboarding (§3.1), Settings (§3.8), Home header with my club, version-checker banner and blocking screen
 - [x] `Router`: tab selection, one stack per tab, deep links (§7.27); destination placeholders for club / game / player
 - [x] Debug component gallery (`bnxt://debug/gallery`) for on-screen review
-- [ ] Native segmented control styling: deferred to Phase 3, where the first screen needs one
+- [x] Native segmented control styling: the system segmented `Picker` (first used by Standings, Phase 3)
 
-### Phase 3: core screens
-Clubs, club page, player page, games, game detail (final + upcoming), standings, stats, compare, home, search. Each ships with its tests.
+### Phase 3: core screens (in progress)
+One slice per commit, each with its unit and UI tests. Standings comes first because Clubs, the club page and Home use its ranks and zones.
+- [x] Standings (§3.5): League / Belgium / Netherlands tables, config zones, cut line, projected brackets; playoff format and
+  "How the season works" text in the config (`playoffs`, `seasonExplainer`)
+- [ ] Clubs tab and club page (§3.8)
+- [ ] Player page (§3.8)
+- [ ] Games and game detail, final + upcoming (§3.3, §3.4)
+- [ ] Stats and compare (§3.6, §3.7)
+- [ ] Home (§3.2)
+- [ ] Search (§3.8)
 
 ### Phase 4: live
 Live polling (visible-only), live card, live game detail; verified on two real game nights.

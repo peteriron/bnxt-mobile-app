@@ -17,6 +17,10 @@ struct RemoteConfig: Sendable, Equatable, Decodable {
     var features: Features
     var zones: [StandingsZone]
     var relegation: Bool
+    /// The playoff format, for the projected brackets (§3.5). Nil hides the Playoffs view.
+    var playoffs: PlayoffSettings?
+    /// "How the season works" paragraphs per language (§3.5).
+    var seasonExplainer: [String: [String]]
     var teams: [Int: TeamSettings]
     /// Replacement for the build's API key if the website rotates its key (§7.15). Absent in normal operation;
     /// adding it publishes the key in the public repo, so it's an emergency measure only.
@@ -42,7 +46,7 @@ struct RemoteConfig: Sendable, Equatable, Decodable {
     }
 
     /// A standings zone (§7.5): league position, or position among the clubs of one country.
-    struct StandingsZone: Sendable, Equatable, Decodable {
+    struct StandingsZone: Sendable, Hashable, Decodable {
         var id: String
         var label: String
         var color: String
@@ -52,7 +56,7 @@ struct RemoteConfig: Sendable, Equatable, Decodable {
     }
 
     private enum CodingKeys: String, CodingKey {
-        case schemaVersion, season, versionPolicy, features, zones, relegation, teams, apiKeyOverride
+        case schemaVersion, season, versionPolicy, features, zones, relegation, playoffs, seasonExplainer, teams, apiKeyOverride
     }
 
     private enum PolicyKeys: String, CodingKey { case ios, minimumDataSchema }
@@ -70,8 +74,15 @@ struct RemoteConfig: Sendable, Equatable, Decodable {
         features = (compatible ? container.lenient(Features.self, forKey: .features) : nil) ?? Features()
         zones = compatible ? container.lossyArray(StandingsZone.self, forKey: .zones) : []
         relegation = (compatible ? container.lenient(Bool.self, forKey: .relegation) : nil) ?? false
+        playoffs = compatible ? container.lenient(PlayoffSettings.self, forKey: .playoffs) : nil
+        seasonExplainer = (compatible ? container.lenient([String: [String]].self, forKey: .seasonExplainer) : nil) ?? [:]
         let teams = (compatible ? container.lenient([String: TeamSettings].self, forKey: .teams) : nil) ?? [:]
         self.teams = Dictionary(uniqueKeysWithValues: teams.compactMap { key, value in Int(key).map { ($0, value) } })
+    }
+
+    /// The explainer in `language`, falling back to English.
+    func seasonExplainer(for language: String) -> [String] {
+        seasonExplainer[language] ?? seasonExplainer["en"] ?? []
     }
 
     /// The copy bundled into this build (the repo's config/v1/config.json at build time).
@@ -94,5 +105,55 @@ struct RemoteFeatures: Sendable, Equatable, Decodable {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         liveStats = container.lenient(Bool.self, forKey: .liveStats) ?? true
+    }
+}
+
+/// The playoff format per country (§3.5): how many clubs qualify follows from the rounds (a final is 2 clubs,
+/// each earlier round doubles it), so the config only lists the rounds.
+struct PlayoffSettings: Sendable, Equatable, Decodable {
+    struct Bracket: Sendable, Equatable, Decodable {
+        var country: Country
+        var label: String
+        var rounds: [Round]
+
+        /// Clubs in the first round: 2 for a final alone, 4 with semi-finals, 8 with quarter-finals.
+        var seeds: Int { rounds.isEmpty ? 0 : 1 << rounds.count }
+
+        private enum CodingKeys: String, CodingKey { case country, label, rounds }
+
+        init(country: Country, label: String, rounds: [Round]) {
+            self.country = country
+            self.label = label
+            self.rounds = rounds
+        }
+
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            country = try container.decode(Country.self, forKey: .country)
+            label = container.text(forKey: .label) ?? ""
+            rounds = container.lossyArray(Round.self, forKey: .rounds)
+        }
+    }
+
+    struct Round: Sendable, Equatable, Decodable {
+        var label: String
+        var bestOf: Int
+    }
+
+    /// The first playoff day ("2027-05-14"), in league time.
+    var startDate: String?
+    var brackets: [Bracket]
+
+    private enum CodingKeys: String, CodingKey { case startDate, brackets }
+
+    init(startDate: String? = nil, brackets: [Bracket]) {
+        self.startDate = startDate
+        self.brackets = brackets
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        startDate = container.text(forKey: .startDate)
+        brackets = container.lossyArray(Bracket.self, forKey: .brackets)
     }
 }

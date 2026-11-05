@@ -47,6 +47,49 @@
     }
   ],
   "relegation": false,
+  "playoffs": {
+    "startDate": "2027-05-14",
+    "brackets": [
+      {
+        "country": "BE",
+        "label": "Belgian playoffs",
+        "rounds": [
+          {
+            "label": "Quarter-finals",
+            "bestOf": 3
+          },
+          {
+            "label": "Semi-finals",
+            "bestOf": 5
+          },
+          {
+            "label": "Final",
+            "bestOf": 5
+          }
+        ]
+      },
+      {
+        "country": "NL",
+        "label": "Dutch playoffs",
+        "rounds": [
+          {
+            "label": "Semi-finals",
+            "bestOf": 5
+          },
+          {
+            "label": "Final",
+            "bestOf": 7
+          }
+        ]
+      }
+    ]
+  },
+  "seasonExplainer": {
+    "en": [
+      "All 16 clubs play each other home and away, for 30 games each between 2 October 2026 and 8 May 2027. The club on top after game 30 is the BNXT Champion.",
+      "Then each country plays its own playoffs. In Belgium the top 8 play best-of-3 quarter-finals, best-of-5 semi-finals and a best-of-5 final. In the Netherlands the top 4 play best-of-5 semi-finals and a best-of-7 final."
+    ]
+  },
   "teams": {
     "537": {
       "displayName": "Spirou Basket",

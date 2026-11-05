@@ -45,6 +45,16 @@ enum Format {
         "\(Int(made))-\(Int(attempted))"
     }
 
+    /// "W5", "L2"
+    static func streak(_ streak: Streak) -> String {
+        "\(streak.isWinning ? "W" : "L")\(streak.count)"
+    }
+
+    /// "Won 5 in a row" / "Lost 1", for VoiceOver.
+    static func streakDescription(_ streak: Streak) -> String {
+        streak.isWinning ? String(localized: "won \(streak.count) in a row") : String(localized: "lost \(streak.count) in a row")
+    }
+
     /// A percentage rounded to whole numbers ("44%"), or "–" when nothing was attempted.
     static func percentage(_ value: Double?) -> String {
         guard let value else { return "–" }
