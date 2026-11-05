@@ -11,7 +11,7 @@ Decisions that depend on this file are in [REQUIREMENTS.md](../REQUIREMENTS.md) 
 | Auth | Header `X-Authorization: <client key>`. Without it: `401 {"errors":[{"code":"401","message":"Unauthorized"}]}`. `server-config` works without a key |
 | The key | The website's public client key, visible in its JS bundle. Used by the app for now (REQUIREMENTS §7.15): `.env` for scripts, `ios/Config/Secrets.xcconfig` for builds, the `BNXT_API_KEY` Actions secret for CI, all outside git. Never commit or print it |
 | Other headers the site sends | `Content-Type: application/json`, `X-Localization: en\|nl\|fr`, and `?lang=en` on every URL |
-| Rate limit | `X-RateLimit-Limit: 200`, `X-RateLimit-Remaining` (window not documented; probably per minute). Per key or per IP is unknown: **to test in Phase 0** |
+| Rate limit | `X-RateLimit-Limit: 200`, `X-RateLimit-Remaining`, per **~1-minute window** (resets every 62–65 s) and counted **per client IP, not per key** (game night 5 Nov 2026, below). No 429 seen yet |
 | Caching | `Cache-Control: no-cache, private`, no ETag / Last-Modified. Apply our own TTLs |
 | CORS | `Access-Control-Allow-Origin: *` |
 | Envelope | `{ "data": … }`, except `*/average-rankings`, which return categories at the top level |
@@ -47,19 +47,19 @@ Competition-team IDs (new every season): 537 CHA, 539 OOS, 541 ANT, 543 MON, 545
 | Player career | `player/career-averages/{rosterId}` | ⚠️ roster id; per season and competition |
 | Player leaders | `player/average-rankings/{cid}?phase_id={phaseId}` | keys `efficiency, points, total_rebound, block, assist, steal, two_point_percent, three_point_percent, free_throw_percent`; entries `{player, team, roster_id, value}`, ~160 each |
 | Team leaders | `competition-team/average-rankings/{cid}?phase_id={phaseId}` | same shape |
-| Search | `search/find?search={q}` | articles, players, teams |
+| Search | `search/find?search={q}` | articles, players, teams. Not used: the app searches rosters on device (REQUIREMENTS §7.29) |
 | News / video / events | `article/list`, `article/find/{slug}`, `video/list`, `event/list`, `award/find/{id}` | not used in v1 |
 | Menu / pages | `menu/list`, `page/find/{slug}` | links to the format article and "Where to watch" |
 | Config | `server-config` | UI translations, no key needed |
 | External | FIBA LiveStats page `https://fibalivestats.dcd.shared.geniussports.com/u/BNXT/{genius_id}/` · BNXT.tv `https://www.bnxt.tv/` · game report `https://bnxtleague.com/en/game-report/{gameId}` | |
-| FIBA LiveStats JSON | `https://fibalivestats.dcd.shared.geniussports.com/data/{genius_id}/data.json` (no key) | Genius Sports feed, **third-party and licensed**. Reachable without auth on 4 Nov 2026: `clock`, `period`, `inOT`, `pbp` (537 events for a finished game), `scorers`, `leaddata`, `officials`, `tm` (team/player stats). Research only until licensed (REQUIREMENTS §7.4) |
+| FIBA LiveStats JSON | `https://fibalivestats.dcd.shared.geniussports.com/data/{genius_id}/data.json` (no key) | Genius Sports feed, **third-party and licensed**. Reachable without auth on 4 Nov 2026: `clock`, `period`, `inOT`, `pbp` (537 events for a finished game), `scorers`, `leaddata`, `officials`, `tm` (team/player stats). Live (5 Nov 2026): publishes about every **30 s**, ~150 ms, ~100 KB in the first quarter; `clock` "MM:SS", `period` 1…, `tm.{1,2}.score` and `tot_s*` team totals, `tm.*.pl` player lines, `pbp` newest first (`clock`, `period`, `s1`/`s2` scores, `tno` team, `player`, `actionType`, `subType`, `qualifier`, `success`, `scoring`). Research only until licensed (REQUIREMENTS §7.4) |
 
 ## Field mapping and quirks
 
 | Field | Meaning / quirk |
 |---|---|
 | `competitors[].side` | **1 = home, 2 = away** (confirmed against the box score's `is_home`) |
-| `status` | `ready` (scheduled), `live` (seen 5 Nov 2026 at tip-off: `period` null, scores 0, box score `[]` for the first minutes), `finished` |
+| `status` | `ready` (scheduled), `live` (from tip-off, 5 Nov 2026), `finished`. While live (first 18 min recorded): `period` stays **null**, quarter scores stay empty, only the total score updates, and `boxscore/game` stays `{"data":[]}`. The live clock, period and box score therefore exist only in the FIBA feed. What changes at the final is still to record |
 | `game_time` | `"YYYY-MM-DD HH:mm:ss"`, Brussels local time with no zone → `GameTime.parse` |
 | `throw_made/all/percent` | **Field goals** (2PT + 3PT) |
 | `free_throw_*` · `two_point_*` · `three_point_*` | FT · 2PT · 3PT |
@@ -95,6 +95,8 @@ All people in the API are professional players and staff with public league prof
 - TTLs: standings / leaders 5 min (60 s on game days) · finished game + box score: immutable 3 h after tip-off, cache-first ·
   rosters 6 h · schedule 15 min · team list 24 h.
 - Live: one request per live screen every **10 s** (5 s minimum if the cadence turns out higher), only while the screen is visible, paused in the background.
+  Measured 5 Nov 2026: FIBA publishes every ~30 s and BNXT's live score every 1–3 min, so 10 s for the FIBA feed and 30 s for
+  `schedule/find` lose nothing (to settle in Phase 4).
 - Exponential back-off on 429/5xx. Stop and show cached data when `X-RateLimit-Remaining` < 20.
 
 ## Research tooling
@@ -121,3 +123,20 @@ python3 tools/record_live.py --summarize .tmp/live/2026-11-05         # rebuild 
 
 Dry run (4 Nov 2026, finished game 11323): all endpoints answered in ~200–350 ms; `X-RateLimit-Remaining` fell by exactly our own
 request count and didn't reset within 40 s, so the window is at least a minute.
+
+#### Game night 5 Nov 2026 (CHA–RCB, game 11351, genius 2873634)
+
+The recording ran from tip-off (20:30) to 20:48, Q1 1:44 left, 18–11. It **missed the end of the game**, so the `status` change at
+the final and the box score appearing are still unrecorded. Record the next game night start to finish (Phase 4 needs two anyway).
+
+- **BNXT API while live:** `schedule/find` and `schedule/overview` change only when the BNXT side copies the score over: 8 times in
+  18 min, 1–3 min apart (median 172 s), sometimes skipping baskets (FIBA showed 10–7, 10–8 and 13–8; BNXT went 8–5 → 15–8).
+  `period` null, quarters empty, `boxscore/game` empty throughout. Responses ~220–280 ms.
+- **FIBA feed while live:** polled every 10 s, it changed every ~31–33 s, so it publishes on a ~30 s cycle. Neither source is
+  always first: BNXT trailed FIBA by up to ~60 s (8–5, 18–11) but twice showed a score up to 25 s before FIBA's next cycle. FIBA
+  showed every basket; BNXT skipped some. 0 errors.
+- **Rate limit:** the window resets every 62–65 s. `summary.md` counted 433 "extra" decrements (Remaining falling faster than our
+  own requests) and read that as a shared key. They come from this Mac's own app: every extra decrement falls inside a test run
+  (Xcode test run 20:31:20–20:37:35, `ci-local.sh` until 20:45:11), and from 20:45:16 Remaining fell by exactly our own requests
+  while the game was still live and the website was serving it. Conclusion: **per client IP**. Run no tests during a recording,
+  so the reading stays clean.

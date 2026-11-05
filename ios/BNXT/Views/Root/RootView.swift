@@ -94,6 +94,11 @@ struct RootView: View {
                 .safeAreaInset(edge: .top) { updateBanner }
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
+                        Button { router.push(.search) } label: { Image(systemName: "magnifyingglass") }
+                            .accessibilityLabel("Search")
+                            .accessibilityIdentifier("home.search")
+                    }
+                    ToolbarItem(placement: .topBarTrailing) {
                         Button { showsSettings = true } label: { Image(systemName: "person.crop.circle") }
                             .accessibilityLabel("Settings")
                             .accessibilityIdentifier("home.settings")

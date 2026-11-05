@@ -70,8 +70,10 @@ struct BNXTAPIClient: Sendable {
         try await list(Endpoint("standings/competition/\(competitionId)/phase/\(phaseId)"), of: Standing.self)
     }
 
-    func roster(teamId: Int, competitionId: Int = Season.current.competitionId) async throws -> Fetched<[RosterEntry]> {
-        try await list(Endpoint("roster/team-players/\(teamId)", ["competition_id": "\(competitionId)"]), of: RosterEntry.self)
+    func roster(teamId: Int, competitionId: Int = Season.current.competitionId,
+                cachePolicy: CachePolicy = .networkFirst) async throws -> Fetched<[RosterEntry]> {
+        try await list(Endpoint("roster/team-players/\(teamId)", ["competition_id": "\(competitionId)"]), of: RosterEntry.self,
+                       policy: cachePolicy)
     }
 
     /// One roster entry: the player's bio for the player page. Takes the **roster id**.

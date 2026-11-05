@@ -220,7 +220,10 @@ come from the public Genius Sports / FIBA LiveStats JSON (`…/data/{genius_id}/
 "live stats" link uses; scores and box scores also keep coming from the BNXT API. *Why:* it's the only live play-by-play source found,
 and it works today. *Risks accepted:* the feed belongs to Genius Sports, not BNXT, and may change or be blocked without notice, so the app
 treats it as optional (live screens fall back to BNXT scores refreshed on the polling schedule) and remote config can switch it off.
-*To do:* confirm with BNXT whether their agreement covers it (§7.17), and measure its update cadence on a game night (Phase 0).
+*To do:* confirm with BNXT whether their agreement covers it (§7.17).
+*Measured 5 Nov 2026* (docs/bnxt-api.md): the feed publishes every ~30 s. While live, the BNXT API sends only the total score (every 1–3 min,
+sometimes skipping baskets): `period` stays null and the box score stays empty. So a live box score and clock come from the feed alone, and
+the fallback without it is score-only.
 *Note:* the prototype's live game is simulated and labelled so.
 
 **§7.5 Standings: phase switcher with zones from config.** League / Belgium / Netherlands / projected Playoffs. Zones are
@@ -265,7 +268,8 @@ static JSON file. The key reaches the app at build time (`ios/Config/Secrets.xcc
 `APIConfiguration`); locally from `.env`, in CI from the `BNXT_API_KEY` Actions secret. It's never committed, because the repo is public.
 *Risks accepted:* anyone can extract a key from an app binary (it's already public on the website); if the website rotates its key, every
 installed app breaks until a new key arrives, so remote config will be able to override the key, and the version checker (§3.9) is the last resort.
-*Revisit (a proxy or an app-specific key from BNXT) if:* the game-night recording shows the 200-request limit is shared per key; BNXT asks
+*Measured 5 Nov 2026:* the 200-request limit is per client IP per ~1-minute window, not shared per key (docs/bnxt-api.md), so it doesn't trigger a revisit.
+*Revisit (a proxy or an app-specific key from BNXT) if:* the limit turns out to be shared per key after all; BNXT asks
 us to stop using the website key; or push notifications move into scope (§7.3).
 
 **§7.16 Privacy.** No accounts, no analytics, advertising or tracking SDKs; nothing about the user leaves the device except the
@@ -339,6 +343,12 @@ Both bursts are capped at 4 concurrent requests and cached for an hour. Compare'
 with at least half the games of the player with the most (rounded up), so one big game isn't a leader; the league's own minimums aren't published.
 A player listed by two clubs keeps the entry with more games. *Trade-off:* the leader by this rule can differ from the league's VAL #1.
 
+**§7.29 Search runs on device over every club's roster.** *Decided 5 Nov 2026:* Search loads the 16 rosters once (4 at a time,
+reused for an hour) and filters clubs and players locally, instead of calling the API's `search/find` per keystroke. *Why:* results from
+the first character without spending the 200-request limit on typing; rosters include players who haven't played yet, which the
+averages lists leave out; `search/find` also returns articles we don't show. *Trade-off:* the first search after an hour costs 16 requests,
+and players can't be searched offline before a roster was ever cached (clubs still can).
+
 ## 8. Release status & roadmap
 
 **Live:** nothing yet. **On `main`:** app shell 0.1.0 (Home, Games, Standings, Stats, Clubs, Archivo display type, theme tokens, API key plumbing, test targets, local CI), live recorder.
@@ -349,9 +359,12 @@ A player listed by two clubs keeps the entry with more games. *Trade-off:* the l
 - [x] Contact BNXT League: permission for data, logos, photos and name granted 4 Nov 2026 (§7.17)
 - [x] Use the website key and the FIBA LiveStats feed for now (§7.15, §7.4); key plumbing via `Secrets.xcconfig` + CI secret
 - [ ] Ask BNXT: is using the website key at app volume OK, and does the agreement cover the FIBA LiveStats feed (§7.15, §7.4)
-- [ ] Record a live game night with `tools/record_live.py` (first chance: Thu 5 Nov, CHA–RCB 20:30): what `status` and live endpoints return, update cadence (§7.4)
+- [x] Record a live game night with `tools/record_live.py` (first chance: Thu 5 Nov, CHA–RCB 20:30): what `status` and live endpoints return, update cadence (§7.4).
+  Done 5 Nov 2026 for the first 18 minutes (docs/bnxt-api.md): `live` status; BNXT updates only the total score, every 1–3 min;
+  FIBA every ~30 s. The final whistle is still unrecorded and moves to Phase 4's game nights
+- [x] Determine whether the rate limit is per key or per IP (game-night recording) → revisit §7.15 if shared.
+  Per client IP, 200 per ~1-minute window: the extra decrements were this Mac's own test runs (docs/bnxt-api.md)
 - [ ] Find the full-season schedule call (the website's calendar page)
-- [ ] Determine whether the rate limit is per key or per IP (game-night recording) → revisit §7.15 if shared
 - [x] Set `DEVELOPMENT_TEAM` (92HC396B37)
 - [x] Brand font: Archivo, bundled (§7.10); App ID `com.pjproductions.bnxt` confirmed (§7.17)
 
@@ -374,7 +387,7 @@ A player listed by two clubs keeps the entry with more games. *Trade-off:* the l
 - [x] Debug component gallery (`bnxt://debug/gallery`) for on-screen review
 - [x] Native segmented control styling: the system segmented `Picker` (first used by Standings, Phase 3)
 
-### Phase 3: core screens (in progress)
+### Phase 3: core screens (done, 5 Nov 2026)
 One slice per commit, each with its unit and UI tests. Standings comes first because Clubs, the club page and Home use its ranks and zones.
 - [x] Standings (§3.5): League / Belgium / Netherlands tables, config zones, cut line, projected brackets; playoff format and
   "How the season works" text in the config (`playoffs`, `seasonExplainer`)
@@ -392,10 +405,12 @@ One slice per commit, each with its unit and UI tests. Standings comes first bec
 - [x] Home (§3.2): header, live card (score and period; clock and last play come with Phase 4), next game and last result,
   standing card with national rank, playoff status and a 5-row snippet, club leaders (PTS REB AST VAL), around the league
   (last 4 days with results), league VAL top 3. Reloads when the favourite changes. The Search button comes with Search (§3.8)
-- [ ] Search (§3.8)
+- [x] Search (§3.8): from Home's header; clubs and players from the first character, every word must match, accents ignored;
+  my club and the league VAL top 5 as suggestions; searched on device over all rosters (§7.29)
 
 ### Phase 4: live
-Live polling (visible-only), live card, live game detail; verified on two real game nights.
+Live polling (visible-only), live card, live game detail; verified on two real game nights, each recorded start to finish
+(the 5 Nov recording stopped in Q1, so what `status`, scores and the box score do at the final is still unknown). No tests running during a recording.
 
 ### Phase 5: hardening & beta
 Accessibility and performance passes, Dynamic Type, offline, a TestFlight beta with fans of 2–3 clubs.

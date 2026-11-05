@@ -23,6 +23,7 @@ final class DeepLinkTests: XCTestCase {
 
     func testCompareIsNotLinkable() {
         XCTAssertNil(DeepLink.url(for: .compare(rosterId: 11173)))
+        XCTAssertNil(DeepLink.url(for: .search))
         XCTAssertNil(parse("bnxt://compare/11173"))
     }
 
