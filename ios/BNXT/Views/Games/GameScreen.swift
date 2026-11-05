@@ -34,6 +34,12 @@ struct GameScreen: View {
         .navigationBarTitleDisplayMode(.inline)
         .refreshable { await model.load(season: appModel.season) }
         .task { if model.state == .idle { await model.load(season: appModel.season) } }
+        // Live polling only while this screen is visible: the task ends when it goes away (§4 Network etiquette).
+        .task(id: model.game?.isLive == true) {
+            if model.game?.isLive == true {
+                await model.watchLive(season: appModel.season, liveStatsEnabled: appModel.config?.features.liveStats ?? true)
+            }
+        }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("screen.game.\(model.gameId)")
     }
@@ -73,6 +79,8 @@ struct GameScreen: View {
         .accessibilityIdentifier("game.tabs")
 
         switch model.selectedTab {
+        case .playByPlay:
+            PlayByPlay(plays: model.liveFeed?.plays ?? [], home: club(game.home.team), away: club(game.away.team))
         case .summary:
             GameSummary(model: model, game: game, club: club, onSelect: onSelect)
         case .boxScore:
@@ -88,6 +96,7 @@ struct GameScreen: View {
 extension GameDetail.Tab {
     var title: LocalizedStringKey {
         switch self {
+        case .playByPlay: "Plays"
         case .summary: "Summary"
         case .boxScore: "Box score"
         case .preview: "Preview"

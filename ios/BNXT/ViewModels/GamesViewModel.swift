@@ -53,12 +53,36 @@ final class GameViewModel {
     private(set) var teamGames: [Int: [Game]] = [:]
     private(set) var state: LoadState = .idle
     private(set) var cachedAt: Date?
+    /// The FIBA LiveStats feed while the game is live (§7.4); its score, period and clock override BNXT's.
+    private(set) var liveFeed: LiveFeed?
 
     @ObservationIgnored private let api: BNXTAPIClient
+    @ObservationIgnored private let liveStats: LiveStatsClient
+    @ObservationIgnored private let sleep: @Sendable (Duration) async throws -> Void
+    /// The game as BNXT sends it; `game` is this with the live feed applied.
+    @ObservationIgnored private var bnxtGame: Game?
+    @ObservationIgnored private var geniusId: Int?
+    @ObservationIgnored private var lookedUpGeniusId = false
+    /// Both clubs' rosters, to give the live box score's players their roster ids (loaded once, on the first feed).
+    @ObservationIgnored private var liveRosters: [Int: [RosterEntry]]?
+    /// The box score built from the feed, shown while BNXT's own is empty.
+    private(set) var liveBox: BoxScore?
 
-    init(gameId: Int, api: BNXTAPIClient) {
+    /// The box score the tabs show: BNXT's once it has lines, else the live one from the feed.
+    var shownBox: BoxScore? {
+        if let box, !box.isEmpty { return box }
+        return liveBox ?? box
+    }
+
+    /// The box score on screen comes from the live feed.
+    var isLiveBox: Bool { shownBox != nil && shownBox == liveBox }
+
+    init(gameId: Int, api: BNXTAPIClient, liveStats: LiveStatsClient = LiveStatsClient(),
+         sleep: @escaping @Sendable (Duration) async throws -> Void = { try await Task.sleep(for: $0) }) {
         self.gameId = gameId
         self.api = api
+        self.liveStats = liveStats
+        self.sleep = sleep
     }
 
     var tabs: [GameDetail.Tab] { game.map(GameDetail.tabs) ?? [] }
@@ -66,7 +90,7 @@ final class GameViewModel {
     var selectedTab: GameDetail.Tab? { tab.flatMap { tabs.contains($0) ? $0 : nil } ?? tabs.first }
 
     func teamBox(_ side: Side) -> TeamBoxScore? {
-        guard let game, let box else { return nil }
+        guard let game, let box = shownBox else { return nil }
         let id = side == .home ? game.home.team.id : game.away.team.id
         return box.teams.first { $0.team.id == id } ?? (side == .home ? box.home : box.away)
     }
@@ -94,7 +118,7 @@ final class GameViewModel {
             state = game == nil ? .failed : .loaded
             return
         }
-        game = fetchedGame.value
+        apply(fetchedGame.value)
         var sources: [any FetchedInfo] = [fetchedGame]
         let game = fetchedGame.value
 
@@ -113,6 +137,84 @@ final class GameViewModel {
         }
         cachedAt = sources.filter(\.isFallback).map(\.fetchedAt).min()
         state = .loaded
+    }
+
+    // MARK: Live (§7.4, docs/bnxt-api.md "Polling policy")
+
+    /// The feed every 10 s: one request per live screen, only while the screen is visible (the caller's task).
+    static let livePollInterval: Duration = .seconds(10)
+    /// BNXT's own game (for the final whistle and the box score) every 6th poll with the feed, every 3rd without.
+    static func refreshesGame(onPoll poll: Int, liveStatsEnabled: Bool) -> Bool {
+        poll > 0 && poll.isMultiple(of: liveStatsEnabled ? 6 : 3)
+    }
+
+    /// Polls until the game is no longer live or the caller's task is cancelled (the screen went away).
+    func watchLive(season: Season, liveStatsEnabled: Bool) async {
+        var poll = 0
+        while game?.isLive == true, !Task.isCancelled {
+            await refreshLive(season: season, liveStatsEnabled: liveStatsEnabled,
+                              refreshGame: Self.refreshesGame(onPoll: poll, liveStatsEnabled: liveStatsEnabled))
+            poll += 1
+            guard game?.isLive == true else { return }
+            do { try await sleep(Self.livePollInterval) } catch { return }
+        }
+    }
+
+    /// One poll. A failed feed keeps the last one shown; BNXT's score is the fallback when there's none.
+    func refreshLive(season: Season, liveStatsEnabled: Bool, refreshGame: Bool) async {
+        if liveStatsEnabled, let id = await resolveGeniusId(season: season), let feed = try? await liveStats.feed(geniusId: id) {
+            liveFeed = feed
+            game = merged()
+            if let game = bnxtGame {
+                let rosters = await rosters(for: game, season: season)
+                liveBox = LiveBoxScore.make(feed, game: game, rosters: rosters)
+            }
+        } else if !liveStatsEnabled, liveFeed != nil {
+            liveFeed = nil // switched off by remote config
+            liveBox = nil
+            game = merged()
+        }
+        guard refreshGame, let fetched = try? await api.game(id: gameId) else { return }
+        apply(fetched.value)
+        if fetched.value.status == .finished {
+            liveFeed = nil
+            liveBox = nil
+            game = merged()
+            await load(season: season) // the final box score, cache-first from now on
+        } else if let fetchedBox = try? await api.boxScore(gameId: gameId, competitionId: season.competitionId, isFinal: false) {
+            box = fetchedBox.value
+        }
+    }
+
+    private func rosters(for game: Game, season: Season) async -> [Int: [RosterEntry]] {
+        if let liveRosters { return liveRosters }
+        let api = api, competitionId = season.competitionId
+        let fetched = await BNXTAPIClient.gather([game.home.team.id, game.away.team.id]) {
+            try await api.roster(teamId: $0, competitionId: competitionId, cachePolicy: .maxAge(StatsViewModel.maxAge))
+        }
+        let rosters = fetched.mapValues(\.value)
+        if !rosters.isEmpty { liveRosters = rosters } // retried on the next poll if both failed
+        return rosters
+    }
+
+    /// Only the game slider carries the FIBA id; looked up once per screen.
+    private func resolveGeniusId(season: Season) async -> Int? {
+        if let geniusId = bnxtGame?.geniusId ?? geniusId { return geniusId }
+        guard !lookedUpGeniusId else { return nil }
+        lookedUpGeniusId = true
+        geniusId = try? await api.gameSlider(competitionId: season.competitionId).value.first { $0.id == gameId }?.geniusId
+        return geniusId
+    }
+
+    private func apply(_ fetched: Game) {
+        bnxtGame = fetched
+        game = merged()
+    }
+
+    private func merged() -> Game? {
+        guard let bnxtGame else { return nil }
+        guard bnxtGame.isLive, let liveFeed else { return bnxtGame }
+        return bnxtGame.applying(liveFeed)
     }
 
     private func setStandings(_ rows: [Standing]) {

@@ -16,10 +16,10 @@ final class GamesUITests: UITestCase {
         }
         firstRow.tap()
         XCTAssertTrue(element("game.tabs").waitForExistence(timeout: 15))
-        // Right after tip-off the API says "live" but sends an empty box score (seen 5 Nov 2026): the note shows instead.
-        XCTAssertTrue(element("game.preview").waitForExistence(timeout: 5) || element("game.boxScore").exists
-                      || element("game.noBoxScore").exists,
-                      "upcoming games open on Preview (or Box score if one went live)")
+        // The first row may be a live game (pinned on top), which opens on Plays (Phase 4).
+        XCTAssertTrue(element("game.preview").waitForExistence(timeout: 5) || element("game.plays").exists
+                      || element("game.noPlays").exists,
+                      "upcoming games open on Preview, live ones on Plays")
     }
 
     func testResultsAndMyClubFilter() {

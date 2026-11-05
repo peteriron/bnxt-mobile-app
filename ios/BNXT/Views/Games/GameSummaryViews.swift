@@ -33,7 +33,7 @@ struct GameSummary: View {
     @ViewBuilder
     private func performer(_ line: PlayerBoxLine?, club: Club) -> some View {
         if let line {
-            Button { onSelect(.player(rosterId: line.rosterId)) } label: {
+            Button { if line.rosterId > 0 { onSelect(.player(rosterId: line.rosterId)) } } label: {
                 VStack(spacing: 8) {
                     PlayerAvatar(player: line.player, size: 64)
                     VStack(spacing: 2) {
@@ -148,7 +148,7 @@ struct GameSummary: View {
     @ViewBuilder
     private func leader(_ line: PlayerBoxLine?, stat: KeyPath<StatLine, Double>, alignment: HorizontalAlignment) -> some View {
         if let line {
-            Button { onSelect(.player(rosterId: line.rosterId)) } label: {
+            Button { if line.rosterId > 0 { onSelect(.player(rosterId: line.rosterId)) } } label: {
                 HStack(spacing: 8) {
                     if alignment == .leading { PlayerAvatar(player: line.player, size: 32) }
                     VStack(alignment: alignment, spacing: 0) {
@@ -181,9 +181,17 @@ struct GameBoxScore: View {
                     sideButton(.home, club: club(game.home.team))
                     sideButton(.away, club: club(game.away.team))
                 }
-                BoxScoreTable(box: box) { onSelect(.player(rosterId: $0.rosterId)) }
+                // Players the rosters don't know (negative placeholder ids, live only) don't open a page.
+                BoxScoreTable(box: box) { line in if line.rosterId > 0 { onSelect(.player(rosterId: line.rosterId)) } }
                     .accessibilityElement(children: .contain)
                     .accessibilityIdentifier("game.boxScore")
+                if model.isLiveBox {
+                    Text("Live box score: FIBA LiveStats. The official one replaces it after the game.")
+                        .font(.caption)
+                        .foregroundStyle(Theme.textTertiary)
+                        .padding(.horizontal, 4)
+                        .accessibilityIdentifier("game.liveBoxNote")
+                }
                 Text("Starters are marked with a dot. Scroll the table sideways for more; tap a player for their page.")
                     .font(.caption)
                     .foregroundStyle(Theme.textTertiary)

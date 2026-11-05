@@ -17,11 +17,21 @@ final class HomeViewModelTests: XCTestCase {
         router.reset()
     }
 
-    private func model() -> HomeViewModel {
+    private func model(sleep: @escaping @Sendable (Duration) async throws -> Void = { _ in }) -> HomeViewModel {
         let now = now
         let api = BNXTAPIClient(configuration: APIConfiguration(apiKey: "test"), session: MockURLProtocol.session(),
                                 cache: ResponseCache(directory: cacheDirectory), now: { now })
-        return HomeViewModel(api: api, now: { now })
+        return HomeViewModel(api: api, liveStats: LiveStatsClient(session: MockURLProtocol.session()), now: { now }, sleep: sleep)
+    }
+
+    /// The game slider with CHA–RCB (11351, genius 2873634) set to a status.
+    private func slider(gameStatus status: String) throws -> Data {
+        var json = try XCTUnwrap(JSONSerialization.jsonObject(with: try Fixture.data("game_slider")) as? [String: Any])
+        var games = try XCTUnwrap(json["data"] as? [[String: Any]])
+        let index = try XCTUnwrap(games.firstIndex { ($0["id"] as? Int) == 11351 })
+        games[index]["status"] = status
+        json["data"] = games
+        return try JSONSerialization.data(withJSONObject: json)
     }
 
     private func stubAll() throws {
@@ -93,5 +103,57 @@ final class HomeViewModelTests: XCTestCase {
         XCTAssertEqual(offline.state, .loaded)
         XCTAssertEqual(offline.nextGame?.id, 11351)
         XCTAssertNotNil(offline.cachedAt)
+    }
+
+    // MARK: Live
+
+    func testLiveCardShowsTheFeedsScoreClockAndLastPlay() async throws {
+        try stubAll()
+        router.stub("schedule/game-slider/25", body: try slider(gameStatus: "live"))
+        try router.stub("/data/2873634/data.json", fixture: "livestats_11351_live")
+        let router = router
+        let finished = try slider(gameStatus: "finished")
+        let model = model { _ in router.stub("schedule/game-slider/25", body: finished) } // the game ends after the first poll
+        await model.load(season: .current, clubId: 537)
+        XCTAssertEqual(model.liveGame?.id, 11351)
+        XCTAssertNil(model.nextGame.map(\.id).flatMap { $0 == 11351 ? $0 : nil }, "the live game isn't also the next game")
+
+        let watching = Task { await model.watchLive(season: .current, liveStatsEnabled: true) }
+        // First poll: the feed. Then six sleeps until the slider is asked again and shows the final.
+        await watching.value
+        XCTAssertNil(model.liveGame, "finished: no live card")
+        XCTAssertNil(model.liveFeed)
+        XCTAssertEqual(router.requests(to: "/data/2873634/data.json").count, 6)
+    }
+
+    func testLiveCardShowsTheFeedWhileWatching() async throws {
+        try stubAll()
+        router.stub("schedule/game-slider/25", body: try slider(gameStatus: "live"))
+        try router.stub("/data/2873634/data.json", fixture: "livestats_11351_live")
+        let model = model { _ in try await Task.sleep(for: .seconds(60)) } // stays between polls until cancelled
+        await model.load(season: .current, clubId: 537)
+        let watching = Task { await model.watchLive(season: .current, liveStatsEnabled: true) }
+        for _ in 0..<200 where model.liveFeed == nil { try await Task.sleep(for: .milliseconds(10)) }
+
+        XCTAssertEqual(model.liveGame?.home.score, 31, "the feed's score, not BNXT's")
+        XCTAssertEqual(model.liveGame?.away.score, 30)
+        XCTAssertEqual(model.liveGame?.period, "Q2 00:00")
+        XCTAssertEqual(model.lastPlay, "T. Tumba · 3PT missed")
+
+        watching.cancel() // Home went away
+        await watching.value
+        XCTAssertEqual(router.requests(to: "/data/2873634/data.json").count, 1)
+        XCTAssertEqual(model.lastPlay, "T. Tumba · 3PT missed",
+                       "kept, so coming back doesn't flash BNXT's older score before the next poll")
+    }
+
+    func testSwitchedOffByConfigNoFeedIsAsked() async throws {
+        try stubAll()
+        router.stub("schedule/game-slider/25", body: try slider(gameStatus: "live"))
+        let model = model { _ in throw CancellationError() }
+        await model.load(season: .current, clubId: 537)
+        await model.watchLive(season: .current, liveStatsEnabled: false)
+        XCTAssertTrue(router.requests(to: "/data/2873634/data.json").isEmpty)
+        XCTAssertNil(model.lastPlay)
     }
 }

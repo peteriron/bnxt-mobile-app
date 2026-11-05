@@ -41,6 +41,12 @@ struct HomeScreen: View {
         .navigationBarTitleDisplayMode(.inline)
         .refreshable { await load() }
         .task(id: club?.id) { await load() }
+        // Live polling only while Home is visible and my club is playing (§4 Network etiquette).
+        .task(id: model.liveGame?.id) {
+            if model.liveGame != nil {
+                await model.watchLive(season: appModel.season, liveStatsEnabled: appModel.config?.features.liveStats ?? true)
+            }
+        }
     }
 
     private func load() async {
@@ -83,7 +89,7 @@ struct HomeScreen: View {
     @ViewBuilder private var content: some View {
         if let live = model.liveGame {
             Button { onSelect(.game(id: live.id)) } label: {
-                LiveCard(game: live, home: club(live.home.team), away: club(live.away.team))
+                LiveCard(game: live, home: club(live.home.team), away: club(live.away.team), lastPlay: model.lastPlay)
             }
             .buttonStyle(.plain)
             .padding(.horizontal)

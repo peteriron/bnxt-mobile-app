@@ -13,19 +13,37 @@ final class HomeViewModel {
     private(set) var leaders: PlayerLeaders?
     private(set) var state: LoadState = .idle
     private(set) var cachedAt: Date?
+    /// The FIBA feed of my club's live game (§7.4): score, clock and last play on the live card.
+    private(set) var liveFeed: (gameId: Int, feed: LiveFeed)?
 
     @ObservationIgnored private let api: BNXTAPIClient
+    @ObservationIgnored private let liveStats: LiveStatsClient
+    @ObservationIgnored private let sleep: @Sendable (Duration) async throws -> Void
     @ObservationIgnored let now: () -> Date
 
-    init(api: BNXTAPIClient, now: @escaping () -> Date = Date.init) {
+    init(api: BNXTAPIClient, liveStats: LiveStatsClient = LiveStatsClient(), now: @escaping () -> Date = Date.init,
+         sleep: @escaping @Sendable (Duration) async throws -> Void = { try await Task.sleep(for: $0) }) {
         self.api = api
+        self.liveStats = liveStats
         self.now = now
+        self.sleep = sleep
     }
 
     /// The slider plus the club's own finished games (the slider only reaches ~2 weeks back).
     private var allGames: [Game] { slider + clubGames }
 
-    var liveGame: Game? { clubId.flatMap { HomePage.liveGame(slider, clubId: $0) } }
+    /// With the feed's score and "Q3 07:42" when it has one.
+    var liveGame: Game? {
+        guard let game = clubId.flatMap({ HomePage.liveGame(slider, clubId: $0) }) else { return nil }
+        guard let liveFeed, liveFeed.gameId == game.id else { return game }
+        return game.applying(liveFeed.feed)
+    }
+
+    /// "J. Heath · 3PT made" under the live score.
+    var lastPlay: String? {
+        guard let liveFeed, liveFeed.gameId == liveGame?.id else { return nil }
+        return liveFeed.feed.lastPlay?.line
+    }
     /// Scheduled games only, so a game in progress shows as the live card instead.
     var nextGame: Game? { clubId.flatMap { HomePage.nextGame(slider, clubId: $0) } }
     var lastResult: Game? { clubId.flatMap { HomePage.lastResult(allGames, clubId: $0) } }
@@ -80,5 +98,29 @@ final class HomeViewModel {
                                                              _ call: @Sendable (Int) async throws -> Value) async -> Value? {
         guard let clubId else { return nil }
         return try? await call(clubId)
+    }
+
+    // MARK: Live
+
+    /// Polls my club's live game while Home is visible (the caller's task): the feed every 10 s, the game slider
+    /// every 6th poll to notice the final whistle. Ends when the game is no longer live or the task is cancelled.
+    func watchLive(season: Season, liveStatsEnabled: Bool) async {
+        var poll = 0
+        while let game = liveGame, !Task.isCancelled {
+            if GameViewModel.refreshesGame(onPoll: poll, liveStatsEnabled: liveStatsEnabled),
+               let fetched = try? await api.gameSlider(competitionId: season.competitionId) {
+                slider = fetched.value
+                guard liveGame != nil else { break } // the final whistle: no more feed requests
+            }
+            if liveStatsEnabled, let geniusId = game.geniusId, let feed = try? await liveStats.feed(geniusId: geniusId) {
+                liveFeed = (game.id, feed)
+            } else if !liveStatsEnabled {
+                liveFeed = nil
+            }
+            poll += 1
+            guard liveGame != nil else { break }
+            do { try await sleep(GameViewModel.livePollInterval) } catch { return }
+        }
+        liveFeed = nil
     }
 }

@@ -52,7 +52,7 @@ Competition-team IDs (new every season): 537 CHA, 539 OOS, 541 ANT, 543 MON, 545
 | Menu / pages | `menu/list`, `page/find/{slug}` | links to the format article and "Where to watch" |
 | Config | `server-config` | UI translations, no key needed |
 | External | FIBA LiveStats page `https://fibalivestats.dcd.shared.geniussports.com/u/BNXT/{genius_id}/` · BNXT.tv `https://www.bnxt.tv/` · game report `https://bnxtleague.com/en/game-report/{gameId}` | |
-| FIBA LiveStats JSON | `https://fibalivestats.dcd.shared.geniussports.com/data/{genius_id}/data.json` (no key) | Genius Sports feed, **third-party and licensed**. Reachable without auth on 4 Nov 2026: `clock`, `period`, `inOT`, `pbp` (537 events for a finished game), `scorers`, `leaddata`, `officials`, `tm` (team/player stats). Live (5 Nov 2026): publishes about every **30 s**, ~150 ms, ~100 KB in the first quarter; `clock` "MM:SS", `period` 1…, `tm.{1,2}.score` and `tot_s*` team totals, `tm.*.pl` player lines, `pbp` newest first (`clock`, `period`, `s1`/`s2` scores, `tno` team, `player`, `actionType`, `subType`, `qualifier`, `success`, `scoring`). Research only until licensed (REQUIREMENTS §7.4) |
+| FIBA LiveStats JSON | `https://fibalivestats.dcd.shared.geniussports.com/data/{genius_id}/data.json` (no key) | Genius Sports feed, **third-party and licensed**. Reachable without auth on 4 Nov 2026: `clock`, `period`, `inOT`, `pbp` (537 events for a finished game), `scorers`, `leaddata`, `officials`, `tm` (team/player stats). Live (5 Nov 2026): publishes about every **30 s**, ~150 ms, ~100 KB in the first quarter; `clock` "MM:SS", `period` 1…, `tm.{1,2}.score` and `tot_s*` team totals, `tm.*.pl` player lines, `pbp` newest first (`clock`, `period`, `s1`/`s2` scores, `tno` team, `player`, `actionType`, `subType`, `qualifier`, `success`, `scoring`). For the app (`LiveFeed`): `tm["1"]` is the **home** side; feed codes differ from BNXT's (ROT vs RCB), so match by order; every shot has `scoring: 1` made or missed, so a score is `success == 1`; `s1`/`s2` are strings; quarter scores are `tm.*.p1_score`, `p2_score`…. Coaches, officials and players' full names also appear (in `tm`, `pbp`, `totallds`, `scorers`): never decoded (§7.16). Used by the live screens (REQUIREMENTS §7.4) |
 
 ## Field mapping and quirks
 
@@ -63,7 +63,7 @@ Competition-team IDs (new every season): 537 CHA, 539 OOS, 541 ANT, 543 MON, 545
 | `game_time` | `"YYYY-MM-DD HH:mm:ss"`, Brussels local time with no zone → `GameTime.parse` |
 | `throw_made/all/percent` | **Field goals** (2PT + 3PT) |
 | `free_throw_*` · `two_point_*` · `three_point_*` | FT · 2PT · 3PT |
-| `value` | VAL / PIR (FIBA efficiency) |
+| `value` | VAL: PTS + REB + AST + STL + BLK + fouls drawn (`defensive_foul`) − missed FG − missed FT − TO. Checked against game 11323 (all 24 player lines); personal fouls and `block_against` don't count, so it isn't PIR |
 | `minute` | integer in box scores, decimal in averages |
 | `starter` | bool in box scores, a count in averages |
 | `plusminus` | filled for ~80 % of player lines; show the column only if any line is non-zero |

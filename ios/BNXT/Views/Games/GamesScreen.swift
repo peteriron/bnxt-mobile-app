@@ -84,6 +84,8 @@ struct GamesScreen: View {
                 .accessibilityIdentifier("games.row.\(game.id)")
             }
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("games.section.\(id)")
     }
 
     private func club(_ team: Team) -> Club {

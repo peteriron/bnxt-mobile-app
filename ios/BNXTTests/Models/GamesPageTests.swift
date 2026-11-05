@@ -67,7 +67,7 @@ final class GameDetailTests: XCTestCase {
     func testTabsDependOnTheGamesState() throws {
         XCTAssertEqual(GameDetail.tabs(for: try finished()), [.summary, .boxScore, .info])
         XCTAssertEqual(GameDetail.tabs(for: try upcoming()), [.preview, .info])
-        XCTAssertEqual(GameDetail.tabs(for: GamesListTests.liveGame()), [.boxScore, .summary, .info])
+        XCTAssertEqual(GameDetail.tabs(for: GamesListTests.liveGame()), [.playByPlay, .boxScore, .summary, .info])
     }
 
     func testQuarterColumnsAddOvertimeOnlyWhenPlayed() throws {

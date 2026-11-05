@@ -224,6 +224,11 @@ treats it as optional (live screens fall back to BNXT scores refreshed on the po
 *Measured 5 Nov 2026* (docs/bnxt-api.md): the feed publishes every ~30 s. While live, the BNXT API sends only the total score (every 1–3 min,
 sometimes skipping baskets): `period` stays null and the box score stays empty. So a live box score and clock come from the feed alone, and
 the fallback without it is score-only.
+*How the app uses it:* polled every 10 s, only while a live screen (game detail, Home's live card) is visible; BNXT's game is re-read
+every 60 s for the final whistle (every 30 s with the feed off). Feed team 1 is the home side, matched by order, never by code.
+*Test data:* a real feed captured on 5 Nov 2026 is a test fixture (`livestats_11351_live.json`) with coaches, officials and players' full names
+removed; the developer's decision that night, knowing the repo is public and the data is Genius Sports'. A hand-written fixture in the same
+shape (`livestats_feed.json`) covers the edge cases. If BNXT's agreement doesn't cover the feed, delete the captured one.
 *Note:* the prototype's live game is simulated and labelled so.
 
 **§7.5 Standings: phase switcher with zones from config.** League / Belgium / Netherlands / projected Playoffs. Zones are
@@ -372,7 +377,7 @@ and players can't be searched offline before a roster was ever cached (clubs sti
 - [x] API client `BNXTAPIClient`: one method per endpoint (12), lenient models, `Fetched` values with source and time
 - [x] File cache with offline fallback, cache-first for finished box scores (empty ones refetched), privacy-filtered (§7.16)
 - [x] Golden fixtures from game 11323 / team 537 (`tools/make_fixtures.py`), shared `MockURLProtocol`, privacy `Mirror` tests
-- [ ] FIBA LiveStats client for live play-by-play (§7.4), once the game-night recording shows the feed's shape and cadence
+- [x] FIBA LiveStats client for live play-by-play (§7.4): `LiveStatsClient`, `LiveFeed` (clock, period, score, quarters, plays), no key, no cache
 - [ ] Full-season schedule endpoint (still unknown; `gameSlider` + `teamGames` cover today's needs)
 - [x] Remote config `config/v1/config.json` (§7.24): season, zones, display names, cities, features, version policy, key override; network → cache → bundled; pre-push validation hook
 - [x] **Version checker** (§3.9): rules, 6 h throttle, blocking screen, dismissable Home banner, UI tests via `--uitest-version-policy`
@@ -411,6 +416,13 @@ One slice per commit, each with its unit and UI tests. Standings comes first bec
 ### Phase 4: live
 Live polling (visible-only), live card, live game detail; verified on two real game nights, each recorded start to finish
 (the 5 Nov recording stopped in Q1, so what `status`, scores and the box score do at the final is still unknown). No tests running during a recording.
+- [x] Game detail while live: Plays tab first (newest first, score after made shots, 3PT marker, per period); header, score and quarter table
+  from the feed; polling every 10 s only while visible, stopping at the final whistle; remote-config switch `features.liveStats`
+- [x] Home live card: the feed's score, clock and last play while Home is visible
+- [x] Checked in the app during CHA–RCB on 5 Nov 2026 (Home card, game header, Plays); `LiveGameUITests` runs whenever a game is live
+- [x] Live box score from the feed's player lines while BNXT's is empty (players matched to rosters by scoreboard name; VAL
+  computed with BNXT's formula, which none of the feed's `eff_*` values matches); Summary uses it too
+- [ ] Two game nights recorded start to finish, including the final whistle
 
 ### Phase 5: hardening & beta
 Accessibility and performance passes, Dynamic Type, offline, a TestFlight beta with fans of 2–3 clubs.

@@ -1,0 +1,37 @@
+{
+  "_comment": "Hand-written in the shape of the FIBA LiveStats data.json (seen 5 Nov 2026). Invented teams, players and plays: no Genius Sports data (REQUIREMENTS §7.4, §7.17).",
+  "clock": "07:42",
+  "period": 3,
+  "periodLength": 10,
+  "periodType": "REGULAR",
+  "inOT": 0,
+  "attendance": 1234,
+  "officials": {"referee1": {"firstName": "Ref", "familyName": "Example"}},
+  "tm": {
+    "1": {"name": "Home Example", "code": "HOM", "score": 52, "full_score": 52,
+          "coach": "C. Example", "coachDetails": {"firstName": "Coach", "familyName": "Example"},
+          "pl": {"1": {"firstName": "Alex", "familyName": "Home", "scoreboardName": "A. Home", "sPoints": 12}}},
+    "2": {"name": "Away Example", "code": "AWY", "score": "49", "full_score": 49,
+          "coach": "D. Example", "coachDetails": {"firstName": "Coach", "familyName": "Other"},
+          "pl": {"1": {"firstName": "Bo", "familyName": "Away", "scoreboardName": "B. Away", "sPoints": 9}}}
+  },
+  "pbp": [
+    {"actionNumber": 210, "gt": "07:42", "period": 3, "periodType": "REGULAR", "tno": 1, "player": "A. Home", "scoreboardName": "A. Home",
+     "actionType": "3pt", "subType": "jumpshot", "success": 1, "scoring": 1, "s1": "52", "s2": "49", "firstName": "Alex", "familyName": "Home"},
+    {"actionNumber": 209, "gt": "07:58", "period": 3, "periodType": "REGULAR", "tno": 2, "player": "B. Away", "scoreboardName": "B. Away",
+     "actionType": "substitution", "subType": "in", "success": 1, "scoring": 0, "s1": "49", "s2": "49"},
+    {"actionNumber": 208, "gt": "08:10", "period": 3, "periodType": "REGULAR", "tno": 2, "player": "B. Away", "scoreboardName": "B. Away",
+     "actionType": "3pt", "subType": "jumpshot", "success": 0, "scoring": 1, "s1": "49", "s2": "49"},
+    {"gt": "08:30", "period": 3, "actionType": "2pt", "_comment": "no actionNumber: dropped, the rest still decode"},
+    {"actionNumber": 207, "gt": "08:31", "period": 3, "periodType": "REGULAR", "tno": 2, "player": "B. Away", "scoreboardName": "B. Away",
+     "actionType": "freethrow", "subType": "2of2", "success": 1, "scoring": 1, "s1": "49", "s2": "49"},
+    {"actionNumber": 206, "gt": "10:00", "period": 3, "periodType": "REGULAR", "tno": 0, "player": "",
+     "actionType": "period", "subType": "start", "success": 1, "scoring": 0, "s1": "49", "s2": "48"},
+    {"actionNumber": 120, "gt": "00:02", "period": 2, "periodType": "REGULAR", "tno": 1, "player": "A. Home", "scoreboardName": "A. Home",
+     "actionType": "2pt", "subType": "layup", "success": 1, "scoring": 1, "s1": "49", "s2": "48"},
+    {"actionNumber": 119, "gt": "00:15", "period": 2, "periodType": "REGULAR", "tno": 1, "player": "",
+     "actionType": "timeout", "subType": "full", "success": 1, "scoring": 0, "s1": "47", "s2": "48"},
+    {"actionNumber": 1, "gt": "10:00", "period": 1, "periodType": "REGULAR", "tno": 0, "player": "",
+     "actionType": "game", "subType": "start", "success": 1, "scoring": 0, "s1": "0", "s2": "0"}
+  ]
+}

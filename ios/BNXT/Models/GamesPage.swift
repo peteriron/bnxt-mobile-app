@@ -55,15 +55,15 @@ enum ComparisonWinner: Hashable, Sendable { case home, away, neither }
 /// Game detail rules (§3.4).
 enum GameDetail {
     enum Tab: String, Hashable, CaseIterable, Sendable {
-        case summary, boxScore, preview, info
+        case playByPlay, summary, boxScore, preview, info
     }
 
-    /// Live: Box score · Summary · Info (play-by-play arrives with Phase 4). Final: Summary · Box score · Info.
+    /// Live: Play-by-play · Box score · Summary · Info. Final: Summary · Box score · Info.
     /// Upcoming: Preview · Info.
     static func tabs(for game: Game) -> [Tab] {
         switch game.status {
         case .finished: [.summary, .boxScore, .info]
-        case .inProgress: [.boxScore, .summary, .info]
+        case .inProgress: [.playByPlay, .boxScore, .summary, .info]
         case .scheduled: [.preview, .info]
         }
     }
