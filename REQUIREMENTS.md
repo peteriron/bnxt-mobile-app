@@ -349,7 +349,7 @@ stack, so Back returns to the tab's root. Tapping the selected tab pops to its r
 - [x] Brand font: Archivo, bundled (§7.10); App ID `com.pjproductions.bnxt` confirmed (§7.17)
 
 ### Phase 1: data layer (in progress)
-- [x] API client `BNXTAPIClient`: one method per endpoint (11), lenient models, `Fetched` values with source and time
+- [x] API client `BNXTAPIClient`: one method per endpoint (12), lenient models, `Fetched` values with source and time
 - [x] File cache with offline fallback, cache-first for finished box scores (empty ones refetched), privacy-filtered (§7.16)
 - [x] Golden fixtures from game 11323 / team 537 (`tools/make_fixtures.py`), shared `MockURLProtocol`, privacy `Mirror` tests
 - [ ] FIBA LiveStats client for live play-by-play (§7.4), once the game-night recording shows the feed's shape and cadence
@@ -373,7 +373,9 @@ One slice per commit, each with its unit and UI tests. Standings comes first bec
   "How the season works" text in the config (`playoffs`, `seasonExplainer`)
 - [x] Clubs tab and club page (§3.8): searchable 3-column grid with record and position; hero, facts, Make my club, Tickets;
   Roster (jersey numbers from the latest box score, since rosters often send none) · Games (upcoming from the game slider) · Player stats
-- [ ] Player page (§3.8)
+- [x] Player page (§3.8): hero, bio, averages from the game log with top-10 league-rank badges, shooting rings, points chart,
+  game log; `roster/find` for the bio. The leaders response (~1.4 MB, ~10 s) loads after the page and is reused for an hour
+  (`CachePolicy.maxAge`). "Compare with another player" comes with Compare
 - [ ] Games and game detail, final + upcoming (§3.3, §3.4)
 - [ ] Stats and compare (§3.6, §3.7)
 - [ ] Home (§3.2)

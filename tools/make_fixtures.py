@@ -61,6 +61,7 @@ def main():
     save("game_11351_upcoming", get(f"schedule/find/{UPCOMING}"))
     save("box_score_11323", box)
     save(f"player_game_log_{roster_id}", get(f"boxscore/player/season-games/{roster_id}"))
+    save(f"roster_entry_{roster_id}", get(f"roster/find/{roster_id}"))
     save("player_game_log_unknown", get("boxscore/player/season-games/999999999"))   # the API's "not found" shape
     leaders = get(f"player/average-rankings/{COMPETITION}?phase_id={PHASE}")
     save("player_leaders", {k: v[:5] for k, v in leaders.items()})

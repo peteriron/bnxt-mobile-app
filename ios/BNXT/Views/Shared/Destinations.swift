@@ -16,9 +16,7 @@ struct RouteDestination: View {
                 .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("screen.game.\(id)")
         case let .player(rosterId):
-            PlaceholderScreen(title: "Player")
-                .accessibilityElement(children: .contain)
-                .accessibilityIdentifier("screen.player.\(rosterId)")
+            PlayerScreen(rosterId: rosterId, appModel: appModel, onSelect: onSelect)
         #if DEBUG
         case .componentGallery:
             ComponentGallery(appModel: appModel)

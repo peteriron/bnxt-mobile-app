@@ -26,6 +26,9 @@ struct BNXTAPIClient: Sendable {
         case networkFirst
         /// Use a usable cached copy without a request; otherwise behave like `.networkFirst`.
         case cacheFirst
+        /// Use a usable cached copy younger than this without a request; otherwise behave like `.networkFirst`.
+        /// For big responses that change only after game nights (the leaders are 1.4 MB and take ~10 s).
+        case maxAge(TimeInterval)
     }
 
     let configuration: APIConfiguration?
@@ -65,6 +68,12 @@ struct BNXTAPIClient: Sendable {
         try await list(Endpoint("roster/team-players/\(teamId)", ["competition_id": "\(competitionId)"]), of: RosterEntry.self)
     }
 
+    /// One roster entry: the player's bio for the player page. Takes the **roster id**.
+    /// (The API also sends a free-text `description`; it's never decoded or cached, §7.16.)
+    func rosterEntry(id: Int) async throws -> Fetched<RosterEntry> {
+        try await fetch(Endpoint("roster/find/\(id)"), as: Envelope<RosterEntry>.self) { $0.data }
+    }
+
     /// Per-game season averages for every player of a club.
     func playerAverages(teamId: Int) async throws -> Fetched<[PlayerSeasonAverages]> {
         try await list(Endpoint("competition-team/player-averages/\(teamId)"), of: PlayerSeasonAverages.self)
@@ -98,10 +107,12 @@ struct BNXTAPIClient: Sendable {
         try await list(Endpoint("boxscore/player/season-games/\(rosterId)"), of: PlayerGameLine.self)
     }
 
+    /// ~1.4 MB and slow; callers on a screen pass `.maxAge` so it isn't refetched on every visit.
     func playerLeaders(competitionId: Int = Season.current.competitionId,
-                       phaseId: Int = Season.current.phaseIds[0]) async throws -> Fetched<PlayerLeaders> {
+                       phaseId: Int = Season.current.phaseIds[0],
+                       cachePolicy: CachePolicy = .networkFirst) async throws -> Fetched<PlayerLeaders> {
         try await fetch(Endpoint("player/average-rankings/\(competitionId)", ["phase_id": "\(phaseId)"]),
-                        as: PlayerLeaders.self) { $0 }
+                        as: PlayerLeaders.self, policy: cachePolicy) { $0 }
     }
 
     // MARK: Plumbing
@@ -136,8 +147,12 @@ struct BNXTAPIClient: Sendable {
             guard let payload = try? JSONDecoder().decode(Payload.self, from: entry.data) else { return nil }
             return Fetched(value: map(payload), source: .cache, fetchedAt: entry.storedAt)
         }
-        if policy == .cacheFirst, let cached, isUsable(cached.value) {
-            return cached
+        if let cached, isUsable(cached.value) {
+            switch policy {
+            case .cacheFirst: return cached
+            case let .maxAge(age) where now().timeIntervalSince(cached.fetchedAt) < age: return cached
+            default: break
+            }
         }
         do {
             let data = try await load(endpoint)

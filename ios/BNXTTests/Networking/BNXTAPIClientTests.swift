@@ -53,6 +53,7 @@ final class BNXTAPIClientTests: XCTestCase {
         try router.stub("boxscore/game/25/11323", fixture: "box_score_11323")
         try router.stub("boxscore/player/season-games/11173", fixture: "player_game_log_11173")
         try router.stub("player/average-rankings/25", fixture: "player_leaders")
+        try router.stub("roster/find/11173", fixture: "roster_entry_11173")
 
         let teams = try await api.teams().value.count
         let team = try await api.team(id: 537).value.statistics?.pointsFor
@@ -65,6 +66,7 @@ final class BNXTAPIClientTests: XCTestCase {
         let box = try await api.boxScore(gameId: 11323, isFinal: true).value.home?.totals.points
         let log = try await api.playerGameLog(rosterId: 11173).value.count
         let leaders = try await api.playerLeaders().value[.points].count
+        let entry = try await api.rosterEntry(id: 11173).value
 
         XCTAssertEqual(teams, 16)
         XCTAssertEqual(team, 79.8)
@@ -77,7 +79,10 @@ final class BNXTAPIClientTests: XCTestCase {
         XCTAssertEqual(box, 65)
         XCTAssertEqual(log, 5)
         XCTAssertEqual(leaders, 5)
-        XCTAssertEqual(router.requests.count, 11)
+        XCTAssertEqual(entry.player.lastName, "Heath")
+        XCTAssertEqual(entry.teamId, 537)
+        XCTAssertEqual(entry.heightCm, 188)
+        XCTAssertEqual(router.requests.count, 12)
         XCTAssertEqual(router.requests(to: "roster/team-players/537").first?.url?.query(), "competition_id=25&lang=en")
         XCTAssertEqual(router.requests(to: "player/average-rankings/25").first?.url?.query(), "phase_id=183&lang=en")
     }
@@ -181,6 +186,28 @@ final class BNXTAPIClientTests: XCTestCase {
         XCTAssertEqual(router.requests(to: "boxscore/game/25/11323").count, 2)
     }
 
+    /// The leaders response is 1.4 MB and ~10 s: `.maxAge` reuses a young cached copy without a request.
+    func testMaxAgeServesAYoungCacheAndRefetchesAnOldOne() async throws {
+        try router.stub("player/average-rankings/25", fixture: "player_leaders")
+        func client(at date: Date) -> BNXTAPIClient {
+            BNXTAPIClient(configuration: APIConfiguration(apiKey: "k"), session: MockURLProtocol.session(),
+                          cache: ResponseCache(directory: cacheDirectory), now: { date })
+        }
+        let first = try await client(at: fixedNow).playerLeaders(cachePolicy: .maxAge(3600))
+        XCTAssertEqual(first.source, .network)
+
+        let young = try await client(at: fixedNow.addingTimeInterval(1800)).playerLeaders(cachePolicy: .maxAge(3600))
+        XCTAssertEqual(young.source, .cache)
+        XCTAssertEqual(router.requests(to: "player/average-rankings/25").count, 1, "no request for a 30-minute-old copy")
+
+        let old = try await client(at: fixedNow.addingTimeInterval(7200)).playerLeaders(cachePolicy: .maxAge(3600))
+        XCTAssertEqual(old.source, .network)
+        XCTAssertEqual(router.requests(to: "player/average-rankings/25").count, 2)
+
+        _ = try await client(at: fixedNow.addingTimeInterval(7300)).playerLeaders()
+        XCTAssertEqual(router.requests(to: "player/average-rankings/25").count, 3, "networkFirst ignores the cache's age")
+    }
+
     /// §7.16: the cache must not hold fields we never decode, even if the API starts filling them in.
     func testCacheNeverStoresForbiddenFields() async throws {
         let player = #"{"id":2,"first_name":"A","last_name":"B","facebook":"fb.com/x","instagram":"@x","twitter":"@x","description":"bio"}"#
@@ -197,6 +224,23 @@ final class BNXTAPIClientTests: XCTestCase {
         for key in ["facebook", "twitter", "instagram", "description"] {
             XCTAssertFalse(cached.contains(key), "cache holds \(key)")
         }
+    }
+
+    /// §7.16: `roster/find` is the endpoint that sends the free-text `description` (docs/bnxt-api.md).
+    func testRosterEntryNeverStoresTheDescription() async throws {
+        let player = #"{"id":212,"first_name":"Joshua","last_name":"Heath","description":"<p>bio</p>","instagram":"@x"}"#
+        let body = #"{"data":{"id":11173,"competition_team_id":537,"description":"x","player":"# + player + "}}"
+        router.stub("roster/find/11173", body: Data(body.utf8))
+
+        let entry = try await client().rosterEntry(id: 11173).value
+        XCTAssertEqual(entry.player.lastName, "Heath")
+
+        let files = try FileManager.default.contentsOfDirectory(at: cacheDirectory, includingPropertiesForKeys: nil)
+        let cached = try String(contentsOf: try XCTUnwrap(files.first), encoding: .utf8)
+        XCTAssertTrue(cached.contains("Heath"))
+        XCTAssertFalse(cached.contains("description"))
+        XCTAssertFalse(cached.contains("bio"))
+        XCTAssertFalse(cached.contains("instagram"))
     }
 
     func testFilterCoversEveryNeverDecodedField() {

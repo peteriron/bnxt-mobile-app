@@ -1,0 +1,105 @@
+{
+ "data": {
+  "id": 11173,
+  "competition_team_id": 537,
+  "jersey": "",
+  "weight": 81,
+  "height": 188,
+  "active": true,
+  "player_position": {
+   "id": 1,
+   "name": "point_guard"
+  },
+  "player": {
+   "id": 212,
+   "birthdate": "1994-12-28",
+   "first_name": "Joshua",
+   "last_name": "Heath",
+   "nationality_code": "USA",
+   "profile_image": {
+    "name": "Heath",
+    "alt": null,
+    "keywords": null,
+    "public_url": "https://bnxt.sportpress.info/storage/p/B/pBpSre7bxTjEAjY9D6r6E8YlV1788858198.png",
+    "thumbnails": {
+     "small": "https://bnxt.sportpress.info/storage/p/B/small-pBpSre7bxTjEAjY9D6r6E8YlV1788858198.png",
+     "medium": "https://bnxt.sportpress.info/storage/p/B/medium-pBpSre7bxTjEAjY9D6r6E8YlV1788858198.png"
+    }
+   },
+   "created_at": "2022-08-10"
+  },
+  "competition_team": {
+   "id": 537,
+   "competition_id": 25,
+   "uu_team_id": 1,
+   "name": "Val-Dieu Spirou Basket",
+   "short_name": "CHA",
+   "ticket_url": "https://shop.utick.be/?pos=SPIROUBASKET&module=ACTIVITYSERIEDETAILS&s=966F953A-5AB6-F8A5-8065-22C274230F12",
+   "club": {
+    "id": 1,
+    "name": "Belgium"
+   },
+   "team_logo": {
+    "name": "Spirou Basket",
+    "alt": null,
+    "keywords": null,
+    "public_url": "https://bnxt.sportpress.info/storage/3/G/3GsvRCSQNq5oeb3QinpVy3p4H1785845088.png",
+    "thumbnails": {
+     "small": "https://bnxt.sportpress.info/storage/3/G/small-3GsvRCSQNq5oeb3QinpVy3p4H1785845088.png",
+     "medium": "https://bnxt.sportpress.info/storage/3/G/medium-3GsvRCSQNq5oeb3QinpVy3p4H1785845088.png"
+    }
+   },
+   "team_image": null,
+   "competition": {
+    "id": 25,
+    "season": 2027,
+    "visible": true,
+    "standings_visible": true,
+    "simple_team_view": false,
+    "summer_season": false,
+    "name": "BNXT League 2026-2027",
+    "logo": null,
+    "ticket_url": null,
+    "video_url": null,
+    "created_at": "2026-07-24"
+   },
+   "staffs": [],
+   "statistics": [],
+   "created_at": "2026-07-24"
+  },
+  "tagged_images": [],
+  "created_at": "2026-09-02",
+  "lastGameStatistics": {
+   "starter": true,
+   "minute": 33,
+   "foul": 2,
+   "defensive_foul": 6,
+   "dunk_made": 0,
+   "dunk_all": 0,
+   "dunk_percent": 0,
+   "two_point_made": 2,
+   "two_point_all": 5,
+   "two_point_percent": 40,
+   "three_point_made": 0,
+   "three_point_all": 2,
+   "three_point_percent": 0,
+   "throw_made": 2,
+   "throw_all": 7,
+   "throw_percent": 28.57,
+   "free_throw_made": 5,
+   "free_throw_all": 6,
+   "free_throw_percent": 83.3,
+   "offensive_rebound": 0,
+   "defensive_rebound": 2,
+   "total_rebound": 2,
+   "block": 0,
+   "block_against": 0,
+   "turnover": 2,
+   "steal": 1,
+   "assist": 7,
+   "points": 9,
+   "value": 17,
+   "jersey": 3
+  }
+ }
+}
