@@ -75,7 +75,7 @@ Competition-team IDs (new every season): 537 CHA, 539 OOS, 541 ANT, 543 MON, 545
 | `staffs`, `referees` | always empty |
 | `team_logo` | transparent PNG; thumbnails `small`/`medium` (~100 KB). Some are dark navy/black (BRU, MEC, OOS) and need a light plate on dark UI |
 | `profile_image` | 400×500 transparent cut-out (~200 KB); missing for 49 of 233 players |
-| Club colours | not in the API → config |
+| Club colours | not in the API → curated in `config/v1/config.json` (REQUIREMENTS §7.25, `tools/club_colours.py`) |
 
 ## Personal data exposed, and what we decode
 

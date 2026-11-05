@@ -15,6 +15,14 @@ final class ThemeTests: XCTestCase {
         XCTAssertEqual(RGB(hex: 0x777777).contrast(with: RGB(hex: 0x777777)), 1, accuracy: 0.001)
     }
 
+    func testParsesHexStrings() {
+        XCTAssertEqual(RGB(hexString: "#6441FF"), RGB(hex: 0x6441FF))
+        XCTAssertEqual(RGB(hexString: "e2ff00"), RGB(hex: 0xE2FF00))
+        for bad in ["", "#FFF", "#GGGGGG", "#1234567", "red", "#+12345"] {
+            XCTAssertNil(RGB(hexString: bad), bad)
+        }
+    }
+
     /// Every text token must clear WCAG AA (4.5:1) on the backgrounds it's used on.
     func testTextTokensClearAAContrast() {
         let texts: [(String, RGB)] = [

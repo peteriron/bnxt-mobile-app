@@ -181,7 +181,9 @@ ViewModels/ Views/ Theme/ Resources/`; tests in `BNXTTests` (XCTest) and `BNXTUI
 | live / win / loss | `#FF3B52` / `#3DDC97` / `#FF5C74` | Semantic |
 
 Display type: wide, heavy italic (the brand uses Druk Wide; see §7.10) for titles and numbers, with tabular digits. SF Pro for text.
-Club colours drive hero gradients; dark logos get a light plate (prototype: `DARK` detection).
+Club colours (config `teams[id].color`, §7.25) drive hero gradients, bars and rings. Graphics lift a club colour that's below **3:1**
+against the background (WCAG non-text contrast) by mixing it towards white until it reaches 3:1; text never uses club colours.
+Dark logos get a light plate (prototype: `DARK` detection).
 
 ## 6. Data & API integration
 
@@ -315,6 +317,12 @@ fallback. *Why:* no backend (§7.15), reviewed in git like code, one source for 
 runs the config tests before any push that touches `config/`; the app ignores unsound policies and newer-schema sections it doesn't
 understand. The path carries a version (`v1`): a breaking schema change gets `v2/` while old apps keep reading `v1/`.
 
+**§7.25 Club colours are curated brand colours in the remote config.** *Decided 5 Nov 2026:* one `#RRGGBB` per club, picked by eye from
+the candidates `tools/club_colours.py` extracts from each logo (the largest cluster is often black outline or a mascot's face, so it's
+never automatic). Stored as the true brand colour, even when dark: 7 of 16 are below 3:1 on ink (Brussels 1.1:1, Mons 1.2:1, Liège 1.4:1,
+Oostende 1.7:1, Hammers 2.0:1, Antwerp 2.3:1, Mechelen 2.8:1), so graphics apply the 3:1 lift in §5.1. *Why in config, not code:*
+clubs rebrand between seasons. *Re-check* each summer with `tools/club_colours.py --check`.
+
 ## 8. Release status & roadmap
 
 **Live:** nothing yet. **On `main`:** app shell 0.1.0 (5 placeholder tabs, Archivo display type, theme tokens, API key plumbing, test targets, local CI), live recorder.
@@ -339,7 +347,7 @@ understand. The path carries a version (`v1`): a breaking schema change gets `v2
 - [ ] Full-season schedule endpoint (still unknown; `gameSlider` + `teamGames` cover today's needs)
 - [x] Remote config `config/v1/config.json` (§7.24): season, zones, display names, cities, features, version policy, key override; network → cache → bundled; pre-push validation hook
 - [x] **Version checker** (§3.9): rules, 6 h throttle, blocking screen, dismissable Home banner, UI tests via `--uitest-version-policy`
-- [ ] Club colours in the config (curated; the prototype derived them from logos)
+- [x] Club colours in the config (§7.25), curated from logos with `tools/club_colours.py`
 
 ### Phase 2: design system & shell
 Theme components (game row, live card, segmented control, chips, stat ring, sparkline, box score table, club logo with

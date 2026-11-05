@@ -72,7 +72,8 @@ Solo development (§7.23): work directly on `main`, no feature branches or PRs, 
 
 `config/v1/config.json` is live for every user once it's on `main` (§7.24). Treat edits like a release: the pre-push hook
 (`git config core.hooksPath tools/hooks`) validates it; never raise `minimumVersion` above the live App Store version; never add
-`apiKeyOverride` without the user's explicit go-ahead (it publishes a key). Read it through `RemoteConfigClient`; `VersionChecker` is the
+`apiKeyOverride` without the user's explicit go-ahead (it publishes a key). Club colours are brand colours and may be dark: use
+`TeamSettings.rgb` and lift them to 3:1 for graphics (§5.1, §7.25), never use them for text. Read it through `RemoteConfigClient`; `VersionChecker` is the
 `@MainActor @Observable` model for update state (inject a `VersionPolicySource`).
 
 ## Releasing

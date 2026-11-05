@@ -29,8 +29,12 @@ struct RemoteConfig: Sendable, Equatable, Decodable {
     struct TeamSettings: Sendable, Equatable, Decodable {
         var displayName: String?
         var city: String?
-        /// "#RRGGBB"
+        /// The club's brand colour, "#RRGGBB", curated from its logo (§7.25). Many are dark: graphics must
+        /// lift them to 3:1 against the background before use.
         var color: String?
+
+        /// `color` parsed; nil when missing or malformed.
+        var rgb: RGB? { color.flatMap(RGB.init(hexString:)) }
     }
 
     /// A standings zone (§7.5): league position, or position among the clubs of one country.

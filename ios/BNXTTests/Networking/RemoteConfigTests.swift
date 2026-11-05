@@ -16,6 +16,7 @@ final class RemoteConfigFileTests: XCTestCase {
         XCTAssertEqual(config.season, Season.current, "config season and the bundled Season.current fallback disagree")
         XCTAssertEqual(config.teams.count, 16)
         XCTAssertEqual(config.teams[537]?.displayName, "Spirou Basket")
+        XCTAssertEqual(config.teams[537]?.rgb, RGB(hex: 0xB41B1F))
         XCTAssertEqual(config.zones.map(\.id), ["leader", "be-playoffs", "nl-playoffs"])
         XCTAssertEqual(config.zones.first { $0.id == "be-playoffs" }?.nationalPositionAtMost, 8)
         XCTAssertEqual(config.zones.first { $0.id == "nl-playoffs" }?.country, .netherlands)
@@ -35,6 +36,18 @@ final class RemoteConfigFileTests: XCTestCase {
         let status = VersionEvaluator.evaluate(installed: installed, policy: policy, minimumDataSchema: config.minimumDataSchema)
         XCTAssertFalse(status.isRequired, "config.json would block \(installed): \(status). Never set minimumVersion above the live version.")
         XCTAssertLessThanOrEqual(config.minimumDataSchema, RemoteConfig.dataSchema)
+    }
+
+    /// §7.25: every club of the season has a display name, a city and a valid brand colour.
+    func testEveryClubHasNameCityAndColour() throws {
+        let config = try bundledConfig()
+        let clubs = try Fixture.list(Team.self, from: "teams")
+        XCTAssertEqual(Set(config.teams.keys), Set(clubs.map(\.id)), "config.teams and the season's clubs differ")
+        for (id, settings) in config.teams {
+            XCTAssertNotNil(settings.displayName, "club \(id) has no displayName")
+            XCTAssertNotNil(settings.city, "club \(id) has no city")
+            XCTAssertNotNil(settings.rgb, "club \(id) colour \(settings.color ?? "nil") isn't #RRGGBB")
+        }
     }
 
     func testNewerSchemaKeepsOnlyTheVersionPolicy() throws {

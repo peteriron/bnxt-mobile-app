@@ -50,67 +50,83 @@
   "teams": {
     "537": {
       "displayName": "Spirou Basket",
-      "city": "Charleroi"
+      "city": "Charleroi",
+      "color": "#B41B1F"
     },
     "539": {
       "displayName": "Oostende",
-      "city": "Ostend"
+      "city": "Ostend",
+      "color": "#043764"
     },
     "541": {
       "displayName": "Giants Antwerp",
-      "city": "Antwerp"
+      "city": "Antwerp",
+      "color": "#91191E"
     },
     "543": {
       "displayName": "Mons",
-      "city": "Mons"
+      "city": "Mons",
+      "color": "#3A0D16"
     },
     "545": {
       "displayName": "Limburg United",
-      "city": "Hasselt"
+      "city": "Hasselt",
+      "color": "#4553A9"
     },
     "547": {
       "displayName": "Donar",
-      "city": "Groningen"
+      "city": "Groningen",
+      "color": "#0BA4E6"
     },
     "549": {
       "displayName": "Landstede Hammers",
-      "city": "Zwolle"
+      "city": "Zwolle",
+      "color": "#25416C"
     },
     "551": {
       "displayName": "Rotterdam City",
-      "city": "Rotterdam"
+      "city": "Rotterdam",
+      "color": "#7FBE54"
     },
     "553": {
       "displayName": "ZZ Leiden",
-      "city": "Leiden"
+      "city": "Leiden",
+      "color": "#3B83B9"
     },
     "555": {
       "displayName": "Heroes Den Bosch",
-      "city": "'s-Hertogenbosch"
+      "city": "'s-Hertogenbosch",
+      "color": "#C61F3E"
     },
     "557": {
       "displayName": "Okapi Aalst",
-      "city": "Aalst"
+      "city": "Aalst",
+      "color": "#1D619B"
     },
     "559": {
       "displayName": "Leuven Bears",
-      "city": "Leuven"
+      "city": "Leuven",
+      "color": "#E19B33"
     },
     "561": {
       "displayName": "Brussels",
-      "city": "Brussels"
+      "city": "Brussels",
+      "color": "#0E151B"
     },
     "563": {
       "displayName": "Kangoeroes Mechelen",
-      "city": "Mechelen"
+      "city": "Mechelen",
+      "color": "#0B58A4"
     },
     "565": {
       "displayName": "Kortrijk Spurs",
-      "city": "Kortrijk"
+      "city": "Kortrijk",
+      "color": "#E71B1C"
     },
     "567": {
       "displayName": "CB Liège",
-      "city": "Liège"
+      "city": "Liège",
+      "color": "#1A2952"
     }
   }
 }

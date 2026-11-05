@@ -70,6 +70,13 @@ struct RGB: Hashable, Sendable {
         blue = Double(hex & 0xFF) / 255
     }
 
+    /// "#RRGGBB" (as in the remote config's club colours); nil for anything else.
+    init?(hexString: String) {
+        let digits = hexString.hasPrefix("#") ? hexString.dropFirst() : Substring(hexString)
+        guard digits.count == 6, digits.allSatisfy(\.isHexDigit), let value = UInt32(digits, radix: 16) else { return nil }
+        self.init(hex: value)
+    }
+
     static let ink = RGB(hex: 0x07060B)
     static let surface = RGB(hex: 0x14121C)
     static let textPrimary = RGB(hex: 0xF5F3FB)
