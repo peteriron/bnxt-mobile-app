@@ -1,5 +1,51 @@
 {
   "sourceLanguage" : "en",
-  "strings" : {},
+  "strings" : {
+    "A new version is available" : {
+
+    },
+    "BNXT League %@" : {
+
+    },
+    "Clubs" : {
+
+    },
+    "Dismiss" : {
+
+    },
+    "Games" : {
+
+    },
+    "Home" : {
+
+    },
+    "Open the App Store and update BNXT." : {
+
+    },
+    "Standings" : {
+
+    },
+    "Stats" : {
+
+    },
+    "This screen is coming soon." : {
+
+    },
+    "This version of BNXT is no longer supported. Update the app to keep following your club." : {
+
+    },
+    "Update" : {
+
+    },
+    "Update in the App Store" : {
+
+    },
+    "Update required" : {
+
+    },
+    "Version %@" : {
+
+    }
+  },
   "version" : "1.0"
 }

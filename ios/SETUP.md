@@ -18,7 +18,8 @@ Simulators: **iPhone 18 Pro (iOS 27)** for tests and **iPhone 14 Plus (iOS 26.5)
 > ⚠️ **iCloud Drive:** this repo currently lives in `~/Documents`, which is synced to iCloud. iCloud tags build output with
 > metadata mid-build, which breaks codesigning for anything built inside the repo (`swift build` failed with "resource fork,
 > Finder information, or similar detritus not allowed"), and syncing `.git` is risky. Xcode builds go to `~/Library/Developer`
-> and are unaffected. Moving the repo to an unsynced folder (e.g. `~/Developer/bnxt-mobile-app`) is recommended.
+> and are unaffected. It also creates conflict copies of generated files (`ios/BNXT 2.xcodeproj` appeared on 5 Nov 2026 after a
+> regeneration). Moving the repo to an unsynced folder (e.g. `~/Developer/bnxt-mobile-app`) is recommended.
 
 ## Project
 
@@ -93,6 +94,17 @@ fields and trimming big lists. They pin game 11323 and team 537, which are finis
 - Dismiss a focused search field's keyboard before the next tap.
 
 **Look at the screens** after building UI: run `AppStoreScreenshotUITests` (or `bundle exec fastlane screenshots`) and open every image.
+
+## Remote config and version policy
+
+`config/v1/config.json` is the remote config (REQUIREMENTS §7.24). Pushing it to `main` publishes it to every installed app within minutes.
+
+- Enable the validation hook once per clone: `git config core.hooksPath tools/hooks`. `tools/hooks/pre-push` then runs `RemoteConfigFileTests`
+  and `VersionEvaluatorTests` whenever a push touches `config/`, and aborts the push on failure.
+- Version policy (`versionPolicy.ios`): raise `latestVersion` to show the update banner; raise `minimumVersion` (or list a version in
+  `blockedVersions`) to block older builds. **Never set `minimumVersion` above the version that's live in the App Store.**
+- The app also bundles the file, so a build always carries the config it was made with.
+- UI tests pin a policy with `--uitest-version-policy required|available|current` (Debug builds only).
 
 ## Local CI (required before merging)
 

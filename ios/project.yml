@@ -26,6 +26,8 @@ targets:
     platform: iOS
     sources:
       - path: BNXT
+      - path: ../config/v1/config.json   # remote config, bundled as the offline fallback (§7.24)
+        buildPhase: resources
     configFiles:                       # BNXT_API_KEY comes from Config/Secrets.xcconfig (git-ignored)
       Debug: Config/App.xcconfig
       Release: Config/App.xcconfig

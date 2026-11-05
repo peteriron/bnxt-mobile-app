@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "season": {
+    "id": 2027,
+    "competitionId": 25,
+    "phaseIds": [
+      183
+    ],
+    "label": "2026-27",
+    "gamesPerTeam": 30
+  },
+  "versionPolicy": {
+    "ios": {
+      "latestVersion": "0.1.0",
+      "minimumVersion": "0.1.0",
+      "blockedVersions": [],
+      "storeURL": null,
+      "message": {
+        "en": "This version of BNXT can no longer load league data. Please update to keep following your club."
+      }
+    },
+    "minimumDataSchema": 1
+  },
+  "features": {
+    "liveStats": true
+  },
+  "zones": [
+    {
+      "id": "leader",
+      "label": "League leader",
+      "color": "#A08CFF",
+      "leaguePositionAtMost": 1
+    },
+    {
+      "id": "be-playoffs",
+      "label": "Belgian playoff place",
+      "color": "#E2FF00",
+      "country": "BE",
+      "nationalPositionAtMost": 8
+    },
+    {
+      "id": "nl-playoffs",
+      "label": "Dutch playoff place",
+      "color": "#FF6A13",
+      "country": "NL",
+      "nationalPositionAtMost": 4
+    }
+  ],
+  "relegation": false,
+  "teams": {
+    "537": {
+      "displayName": "Spirou Basket",
+      "city": "Charleroi"
+    },
+    "539": {
+      "displayName": "Oostende",
+      "city": "Ostend"
+    },
+    "541": {
+      "displayName": "Giants Antwerp",
+      "city": "Antwerp"
+    },
+    "543": {
+      "displayName": "Mons",
+      "city": "Mons"
+    },
+    "545": {
+      "displayName": "Limburg United",
+      "city": "Hasselt"
+    },
+    "547": {
+      "displayName": "Donar",
+      "city": "Groningen"
+    },
+    "549": {
+      "displayName": "Landstede Hammers",
+      "city": "Zwolle"
+    },
+    "551": {
+      "displayName": "Rotterdam City",
+      "city": "Rotterdam"
+    },
+    "553": {
+      "displayName": "ZZ Leiden",
+      "city": "Leiden"
+    },
+    "555": {
+      "displayName": "Heroes Den Bosch",
+      "city": "'s-Hertogenbosch"
+    },
+    "557": {
+      "displayName": "Okapi Aalst",
+      "city": "Aalst"
+    },
+    "559": {
+      "displayName": "Leuven Bears",
+      "city": "Leuven"
+    },
+    "561": {
+      "displayName": "Brussels",
+      "city": "Brussels"
+    },
+    "563": {
+      "displayName": "Kangoeroes Mechelen",
+      "city": "Mechelen"
+    },
+    "565": {
+      "displayName": "Kortrijk Spurs",
+      "city": "Kortrijk"
+    },
+    "567": {
+      "displayName": "CB Liège",
+      "city": "Liège"
+    }
+  }
+}

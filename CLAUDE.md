@@ -68,6 +68,13 @@ Solo development (§7.23): work directly on `main`, no feature branches or PRs, 
    There are no GitHub macOS runners in the normal flow; GitHub only runs `lint`.
 3. If `local-tests` or `lint` fails, fix it in the next commit.
 
+## Remote config
+
+`config/v1/config.json` is live for every user once it's on `main` (§7.24). Treat edits like a release: the pre-push hook
+(`git config core.hooksPath tools/hooks`) validates it; never raise `minimumVersion` above the live App Store version; never add
+`apiKeyOverride` without the user's explicit go-ahead (it publishes a key). Read it through `RemoteConfigClient`; `VersionChecker` is the
+`@MainActor @Observable` model for update state (inject a `VersionPolicySource`).
+
 ## Releasing
 
 `/release x.y.z` runs [`.claude/commands/release.md`](.claude/commands/release.md). Before staging anything, check App Store Connect for a version

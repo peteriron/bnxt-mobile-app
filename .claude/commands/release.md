@@ -20,7 +20,8 @@ Background: docs/ios-playbook/04-release-and-app-store.md, REQUIREMENTS.md §7.2
 8. **Tag** `v$ARGUMENTS` (annotated) on that commit, push the tag, and create the GitHub release (Added / Fixed / Also since / Status).
 9. **Upload:** `bundle exec fastlane build_and_upload`.
 10. **Stage:** `bundle exec fastlane stage_app_store version:$ARGUMENTS`. It refuses while a version is with Apple and verifies the screenshots.
-11. **Update the version policy** if this release should move `latestVersion` or `minimumVersion` (REQUIREMENTS §3.9). Validation must pass,
-    and `minimumVersion` must never exceed the version that's live.
+11. **Update the version policy** in `config/v1/config.json` only once this version is **live** in the App Store (after the human's release),
+    not at staging: raise `latestVersion` to show the banner; raise `minimumVersion` only if old builds must stop (REQUIREMENTS §3.9, §7.24).
+    The pre-push hook validates it; `minimumVersion` must never exceed the live version.
 12. **Update REQUIREMENTS.md §8** (release status).
 13. **Report back** with links to the GitHub release and App Store Connect, and say plainly that **Submit for Review is your step**. Never submit.

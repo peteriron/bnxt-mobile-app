@@ -131,8 +131,9 @@ In this order:
 Keeps every user on a build that works (§7.18).
 - States: **up to date** · **update available** (a dismissible Home banner, shown once per latest version, plus a Settings row) ·
   **update required** (a full-screen blocking view with an Update button, which can't be dismissed) · **unknown** (behaves as up to date).
-- Inputs: installed `CFBundleShortVersionString` and a remote **version policy**: `latestVersion`, `minimumVersion`,
-  `blockedVersions[]`, `storeURL`, localised `message`, `minimumDataSchema`.
+- Inputs: installed `CFBundleShortVersionString` and the **version policy** in the remote config (§7.24): `latestVersion`, `minimumVersion`,
+  `blockedVersions[]`, `storeURL` (optional until the app has a store page), localised `message`, `minimumDataSchema`.
+- An unsound policy (unparsable version, `minimumVersion` above `latestVersion`, non-https `storeURL`) is ignored, so a typo can't lock users out.
 - Rules, in order:
   1. Installed version unparsable or no policy → unknown.
   2. Installed version in `blockedVersions` → required.
@@ -141,8 +142,9 @@ Keeps every user on a build that works (§7.18).
   5. Installed version below `latestVersion` → available.
   6. Otherwise → up to date.
 - Versions compare as SemVer `MAJOR.MINOR.PATCH` (missing parts = 0, numeric not lexical, pre-release suffix ignored).
-- Checked on launch and when returning to the foreground, at most once per 6 hours. The last policy is cached on device.
-- **A network failure never blocks the app:** fall back to the cached policy, otherwise unknown.
+- Checked on launch and when returning to the foreground, at most once per 6 hours. The config is cached on device.
+- **A network failure never blocks the app:** a failed check keeps the previous status; the config falls back to the cached copy, then to
+  the copy bundled into the build (which by construction never blocks that build).
 - A policy change must pass a validation test before it's published: `minimumVersion ≤ latestVersion`, `storeURL` is https,
   and `minimumVersion` is not above the version live in the App Store.
 
@@ -280,7 +282,7 @@ independent fan app built with the league's permission, not as the official app,
 **Genius Sports / FIBA LiveStats feed** (§7.4); that feed belongs to Genius Sports, so it likely needs their licence or BNXT's sublicence.
 Bundle ID / App ID: `com.pjproductions.bnxt` (confirmed 4 Nov 2026, registered in the developer account).
 
-**§7.18 Version checker with soft and hard updates** (§3.9). The policy is hosted with remote config (§7.15).
+**§7.18 Version checker with soft and hard updates** (§3.9). The policy lives in the remote config (§7.24).
 *Why:* the data source is unversioned and outside our control; if it changes we must be able to move users onto a fixed build.
 A network failure never blocks.
 
@@ -305,6 +307,14 @@ change adds ceremony without review value. `main` still blocks force-pushes and 
 there's nothing to merge; `ci-local.sh` runs after every push instead. *Revisit when* a second contributor joins or the project changes:
 then go back to the playbook's branch + PR flow and require `local-tests` and `lint` on `main` again. (The PR template stays for that.)
 
+**§7.24 Remote config is a static file in this repo.** *Decided 5 Nov 2026:* `config/v1/config.json` (season IDs, standings zones,
+display names and cities, feature flags, version policy, an emergency API-key override) is served from
+`https://raw.githubusercontent.com/peteriron/bnxt-mobile-app/main/config/v1/config.json` and bundled into every build as the offline
+fallback. *Why:* no backend (§7.15), reviewed in git like code, one source for the remote and bundled copies.
+*Consequences:* pushing a change to `main` publishes it within minutes (GitHub's CDN caches ~5 min), so the `tools/hooks/pre-push` hook
+runs the config tests before any push that touches `config/`; the app ignores unsound policies and newer-schema sections it doesn't
+understand. The path carries a version (`v1`): a breaking schema change gets `v2/` while old apps keep reading `v1/`.
+
 ## 8. Release status & roadmap
 
 **Live:** nothing yet. **On `main`:** app shell 0.1.0 (5 placeholder tabs, Archivo display type, theme tokens, API key plumbing, test targets, local CI), live recorder.
@@ -327,8 +337,9 @@ then go back to the playbook's branch + PR flow and require `local-tests` and `l
 - [x] Golden fixtures from game 11323 / team 537 (`tools/make_fixtures.py`), shared `MockURLProtocol`, privacy `Mirror` tests
 - [ ] FIBA LiveStats client for live play-by-play (§7.4), once the game-night recording shows the feed's shape and cadence
 - [ ] Full-season schedule endpoint (still unknown; `gameSlider` + `teamGames` cover today's needs)
-- [ ] Remote config (season IDs, zones, display names, club colours, key override, feature flags)
-- [ ] **Version checker** (§3.9) with tests
+- [x] Remote config `config/v1/config.json` (§7.24): season, zones, display names, cities, features, version policy, key override; network → cache → bundled; pre-push validation hook
+- [x] **Version checker** (§3.9): rules, 6 h throttle, blocking screen, dismissable Home banner, UI tests via `--uitest-version-policy`
+- [ ] Club colours in the config (curated; the prototype derived them from logos)
 
 ### Phase 2: design system & shell
 Theme components (game row, live card, segmented control, chips, stat ring, sparkline, box score table, club logo with

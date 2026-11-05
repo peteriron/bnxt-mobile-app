@@ -2,13 +2,14 @@ import Foundation
 
 /// A value plus where it came from, so screens can show "last updated" when it's from the cache.
 struct Fetched<Value: Sendable>: Sendable {
-    enum Source: Sendable, Equatable { case network, cache }
+    /// `.bundled`: shipped inside the app (remote config's offline fallback).
+    enum Source: Sendable, Equatable { case network, cache, bundled }
 
     let value: Value
     let source: Source
     let fetchedAt: Date
 
-    var isFromCache: Bool { source == .cache }
+    var isFromCache: Bool { source != .network }
 }
 
 /// The BNXT League API client: one method per endpoint (docs/bnxt-api.md), returning decoded models.

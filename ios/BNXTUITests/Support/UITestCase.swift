@@ -6,10 +6,13 @@ import XCTest
 class UITestCase: XCTestCase {
     var app: XCUIApplication!
 
+    /// Extra launch arguments for a whole test class (e.g. a pinned version policy).
+    var extraLaunchArguments: [String] { [] }
+
     override func setUp() async throws {
         continueAfterFailure = false
         app = XCUIApplication()
-        app.launchArguments += ["--uitest-reset-state"]
+        app.launchArguments += ["--uitest-reset-state"] + extraLaunchArguments
         app.launch()
     }
 
@@ -18,7 +21,11 @@ class UITestCase: XCTestCase {
         app.tabBars.buttons.element(boundBy: index)
     }
 
-    func screen(_ id: String) -> XCUIElement {
+    func element(_ id: String) -> XCUIElement {
         app.descendants(matching: .any)[id]
+    }
+
+    func screen(_ id: String) -> XCUIElement {
+        element(id)
     }
 }
