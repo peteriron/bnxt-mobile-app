@@ -81,13 +81,13 @@ struct BNXTAPIClient: Sendable {
     }
 
     /// Per-game season averages for every player of a club.
-    func playerAverages(teamId: Int) async throws -> Fetched<[PlayerSeasonAverages]> {
-        try await list(Endpoint("competition-team/player-averages/\(teamId)"), of: PlayerSeasonAverages.self)
+    func playerAverages(teamId: Int, cachePolicy: CachePolicy = .networkFirst) async throws -> Fetched<[PlayerSeasonAverages]> {
+        try await list(Endpoint("competition-team/player-averages/\(teamId)"), of: PlayerSeasonAverages.self, policy: cachePolicy)
     }
 
-    /// A club's finished games this season.
-    func teamGames(teamId: Int) async throws -> Fetched<[Game]> {
-        try await list(Endpoint("competition-team/statistics-by-game/total/\(teamId)"), of: Game.self)
+    /// A club's finished games this season, each with the club's own totals (`Game.teamTotals`).
+    func teamGames(teamId: Int, cachePolicy: CachePolicy = .networkFirst) async throws -> Fetched<[Game]> {
+        try await list(Endpoint("competition-team/statistics-by-game/total/\(teamId)"), of: Game.self, policy: cachePolicy)
     }
 
     /// ~30 games around today, with FIBA LiveStats ids. (No trailing slash: that 301s.)
@@ -138,8 +138,28 @@ struct BNXTAPIClient: Sendable {
         }
     }
 
-    private func list<Element: Decodable & Sendable>(_ endpoint: Endpoint, of _: Element.Type) async throws -> Fetched<[Element]> {
-        try await fetch(endpoint, as: Envelope<LossyArray<Element>>.self) { $0.data.elements }
+    private func list<Element: Decodable & Sendable>(_ endpoint: Endpoint, of _: Element.Type,
+                                                     policy: CachePolicy = .networkFirst) async throws -> Fetched<[Element]> {
+        try await fetch(endpoint, as: Envelope<LossyArray<Element>>.self, policy: policy) { $0.data.elements }
+    }
+
+    /// Calls `request` once per id, at most `limit` at a time (docs/bnxt-api.md: bursts are capped at 4 concurrent requests).
+    /// Failed requests are left out of the result.
+    static func gather<Value: Sendable>(_ ids: [Int], limit: Int = 4,
+                                        _ request: @escaping @Sendable (Int) async throws -> Value) async -> [Int: Value] {
+        await withTaskGroup(of: (Int, Value?).self) { group in
+            var pending = ids.makeIterator()
+            for _ in 0..<max(limit, 1) {
+                guard let id = pending.next() else { break }
+                group.addTask { (id, try? await request(id)) }
+            }
+            var results: [Int: Value] = [:]
+            while let (id, value) = await group.next() {
+                if let value { results[id] = value }
+                if let next = pending.next() { group.addTask { (next, try? await request(next)) } }
+            }
+            return results
+        }
     }
 
     private func fetch<Payload: Decodable, Value: Sendable>(

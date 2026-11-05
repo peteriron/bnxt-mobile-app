@@ -1,8 +1,37 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "#%lld in league" : {
+
+    },
+    "%@ is better" : {
+
+    },
+    "%@ leader" : {
+
+    },
+    "%@ leader: %@, %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ leader: %2$@, %3$@"
+          }
+        }
+      }
+    },
     "%@ points per game" : {
 
+    },
+    "%@ points, %@ rebounds, %@ assists" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ points, %2$@ rebounds, %3$@ assists"
+          }
+        }
+      }
     },
     "%@, best of %lld" : {
       "localizations" : {
@@ -15,6 +44,9 @@
       }
     },
     "%lld clubs" : {
+
+    },
+    "%lld games" : {
 
     },
     "%lld wins, %lld losses" : {
@@ -37,13 +69,58 @@
         }
       }
     },
+    "2-point %" : {
+
+    },
+    "2PT" : {
+
+    },
+    "3-point %" : {
+
+    },
+    "3-point percentage" : {
+
+    },
+    "3-pointers" : {
+
+    },
+    "3P%" : {
+
+    },
+    "3PT" : {
+
+    },
     "A new version is available" : {
 
     },
     "About" : {
 
     },
+    "Add to Calendar" : {
+
+    },
+    "Age" : {
+
+    },
+    "All clubs" : {
+
+    },
+    "Arena to be confirmed" : {
+
+    },
+    "Assists" : {
+
+    },
+    "Assists per game" : {
+
+    },
+    "at" : {
+
+    },
     "Average" : {
+
+    },
+    "Away" : {
 
     },
     "Belgium" : {
@@ -52,10 +129,22 @@
     "Belgium and the Netherlands, 16 clubs, one league. Live scores, box scores and stats for every game." : {
 
     },
+    "Blocks" : {
+
+    },
+    "BNXT League · Regular season" : {
+
+    },
     "BNXT League %@" : {
 
     },
+    "Box score" : {
+
+    },
     "Can't load league data" : {
+
+    },
+    "Cancel" : {
 
     },
     "Change" : {
@@ -65,6 +154,18 @@
 
     },
     "Choose a club to continue" : {
+
+    },
+    "Choose a player" : {
+
+    },
+    "Choose another player" : {
+
+    },
+    "Choose player 1" : {
+
+    },
+    "Choose player 2" : {
 
     },
     "Choose your club" : {
@@ -79,13 +180,49 @@
     "Coming later" : {
 
     },
+    "Compare" : {
+
+    },
+    "Compare players" : {
+
+    },
+    "Compare with another player" : {
+
+    },
+    "Computed from the box scores of finished games, regular season %@." : {
+
+    },
+    "Defense" : {
+
+    },
     "Dismiss" : {
 
     },
     "Done" : {
 
     },
+    "Earlier this season" : {
+
+    },
+    "Efficiency" : {
+
+    },
+    "Efficiency (VAL)" : {
+
+    },
     "English" : {
+
+    },
+    "FG" : {
+
+    },
+    "FG%" : {
+
+    },
+    "Field goal percentage" : {
+
+    },
+    "Field goals" : {
 
     },
     "final" : {
@@ -100,13 +237,37 @@
     "Français" : {
 
     },
+    "Free throw %" : {
+
+    },
+    "Free throws" : {
+
+    },
+    "FT" : {
+
+    },
+    "FT%" : {
+
+    },
     "Game" : {
+
+    },
+    "Game leaders" : {
+
+    },
+    "Game log" : {
+
+    },
+    "Game report on bnxtleague.com" : {
 
     },
     "Games" : {
 
     },
     "Get started" : {
+
+    },
+    "Height" : {
 
     },
     "Home" : {
@@ -118,10 +279,16 @@
     "How the season works" : {
 
     },
+    "Info" : {
+
+    },
     "L" : {
 
     },
     "Language" : {
+
+    },
+    "Last 5" : {
 
     },
     "Last results, oldest first" : {
@@ -130,10 +297,25 @@
     "League" : {
 
     },
+    "Level" : {
+
+    },
     "live" : {
 
     },
     "LIVE" : {
+
+    },
+    "Live and on demand on BNXT.tv" : {
+
+    },
+    "Live now" : {
+
+    },
+    "Loading the league leaders…" : {
+
+    },
+    "lost" : {
 
     },
     "lost %lld in a row" : {
@@ -142,7 +324,13 @@
     "Make my club" : {
 
     },
+    "Minutes" : {
+
+    },
     "My club" : {
+
+    },
+    "Nationality" : {
 
     },
     "Nederlands" : {
@@ -151,7 +339,13 @@
     "Netherlands" : {
 
     },
+    "No games played yet this season." : {
+
+    },
     "No games scheduled" : {
+
+    },
+    "No rankings yet" : {
 
     },
     "No relegation this season" : {
@@ -160,10 +354,25 @@
     "No results yet" : {
 
     },
+    "No results yet." : {
+
+    },
     "No roster published yet." : {
 
     },
+    "No team stats yet" : {
+
+    },
+    "No upcoming games in the published schedule yet." : {
+
+    },
     "None" : {
+
+    },
+    "number %lld in the league" : {
+
+    },
+    "Official page for this game" : {
 
     },
     "Offline · updated %@" : {
@@ -175,19 +384,37 @@
     "Opp PPG" : {
 
     },
+    "Opponent" : {
+
+    },
     "Other" : {
+
+    },
+    "Per-game averages, regular season %@. VAL is the FIBA efficiency rating. Shooting percentages need a minimum number of attempts." : {
 
     },
     "Per-game averages. Tap a column heading to sort by it." : {
 
     },
+    "Per-game season averages, %@. The better value in each row is highlighted." : {
+
+    },
     "Pick your club" : {
 
     },
-    "Player" : {
+    "Player 1" : {
+
+    },
+    "Player 2" : {
 
     },
     "Player stats" : {
+
+    },
+    "Players" : {
+
+    },
+    "Players to watch" : {
 
     },
     "Playoff cut line" : {
@@ -199,7 +426,22 @@
     "point difference %@" : {
 
     },
+    "Points" : {
+
+    },
+    "Points allowed" : {
+
+    },
+    "Points allowed per game (lower is better)" : {
+
+    },
     "Points per game" : {
+
+    },
+    "Points scored per game" : {
+
+    },
+    "Position" : {
 
     },
     "Position n/a" : {
@@ -208,7 +450,16 @@
     "PPG" : {
 
     },
+    "Preview" : {
+
+    },
     "Projected" : {
+
+    },
+    "Rebounds" : {
+
+    },
+    "Rebounds per game" : {
 
     },
     "Record" : {
@@ -230,10 +481,22 @@
     "Roster" : {
 
     },
+    "Score" : {
+
+    },
     "Scores, stats, logos and photos: BNXT League, used with permission." : {
 
     },
+    "Search by player or club" : {
+
+    },
     "Search clubs" : {
+
+    },
+    "Season averages" : {
+
+    },
+    "Season so far" : {
 
     },
     "Section" : {
@@ -252,7 +515,13 @@
     "Settings" : {
 
     },
+    "Shooting" : {
+
+    },
     "Show onboarding again" : {
+
+    },
+    "Sold by %@" : {
 
     },
     "Sort by %@" : {
@@ -264,13 +533,40 @@
     "Starter" : {
 
     },
+    "Starters are marked with a dot. Scroll the table sideways for more; tap a player for their page." : {
+
+    },
     "Stats" : {
+
+    },
+    "Steals" : {
+
+    },
+    "Steals per game" : {
 
     },
     "Strk" : {
 
     },
+    "Summary" : {
+
+    },
     "Team" : {
+
+    },
+    "Team comparison" : {
+
+    },
+    "Team stats appear once games have been played." : {
+
+    },
+    "Teams" : {
+
+    },
+    "The box score isn't available yet." : {
+
+    },
+    "The league publishes rankings once games have been played." : {
 
     },
     "This is how the brackets would look if the regular season ended today. The higher seed has home-court advantage." : {
@@ -285,6 +581,16 @@
     "Tickets" : {
 
     },
+    "Tip-off %@ (%@)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Tip-off %1$@ (%2$@)"
+          }
+        }
+      }
+    },
     "To be decided" : {
 
     },
@@ -294,7 +600,19 @@
     "Tomorrow" : {
 
     },
+    "Top performers" : {
+
+    },
     "Try again" : {
+
+    },
+    "Turnovers" : {
+
+    },
+    "Turnovers per game (lower is better)" : {
+
+    },
+    "Unknown" : {
 
     },
     "Upcoming" : {
@@ -325,6 +643,12 @@
 
     },
     "W" : {
+
+    },
+    "Where to watch" : {
+
+    },
+    "won" : {
 
     },
     "won %lld in a row" : {

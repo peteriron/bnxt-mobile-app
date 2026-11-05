@@ -107,14 +107,14 @@ struct RootView: View {
             GamesScreen(appModel: appModel, favorites: favorites) { router.push(.game(id: $0)) }
                 .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("screen.games")
+        case .stats:
+            StatsScreen(appModel: appModel, favorites: favorites) { router.push($0) }
+                .accessibilityElement(children: .contain)
+                .accessibilityIdentifier("screen.stats")
         case .clubs:
             ClubsScreen(appModel: appModel, favorites: favorites) { router.push(.club(id: $0)) }
                 .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("screen.clubs")
-        default:
-            PlaceholderScreen(title: tab.title)
-                .accessibilityElement(children: .contain)
-                .accessibilityIdentifier("screen.\(tab.rawValue)")
         }
     }
 

@@ -93,6 +93,8 @@ struct SectionHeader: View {
 struct ChipBar<Value: Hashable>: View {
     let options: [(value: Value, title: String)]
     @Binding var selection: Value
+    /// An accessibility identifier per chip, for UI tests.
+    var identifier: ((Value) -> String)?
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
@@ -111,6 +113,7 @@ struct ChipBar<Value: Hashable>: View {
                     }
                     .buttonStyle(.plain)
                     .accessibilityAddTraits(selected ? .isSelected : [])
+                    .accessibilityIdentifier(identifier?(option.value) ?? "")
                 }
             }
             .padding(.horizontal)

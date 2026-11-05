@@ -7,6 +7,8 @@ enum Route: Hashable, Sendable {
     case game(id: Int)
     /// Players are addressed by roster id: the id the game-log endpoint takes (docs/bnxt-api.md).
     case player(rosterId: Int)
+    /// Compare players (§3.7); `rosterId` pre-fills slot A.
+    case compare(rosterId: Int?)
     #if DEBUG
     case componentGallery
     #endif
@@ -37,6 +39,7 @@ enum DeepLink {
         case let .club(id): URL(string: "\(scheme)://club/\(id)")
         case let .game(id): URL(string: "\(scheme)://game/\(id)")
         case let .player(rosterId): URL(string: "\(scheme)://player/\(rosterId)")
+        case .compare: nil // not linkable (§7.27)
         #if DEBUG
         case .componentGallery: URL(string: "\(scheme)://debug/gallery")
         #endif

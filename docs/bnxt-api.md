@@ -37,7 +37,7 @@ Competition-team IDs (new every season): 537 CHA, 539 OOS, 541 ANT, 543 MON, 545
 | Roster | `roster/team-players/{teamId}?competition_id={cid}` | roster `id`, jersey (string), height (cm), weight (often null), `player_position`, `player{…}` |
 | Roster entry | `roster/find/{rosterId}` | adds `player.description` |
 | Team player averages | `competition-team/player-averages/{teamId}` | per-game averages + `played_games` |
-| Team games | `competition-team/statistics-by-game/total/{teamId}` | finished games of one team |
+| Team games | `competition-team/statistics-by-game/total/{teamId}` | finished games of one team; each has `total`, **that team's** box-score totals (not the home side's). Feeds the Stats tab's Teams table |
 | Game strip | `schedule/game-slider/{cid}` | ~30 games around today; includes `genius_id` |
 | Schedule by month | `schedule/club/{cid}?clubs[0]=1&clubs[1]=2&phase_id=&month=&monthCount=&competition_team_id=` | returned `[]` with every parameter set tried. **Still to figure out** |
 | Game | `schedule/find/{gameId}` | competitors + `period_scores`, `period`, `round` (name empty), phase, `arena{name}`, referees (empty) |

@@ -37,6 +37,7 @@ struct PlayerScreen: View {
                         ShootingRings(season: season, color: club?.graphicColor ?? .violet)
                         pointsChart(season: season)
                         GameLog(rows: model.log, appModel: appModel, onSelect: onSelect)
+                        compareButton
                     } else {
                         Text("No games played yet this season.")
                             .font(.subheadline)
@@ -61,6 +62,19 @@ struct PlayerScreen: View {
         .task { if model.state == .idle { await model.load(season: appModel.season) } }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("screen.player.\(model.rosterId)")
+    }
+
+    /// §3.7: opens Compare with this player in slot A.
+    private var compareButton: some View {
+        Button { onSelect(.compare(rosterId: model.rosterId)) } label: {
+            Label("Compare with another player", systemImage: "person.2.fill")
+                .font(.headline)
+                .frame(maxWidth: .infinity, minHeight: 50)
+                .foregroundStyle(Theme.textPrimary)
+                .background(Theme.surface2, in: Capsule())
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier("player.compare")
     }
 
     private func pointsChart(season: PlayerPage.SeasonStats) -> some View {

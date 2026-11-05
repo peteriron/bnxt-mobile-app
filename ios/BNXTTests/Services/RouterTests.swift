@@ -21,6 +21,11 @@ final class DeepLinkTests: XCTestCase {
         }
     }
 
+    func testCompareIsNotLinkable() {
+        XCTAssertNil(DeepLink.url(for: .compare(rosterId: 11173)))
+        XCTAssertNil(parse("bnxt://compare/11173"))
+    }
+
     func testRoundTripsRoutes() throws {
         for route in [Route.club(id: 537), .game(id: 11323), .player(rosterId: 11173)] {
             let url = try XCTUnwrap(DeepLink.url(for: route))

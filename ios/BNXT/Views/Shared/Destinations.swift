@@ -15,6 +15,8 @@ struct RouteDestination: View {
             GameScreen(gameId: id, appModel: appModel, onSelect: onSelect)
         case let .player(rosterId):
             PlayerScreen(rosterId: rosterId, appModel: appModel, onSelect: onSelect)
+        case let .compare(rosterId):
+            CompareScreen(presetRosterId: rosterId, appModel: appModel, favorites: favorites, onSelect: onSelect)
         #if DEBUG
         case .componentGallery:
             ComponentGallery(appModel: appModel)

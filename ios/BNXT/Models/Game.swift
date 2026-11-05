@@ -14,6 +14,9 @@ struct Game: Identifiable, Hashable, Sendable, Decodable {
     /// The FIBA LiveStats id (only the game slider sends it; REQUIREMENTS §7.4).
     let geniusId: Int?
     let phaseId: Int?
+    /// The requesting club's own totals for this game. Only team game lists (`statistics-by-game/total/{team}`) send it;
+    /// the Stats tab's team table is built from it (§3.6).
+    let teamTotals: StatLine?
 
     var hasStarted: Bool { status != .scheduled }
 
@@ -24,7 +27,7 @@ struct Game: Identifiable, Hashable, Sendable, Decodable {
     }
 
     init(id: Int, tipOff: Date, status: GameStatus, home: GameSide, away: GameSide, period: String? = nil,
-         arena: String? = nil, geniusId: Int? = nil, phaseId: Int? = nil) {
+         arena: String? = nil, geniusId: Int? = nil, phaseId: Int? = nil, teamTotals: StatLine? = nil) {
         self.id = id
         self.tipOff = tipOff
         self.status = status
@@ -34,10 +37,11 @@ struct Game: Identifiable, Hashable, Sendable, Decodable {
         self.arena = arena
         self.geniusId = geniusId
         self.phaseId = phaseId
+        self.teamTotals = teamTotals
     }
 
     private enum CodingKeys: String, CodingKey {
-        case id, status, competitors, period, arena, phase
+        case id, status, competitors, period, arena, phase, total
         case tipOff = "game_time"
         case geniusId = "genius_id"
     }
@@ -67,6 +71,7 @@ struct Game: Identifiable, Hashable, Sendable, Decodable {
         arena = container.lenient(Named.self, forKey: .arena)?.name.flatMap { $0.isEmpty ? nil : $0 }
         geniusId = container.integer(forKey: .geniusId)
         phaseId = container.lenient(Identified.self, forKey: .phase)?.id
+        teamTotals = container.lenient(StatLine.self, forKey: .total)
     }
 }
 

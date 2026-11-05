@@ -197,7 +197,7 @@ personal-data inventory and polling policy are in [docs/bnxt-api.md](docs/bnxt-a
 | Games | `schedule/game-slider` (+ full schedule, still to find: §8 Phase 0) |
 | Game detail | `schedule/find/{game}`, `schedule/overview/{game}`, `boxscore/game/{cid}/{game}`, live: still to find (§7.4) |
 | Standings | `standings/competition/{cid}/phase/{phase}` + season config |
-| Stats | `player/average-rankings/{cid}`, team aggregates from box scores |
+| Stats | `player/average-rankings/{cid}`; Teams: `competition-team/statistics-by-game/total/{team}` × 16 (each game carries the club's totals); Compare: `competition-team/player-averages/{team}` × 16 |
 | Club page | `competition-team/find/{team}`, `roster/team-players/{team}`, `competition-team/player-averages/{team}`, `competition-team/statistics-by-game/total/{team}` |
 | Player page | `roster/find/{roster}`, `boxscore/player/season-games/{roster}`, rankings |
 
@@ -332,6 +332,13 @@ before the API answers. The favourite club is stored with its short name and re-
 (universal links need a website we don't run). A link selects its tab (club and player: Clubs; game: Games) and replaces that tab's
 stack, so Back returns to the tab's root. Tapping the selected tab pops to its root. Each tab has its own navigation stack (`Router`).
 
+**§7.28 Stats and Compare data: per-club lists, a qualification rule for Compare's defaults.** *Decided 5 Nov 2026:* the Teams table
+sums `competition-team/statistics-by-game/total/{team}` (each finished game with that club's own totals) instead of fetching every box score:
+16 requests, not ~120. Compare reads every club's `player-averages` (16 requests), since the leaders lists only carry one value per category.
+Both bursts are capped at 4 concurrent requests and cached for an hour. Compare's default "league VAL leader" is the best VAL among players
+with at least half the games of the player with the most (rounded up), so one big game isn't a leader; the league's own minimums aren't published.
+A player listed by two clubs keeps the entry with more games. *Trade-off:* the leader by this rule can differ from the league's VAL #1.
+
 ## 8. Release status & roadmap
 
 **Live:** nothing yet. **On `main`:** app shell 0.1.0 (5 placeholder tabs, Archivo display type, theme tokens, API key plumbing, test targets, local CI), live recorder.
@@ -379,7 +386,9 @@ One slice per commit, each with its unit and UI tests. Standings comes first bec
 - [x] Games and game detail, final + upcoming (§3.3, §3.4): Upcoming / Results with my-club filter and live pinned; header,
   quarters, Summary · Box score · Info (final), Preview · Info (upcoming; team REB/AST/3P% summed from player averages),
   Add to Calendar via the system editor (no calendar permission). Live games get Box score · Summary · Info until Phase 4 adds play-by-play
-- [ ] Stats and compare (§3.6, §3.7)
+- [x] Stats and compare (§3.6, §3.7): Players (league leaders, hero + ranks 2–20 with bars) · Teams (summed from each club's
+  game list totals, loaded only when shown); Compare from the Stats toolbar and the player page, picker searchable by player or club,
+  defaults per §7.28. The 16-request bursts run at most 4 at a time and are reused for an hour (pull to refresh asks again)
 - [ ] Home (§3.2)
 - [ ] Search (§3.8)
 
