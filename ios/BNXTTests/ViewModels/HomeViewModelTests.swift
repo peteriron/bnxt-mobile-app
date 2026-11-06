@@ -156,4 +156,56 @@ final class HomeViewModelTests: XCTestCase {
         XCTAssertTrue(router.requests(to: "/data/2873634/data.json").isEmpty)
         XCTAssertNil(model.lastPlay)
     }
+
+    // MARK: Next game beyond the slider
+
+    /// The slider reaches about two weeks ahead: during a longer break Home showed no next game at all.
+    func testNextGameBeyondTheSliderComesFromTheSchedule() async throws {
+        try stubAll()
+        router.stub("schedule/game-slider/25", body: try slider(gameStatus: "finished")) // nothing left for 537
+        try router.stub("schedule/club/2027", fixture: "schedule")
+        let model = model()
+        await model.load(season: .current, clubId: 537)
+
+        XCTAssertEqual(model.nextGame?.id, 11743)
+        let query = try XCTUnwrap(router.requests(to: "schedule/club/2027").first?.url?.query(percentEncoded: false))
+        XCTAssertTrue(query.contains("competition_team_id=537"), query)
+    }
+
+    func testTheSlidersNextGameWinsOverTheSchedule() async throws {
+        try stubAll()
+        try router.stub("schedule/club/2027", fixture: "schedule")
+        let model = model()
+        await model.load(season: .current, clubId: 537)
+        XCTAssertEqual(model.nextGame?.id, 11351)
+    }
+
+    /// A stale cached schedule can still say `ready` for a game that has been played.
+    func testAPastGameFromTheScheduleIsNotTheNextGame() async throws {
+        try stubAll()
+        router.stub("schedule/game-slider/25", body: try slider(gameStatus: "finished"))
+        var json = try XCTUnwrap(JSONSerialization.jsonObject(with: try Fixture.data("schedule")) as? [String: Any])
+        let games = try XCTUnwrap(json["data"] as? [[String: Any]]).filter { ($0["id"] as? Int) != 11743 }.map { game -> [String: Any] in
+            var game = game
+            game["status"] = "ready"
+            return game
+        }
+        json["data"] = games
+        router.stub("schedule/club/2027", body: try JSONSerialization.data(withJSONObject: json))
+        let model = model()
+        await model.load(season: .current, clubId: 537)
+        XCTAssertNil(model.nextGame, "11279 has been played; the slider says 11351 has too")
+    }
+
+    func testChangingClubDropsTheOldClubsSchedule() async throws {
+        try stubAll()
+        router.stub("schedule/game-slider/25", body: try slider(gameStatus: "finished"))
+        try router.stub("schedule/club/2027", fixture: "schedule")
+        let model = model()
+        await model.load(season: .current, clubId: 537)
+        XCTAssertNotNil(model.nextGame)
+
+        await model.load(season: .current, clubId: nil)
+        XCTAssertNil(model.nextGame)
+    }
 }

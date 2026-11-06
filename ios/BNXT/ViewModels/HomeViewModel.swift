@@ -9,6 +9,8 @@ final class HomeViewModel {
     private(set) var standings: [Standing] = []
     private(set) var slider: [Game] = []
     private(set) var clubGames: [Game] = []
+    /// The club's whole season, for a next game beyond the slider's reach.
+    private(set) var clubSchedule: [Game] = []
     private(set) var averages: [PlayerSeasonAverages] = []
     private(set) var leaders: PlayerLeaders?
     private(set) var state: LoadState = .idle
@@ -44,8 +46,15 @@ final class HomeViewModel {
         guard let liveFeed, liveFeed.gameId == liveGame?.id else { return nil }
         return liveFeed.feed.lastPlay?.line
     }
-    /// Scheduled games only, so a game in progress shows as the live card instead.
-    var nextGame: Game? { clubId.flatMap { HomePage.nextGame(slider, clubId: $0) } }
+    /// Scheduled games only, so a game in progress shows as the live card instead. The slider knows best around today;
+    /// the schedule, which may be up to 15 min old, only adds later games it doesn't have.
+    var nextGame: Game? {
+        guard let clubId else { return nil }
+        if let next = HomePage.nextGame(slider, clubId: clubId) { return next }
+        let sliderIds = Set(slider.map(\.id))
+        let later = clubSchedule.filter { !sliderIds.contains($0.id) && $0.tipOff > now() }
+        return HomePage.nextGame(later, clubId: clubId)
+    }
     var lastResult: Game? { clubId.flatMap { HomePage.lastResult(allGames, clubId: $0) } }
     var aroundTheLeague: [Game] { HomePage.aroundTheLeague(slider) }
     var clubLeaders: [HomePage.ClubLeader] { HomePage.clubLeaders(averages) }
@@ -65,6 +74,7 @@ final class HomeViewModel {
             // A new favourite: drop the old club's data so it never shows under the new name.
             self.clubId = clubId
             clubGames = []
+            clubSchedule = []
             averages = []
             state = .loading
         } else if state != .loaded {
@@ -77,17 +87,21 @@ final class HomeViewModel {
         async let slider = try? api.gameSlider(competitionId: season.competitionId)
         async let games = Self.request(clubId) { try await api.teamGames(teamId: $0) }
         async let averages = Self.request(clubId) { try await api.playerAverages(teamId: $0) }
-        let fetched = await (standings: standings, slider: slider, games: games, averages: averages)
+        async let schedule = Self.request(clubId) {
+            try await api.schedule(seasonId: season.id, teamId: $0, cachePolicy: .maxAge(BNXTAPIClient.scheduleMaxAge))
+        }
+        let fetched = await (standings: standings, slider: slider, games: games, averages: averages, schedule: schedule)
         guard clubId == self.clubId else { return } // the favourite changed while loading
 
         if let value = fetched.standings?.value { self.standings = value }
         if let value = fetched.slider?.value { self.slider = value }
         if let value = fetched.games?.value { clubGames = value }
         if let value = fetched.averages?.value { self.averages = value }
-        let all: [(any FetchedInfo)?] = [fetched.standings, fetched.slider, fetched.games, fetched.averages]
+        if let value = fetched.schedule?.value { clubSchedule = value }
+        let all: [(any FetchedInfo)?] = [fetched.standings, fetched.slider, fetched.games, fetched.averages, fetched.schedule]
         let got = all.compactMap { $0 }
         cachedAt = got.filter(\.isFallback).map(\.fetchedAt).min()
-        let hasData = !self.standings.isEmpty || !self.slider.isEmpty || !clubGames.isEmpty || !self.averages.isEmpty
+        let hasData = !self.standings.isEmpty || !self.slider.isEmpty || !clubGames.isEmpty || !self.averages.isEmpty || !clubSchedule.isEmpty
         state = hasData ? .loaded : .failed
 
         if let value = await leaders?.value { self.leaders = value }

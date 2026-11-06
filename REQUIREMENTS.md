@@ -193,7 +193,7 @@ personal-data inventory and polling policy are in [docs/bnxt-api.md](docs/bnxt-a
 | Screen | Endpoints |
 |---|---|
 | Onboarding, Clubs | `competition-team/all`, `standings/…` |
-| Home | `standings/…`, `schedule/game-slider`, `competition-team/player-averages/{team}`, `player/average-rankings` |
+| Home | `standings/…`, `schedule/game-slider` (+ the club's `schedule/club/{season}` for a next game beyond it), `competition-team/player-averages/{team}`, `player/average-rankings` |
 | Games | `schedule/club/{season}` (whole season) + `schedule/game-slider` (fresher around today, FIBA ids) |
 | Game detail | `schedule/find/{game}`, `schedule/overview/{game}`, `boxscore/game/{cid}/{game}`, live: still to find (§7.4) |
 | Standings | `standings/competition/{cid}/phase/{phase}` + season config |
