@@ -116,10 +116,14 @@ logs every poll with its rate-limit headers to `log.jsonl`, and writes `summary.
 while live, and whether `X-RateLimit-Remaining` falls faster than our own requests (which would mean the limit is shared per key, §7.15).
 
 ```bash
-caffeinate -i python3 tools/record_live.py --date 2026-11-05          # → .tmp/live/2026-11-05/
+caffeinate -is python3 tools/record_live.py --date 2026-11-05         # → .tmp/live/2026-11-05/
 python3 tools/record_live.py --date 2026-11-05 --fiba                 # also the FIBA feed (research only)
 python3 tools/record_live.py --summarize .tmp/live/2026-11-05         # rebuild the summary
 ```
+
+**Keep the Mac on power with the lid open.** `caffeinate` doesn't stop sleep when the lid closes: on 6 Nov 2026 that cut polling to a few
+seconds every 15 min or so (`-s` also only works on mains power). Polling gaps look like a stalled feed or a late status, so before
+trusting any timing, check `log.jsonl` for gaps and `pmset -g log` for `Clamshell Sleep`.
 
 Dry run (4 Nov 2026, finished game 11323): all endpoints answered in ~200–350 ms; `X-RateLimit-Remaining` fell by exactly our own
 request count and didn't reset within 40 s, so the window is at least a minute.
@@ -155,3 +159,13 @@ recorded, so this doesn't count as a start-to-finish night (Phase 4 needs two).
 
   So BNXT's `finished` follows FIBA within seconds, but `finished` doesn't mean complete: for ~5 min only the feed has quarters and
   player lines, and BNXT's first box score is provisional. The feed stayed unchanged and available after the final.
+
+#### Game night 6 Nov 2026 (LIE–ZWO, game 11353, genius 2873638)
+
+Recorded from 21:06, mid-game. The lid closed at 21:53, so the Mac slept through most of the end of the game and **timings after that are
+only bounds**: how long BNXT took to say `finished`, and whether quarters and box score lagged, can't be read from this night.
+
+- **At the first wake-up after the final:** at 22:20:10 FIBA had `game`/`end` at 88–84, and at 22:20:13 BNXT had the same score, still `live`.
+  By 22:35:24 BNXT had `finished` with quarters, and its box score had lines by 22:35:19.
+- **Late box-score corrections:** unchanged at 22:53:04, but by 23:03:52 `plusminus` had gone from 0 to a real value on 17 of 22 lines and
+  minutes had changed on four. So corrections can come **at least 33 min after the final**, well inside the 3 h rule.

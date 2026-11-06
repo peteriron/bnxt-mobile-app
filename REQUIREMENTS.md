@@ -194,7 +194,7 @@ personal-data inventory and polling policy are in [docs/bnxt-api.md](docs/bnxt-a
 |---|---|
 | Onboarding, Clubs | `competition-team/all`, `standings/…` |
 | Home | `standings/…`, `schedule/game-slider`, `competition-team/player-averages/{team}`, `player/average-rankings` |
-| Games | `schedule/game-slider` (+ full schedule `schedule/club/{season}`, not used yet) |
+| Games | `schedule/club/{season}` (whole season) + `schedule/game-slider` (fresher around today, FIBA ids) |
 | Game detail | `schedule/find/{game}`, `schedule/overview/{game}`, `boxscore/game/{cid}/{game}`, live: still to find (§7.4) |
 | Standings | `standings/competition/{cid}/phase/{phase}` + season config |
 | Stats | `player/average-rankings/{cid}`; Teams: `competition-team/statistics-by-game/total/{team}` × 16 (each game carries the club's totals); Compare: `competition-team/player-averages/{team}` × 16 |
@@ -224,7 +224,7 @@ treats it as optional (live screens fall back to BNXT scores refreshed on the po
 *Measured 5 Nov 2026* (docs/bnxt-api.md): the feed publishes every ~30 s. While live, the BNXT API sends only the total score (every 1–3 min,
 sometimes skipping baskets): `period` stays null and the box score stays empty. So a live box score and clock come from the feed alone, and
 the fallback without it is score-only. At the final (one game so far) BNXT says `finished` within seconds of FIBA's last update, but its quarters and
-box score follow ~5 min later, and the box score was still corrected for two more minutes.
+box score follow ~5 min later. Box scores get corrected after they appear: for two more minutes that night, and at least 33 min after the final on 6 Nov.
 *How the app uses it:* polled every 10 s, only while a live screen (game detail, Home's live card) is visible; BNXT's game is re-read
 every 60 s for the final whistle (every 30 s with the feed off). Feed team 1 is the home side, matched by order, never by code.
 A finished game without BNXT's quarters or box score shows the feed's, only if it agrees on the final score; pull to refresh or reopening picks up BNXT's.
@@ -381,7 +381,7 @@ and players can't be searched offline before a roster was ever cached (clubs sti
 - [x] File cache with offline fallback, cache-first for finished box scores (empty ones refetched), privacy-filtered (§7.16)
 - [x] Golden fixtures from game 11323 / team 537 (`tools/make_fixtures.py`), shared `MockURLProtocol`, privacy `Mirror` tests
 - [x] FIBA LiveStats client for live play-by-play (§7.4): `LiveStatsClient`, `LiveFeed` (clock, period, score, quarters, plays), no key, no cache
-- [ ] Full-season schedule in `BNXTAPIClient` (endpoint known, docs/bnxt-api.md; not added yet, `gameSlider` + `teamGames` cover today's needs)
+- [x] Full-season schedule in `BNXTAPIClient`: the Games tab and the club page's Games list show the whole season, reused for 15 min; the slider stays for FIBA ids and fresh status
 - [x] Remote config `config/v1/config.json` (§7.24): season, zones, display names, cities, features, version policy, key override; network → cache → bundled; pre-push validation hook
 - [x] **Version checker** (§3.9): rules, 6 h throttle, blocking screen, dismissable Home banner, UI tests via `--uitest-version-policy`
 - [x] Club colours in the config (§7.25), curated from logos with `tools/club_colours.py`
@@ -400,7 +400,7 @@ One slice per commit, each with its unit and UI tests. Standings comes first bec
 - [x] Standings (§3.5): League / Belgium / Netherlands tables, config zones, cut line, projected brackets; playoff format and
   "How the season works" text in the config (`playoffs`, `seasonExplainer`)
 - [x] Clubs tab and club page (§3.8): searchable 3-column grid with record and position; hero, facts, Make my club, Tickets;
-  Roster (jersey numbers from the latest box score, since rosters often send none) · Games (upcoming from the game slider) · Player stats
+  Roster (jersey numbers from the latest box score, since rosters often send none) · Games (the full schedule plus the slider) · Player stats
 - [x] Player page (§3.8): hero, bio, averages from the game log with top-10 league-rank badges, shooting rings, points chart,
   game log; `roster/find` for the bio. The leaders response (~1.4 MB, ~10 s) loads after the page and is reused for an hour
   (`CachePolicy.maxAge`). "Compare with another player" comes with Compare

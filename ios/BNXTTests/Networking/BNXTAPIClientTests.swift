@@ -267,6 +267,32 @@ final class BNXTAPIClientTests: XCTestCase {
             XCTFail("Unexpected \(error)", file: file, line: line)
         }
     }
+
+    // MARK: Full schedule
+
+    /// `schedule/club` takes the season, not the competition id, and `month=-1` means all months (docs/bnxt-api.md).
+    func testScheduleAsksForTheWholeSeason() async throws {
+        try MockURLProtocol.router.stub("schedule/club/2027", fixture: "schedule")
+        let api = BNXTAPIClient(configuration: APIConfiguration(apiKey: "test"), session: MockURLProtocol.session())
+
+        let games = try await api.schedule(seasonId: 2027).value
+        XCTAssertEqual(games.count, 4)
+
+        let query = try XCTUnwrap(MockURLProtocol.router.requests(to: "schedule/club/2027").first?.url?.query(percentEncoded: false))
+        XCTAssertTrue(query.contains("clubs[0]=1"), query)
+        XCTAssertTrue(query.contains("clubs[1]=2"), query)
+        XCTAssertTrue(query.contains("month=-1"), query)
+        XCTAssertFalse(query.contains("competition_team_id"), query)
+    }
+
+    func testScheduleCanBeLimitedToOneClub() async throws {
+        try MockURLProtocol.router.stub("schedule/club/2027", fixture: "schedule")
+        let api = BNXTAPIClient(configuration: APIConfiguration(apiKey: "test"), session: MockURLProtocol.session())
+
+        _ = try await api.schedule(seasonId: 2027, teamId: 537)
+        let query = try XCTUnwrap(MockURLProtocol.router.requests(to: "schedule/club/2027").first?.url?.query(percentEncoded: false))
+        XCTAssertTrue(query.contains("competition_team_id=537"), query)
+    }
 }
 
 final class ResponseCacheTests: XCTestCase {

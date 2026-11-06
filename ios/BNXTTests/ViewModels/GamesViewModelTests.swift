@@ -44,6 +44,59 @@ final class GamesViewModelTests: XCTestCase {
         XCTAssertEqual(model.state, .failed)
     }
 
+    // MARK: Full schedule
+
+    func testGamesTabShowsTheWholeSeasonBeyondTheSlider() async throws {
+        try router.stub("schedule/game-slider/25", fixture: "game_slider")
+        try router.stub("schedule/club/2027", fixture: "schedule")
+        let model = GamesViewModel(api: api)
+        await model.load(season: .current)
+
+        let ids = model.sections(favoriteId: nil).days.flatMap(\.games).map(\.id)
+        XCTAssertTrue(ids.contains(11749), "a game only the schedule has")
+        XCTAssertTrue(ids.contains(11355), "a game only the slider has")
+    }
+
+    func testTheSliderWinsOverTheScheduleForTheSameGame() async throws {
+        try router.stub("schedule/game-slider/25", fixture: "game_slider") // 11351 still `ready`, with its FIBA id
+        try router.stub("schedule/club/2027", fixture: "schedule") // 11351 `finished`, no FIBA id
+        let model = GamesViewModel(api: api)
+        await model.load(season: .current)
+
+        let game = try XCTUnwrap(model.sections(favoriteId: nil).days.flatMap(\.games).first { $0.id == 11351 })
+        XCTAssertEqual(game.status, .scheduled)
+        XCTAssertEqual(game.geniusId, 2873634)
+    }
+
+    func testGamesTabSurvivesEitherSourceFailing() async throws {
+        router.fail("schedule/game-slider/25")
+        try router.stub("schedule/club/2027", fixture: "schedule")
+        let onlySchedule = GamesViewModel(api: api)
+        await onlySchedule.load(season: .current)
+        XCTAssertEqual(onlySchedule.state, .loaded)
+        XCTAssertTrue(onlySchedule.sections(favoriteId: nil).days.flatMap(\.games).contains { $0.id == 11749 })
+
+        router.reset()
+        try FileManager.default.removeItem(at: cacheDirectory)
+        try router.stub("schedule/game-slider/25", fixture: "game_slider")
+        router.fail("schedule/club/2027")
+        let onlySlider = GamesViewModel(api: api)
+        await onlySlider.load(season: .current)
+        XCTAssertEqual(onlySlider.state, .loaded)
+        XCTAssertTrue(onlySlider.sections(favoriteId: nil).days.flatMap(\.games).contains { $0.id == 11355 })
+    }
+
+    func testTheScheduleIsReusedForFifteenMinutes() async throws {
+        try router.stub("schedule/game-slider/25", fixture: "game_slider")
+        try router.stub("schedule/club/2027", fixture: "schedule")
+        let model = GamesViewModel(api: api)
+        await model.load(season: .current)
+        await model.load(season: .current)
+
+        XCTAssertEqual(router.requests(to: "schedule/club/2027").count, 1, "~450 KB: not on every visit")
+        XCTAssertEqual(router.requests(to: "schedule/game-slider/25").count, 2, "the slider stays fresh")
+    }
+
     // MARK: Game detail
 
     private func stubFinished() throws {

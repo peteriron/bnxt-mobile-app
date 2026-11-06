@@ -1,8 +1,7 @@
 import Foundation
 import Observation
 
-/// The Games tab (§3.3). Source: the game slider (~30 games around today) until the full-season schedule
-/// call is found (§8 Phase 0).
+/// The Games tab (§3.3): the full-season schedule, with the game slider's fresher copy of the games around today.
 @MainActor @Observable
 final class GamesViewModel {
     var mode: GamesList.Mode = .upcoming
@@ -24,14 +23,19 @@ final class GamesViewModel {
 
     func load(season: Season) async {
         if games.isEmpty { state = .loading }
-        do {
-            let fetched = try await api.gameSlider(competitionId: season.competitionId)
-            games = fetched.value
-            cachedAt = fetched.isFallback ? fetched.fetchedAt : nil
-            state = .loaded
-        } catch {
+        let api = api
+        async let sliderRequest = try? api.gameSlider(competitionId: season.competitionId)
+        async let scheduleRequest = try? api.schedule(seasonId: season.id, cachePolicy: .maxAge(BNXTAPIClient.scheduleMaxAge))
+        let (slider, schedule) = await (sliderRequest, scheduleRequest)
+        guard slider != nil || schedule != nil else {
             state = games.isEmpty ? .failed : .loaded
+            return
         }
+        // The slider first: `GamesList.sections` keeps the first copy of a game.
+        games = (slider?.value ?? []) + (schedule?.value ?? [])
+        let got: [(any FetchedInfo)?] = [slider, schedule]
+        cachedAt = got.compactMap { $0 }.filter(\.isFallback).map(\.fetchedAt).min()
+        state = .loaded
     }
 }
 

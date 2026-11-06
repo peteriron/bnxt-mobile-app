@@ -40,13 +40,16 @@ final class ClubViewModel {
         async let averages = try? api.playerAverages(teamId: id)
         async let finished = try? api.teamGames(teamId: id)
         async let slider = try? api.gameSlider(competitionId: season.competitionId)
-        let fetched = await (team: team, standings: standings, roster: roster, averages: averages, finished: finished, slider: slider)
+        async let schedule = try? api.schedule(seasonId: season.id, teamId: id, cachePolicy: .maxAge(BNXTAPIClient.scheduleMaxAge))
+        let fetched = await (team: team, standings: standings, roster: roster, averages: averages, finished: finished, slider: slider,
+                             schedule: schedule)
 
         if let value = fetched.team?.value { self.team = value }
         if let value = fetched.standings?.value { standing = value.first { $0.team.id == id } }
         if let value = fetched.averages?.value { self.averages = value }
-        let games = (fetched.finished?.value ?? []) + (fetched.slider?.value ?? [])
-        if fetched.finished != nil || fetched.slider != nil {
+        // The schedule last: `unique` keeps the first unfinished copy, so the fresher slider wins.
+        let games = (fetched.finished?.value ?? []) + (fetched.slider?.value ?? []) + (fetched.schedule?.value ?? [])
+        if fetched.finished != nil || fetched.slider != nil || fetched.schedule != nil {
             results = ClubPage.results(Self.unique(games), teamId: id)
             upcoming = ClubPage.upcoming(Self.unique(games), teamId: id)
             arena = ClubPage.arena(games: games, teamId: id) ?? arena
@@ -62,7 +65,7 @@ final class ClubViewModel {
             rosterRows = ClubPage.roster(roster, jerseys: jerseys, averages: self.averages)
         }
 
-        let all: [(any FetchedInfo)?] = [fetched.team, fetched.standings, fetched.roster, fetched.averages, fetched.finished, fetched.slider]
+        let all: [(any FetchedInfo)?] = [fetched.team, fetched.standings, fetched.roster, fetched.averages, fetched.finished, fetched.slider, fetched.schedule]
         let got = all.compactMap { $0 }
         cachedAt = got.filter(\.isFallback).map(\.fetchedAt).min()
         if got.isEmpty {

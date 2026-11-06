@@ -19,7 +19,8 @@ struct GamesScreen: View {
         @Bindable var model = model
         let favorite = favorites.resolve(in: appModel.clubs)
         ScrollView {
-            VStack(alignment: .leading, spacing: 14) {
+            // Lazy: the whole season is ~240 rows with logos.
+            LazyVStack(alignment: .leading, spacing: 14) {
                 Picker("Games", selection: $model.mode) {
                     Text("Upcoming").tag(GamesList.Mode.upcoming)
                     Text("Results").tag(GamesList.Mode.results)

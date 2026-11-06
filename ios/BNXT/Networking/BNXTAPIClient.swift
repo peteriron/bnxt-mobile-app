@@ -99,6 +99,17 @@ struct BNXTAPIClient: Sendable {
         try await list(Endpoint("schedule/game-slider/\(competitionId)"), of: Game.self)
     }
 
+    /// How long a schedule response is reused. Games near today come from the fresher slider.
+    static let scheduleMaxAge: TimeInterval = 15 * 60
+
+    /// The whole season: every game (~450 KB, ~1 s), or one club's with `teamId` (~60 KB). Takes the **season** id, not
+    /// the competition id, which answers an empty list. No FIBA ids: live games get theirs from the slider (docs/bnxt-api.md).
+    func schedule(seasonId: Int, teamId: Int? = nil, cachePolicy: CachePolicy = .networkFirst) async throws -> Fetched<[Game]> {
+        var query = ["clubs[0]": "1", "clubs[1]": "2", "month": "-1"]
+        if let teamId { query["competition_team_id"] = String(teamId) }
+        return try await list(Endpoint("schedule/club/\(seasonId)", query), of: Game.self, policy: cachePolicy)
+    }
+
     /// One game with arena and quarter scores. Pass `.cacheFirst` once the game is known to be finished.
     /// BNXT sends `finished` before it has the quarters, so a cached game without them is refetched.
     func game(id: Int, cachePolicy: CachePolicy = .networkFirst) async throws -> Fetched<Game> {

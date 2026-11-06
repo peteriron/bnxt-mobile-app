@@ -35,10 +35,8 @@ enum GamesList {
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = GameTime.leagueTimeZone
         let byDay = Dictionary(grouping: games) { calendar.startOfDay(for: $0.tipOff) }
-        return byDay.keys.sorted(by: newestFirst ? (>) : (<)).map { day in
-            // Within a day, keep the order the caller sorted in.
-            Day(date: day, games: games.filter { calendar.startOfDay(for: $0.tipOff) == day })
-        }
+        // Grouping keeps the order the caller sorted in within a day.
+        return byDay.sorted { newestFirst ? $0.key > $1.key : $0.key < $1.key }.map { Day(date: $0.key, games: $0.value) }
     }
 }
 

@@ -57,6 +57,11 @@ def main():
     finished = [g for g in slider["data"] if g["status"] == "finished"][:3]
     ready = [g for g in slider["data"] if g["status"] != "finished"][:3]
     save("game_slider", {"data": finished + ready})
+    schedule = get("schedule/club/2027?clubs[0]=1&clubs[1]=2&month=-1")["data"]
+    club_games = sorted((g for g in schedule if TEAM in [c["competition_team"]["id"] for c in g["competitors"]]),
+                        key=lambda g: g["game_time"])
+    keep = {club_games[0]["id"], club_games[-1]["id"], UPCOMING, 11749}   # 11749: the placeholder tip-off (docs/bnxt-api.md)
+    save("schedule", {"data": [g for g in schedule if g["id"] in keep]})
     save("game_11323", get(f"schedule/find/{GAME}"))
     save("game_11351_upcoming", get(f"schedule/find/{UPCOMING}"))
     save("box_score_11323", box)

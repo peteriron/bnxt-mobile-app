@@ -91,4 +91,16 @@ final class ClubViewModelTests: XCTestCase {
         XCTAssertEqual(model.rosterRows.count, 13)
         XCTAssertEqual(model.rosterRows.first { $0.entry.player.lastName == "Heath" }?.jersey, "3", "finished box score served from cache")
     }
+
+    /// The slider reaches about two weeks ahead; the club's Games tab shows the rest of the season.
+    func testUpcomingReachesTheEndOfTheSeason() async throws {
+        try stubAll()
+        try router.stub("schedule/club/2027", fixture: "schedule")
+        let model = model()
+        await model.load(season: .current)
+
+        XCTAssertEqual(model.upcoming.last?.id, 11743)
+        let query = try XCTUnwrap(router.requests(to: "schedule/club/2027").first?.url?.query(percentEncoded: false))
+        XCTAssertTrue(query.contains("competition_team_id=537"), "the small per-club response: " + query)
+    }
 }

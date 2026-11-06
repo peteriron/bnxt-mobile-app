@@ -22,6 +22,16 @@ final class GamesUITests: UITestCase {
                       "upcoming games open on Preview, live ones on Plays")
     }
 
+    /// The slider reaches about two weeks ahead; this is Spirou's last regular-season game (§3.3).
+    func testUpcomingReachesTheEndOfTheSeason() {
+        tab(1).tap()
+        XCTAssertTrue(firstRow.waitForExistence(timeout: 15))
+        app.buttons["Spirou Basket"].tap()
+        let lastGame = app.buttons["games.row.11743"]
+        for _ in 0..<12 where !lastGame.exists { app.swipeUp() }
+        XCTAssertTrue(lastGame.waitForExistence(timeout: 5))
+    }
+
     func testResultsAndMyClubFilter() {
         tab(1).tap()
         let results = app.segmentedControls["games.mode"].buttons["Results"]
