@@ -223,9 +223,12 @@ treats it as optional (live screens fall back to BNXT scores refreshed on the po
 *To do:* confirm with BNXT whether their agreement covers it (§7.17).
 *Measured 5 Nov 2026* (docs/bnxt-api.md): the feed publishes every ~30 s. While live, the BNXT API sends only the total score (every 1–3 min,
 sometimes skipping baskets): `period` stays null and the box score stays empty. So a live box score and clock come from the feed alone, and
-the fallback without it is score-only.
+the fallback without it is score-only. At the final (one game so far) BNXT says `finished` within seconds of FIBA's last update, but its quarters and
+box score follow ~5 min later, and the box score was still corrected for two more minutes.
 *How the app uses it:* polled every 10 s, only while a live screen (game detail, Home's live card) is visible; BNXT's game is re-read
 every 60 s for the final whistle (every 30 s with the feed off). Feed team 1 is the home side, matched by order, never by code.
+A finished game without BNXT's quarters or box score shows the feed's, only if it agrees on the final score; pull to refresh or reopening picks up BNXT's.
+A finished game without quarters isn't cached as final, and a box score counts as final only if stored from 3 h after tip-off.
 *Test data:* a real feed captured on 5 Nov 2026 is a test fixture (`livestats_11351_live.json`) with coaches, officials and players' full names
 removed; the developer's decision that night, knowing the repo is public and the data is Genius Sports'. A hand-written fixture in the same
 shape (`livestats_feed.json`) covers the edge cases. If BNXT's agreement doesn't cover the feed, delete the captured one.
@@ -366,7 +369,7 @@ and players can't be searched offline before a roster was ever cached (clubs sti
 - [ ] Ask BNXT: is using the website key at app volume OK, and does the agreement cover the FIBA LiveStats feed (§7.15, §7.4)
 - [x] Record a live game night with `tools/record_live.py` (first chance: Thu 5 Nov, CHA–RCB 20:30): what `status` and live endpoints return, update cadence (§7.4).
   Done 5 Nov 2026 for the first 18 minutes (docs/bnxt-api.md): `live` status; BNXT updates only the total score, every 1–3 min;
-  FIBA every ~30 s. The final whistle is still unrecorded and moves to Phase 4's game nights
+  FIBA every ~30 s. The final whistle was recorded the same night; full game nights moved to Phase 4
 - [x] Determine whether the rate limit is per key or per IP (game-night recording) → revisit §7.15 if shared.
   Per client IP, 200 per ~1-minute window: the extra decrements were this Mac's own test runs (docs/bnxt-api.md)
 - [x] Find the full-season schedule call (the website's calendar page): `schedule/club/{season}?…&month=-1`, found 5 Nov 2026 (docs/bnxt-api.md)
@@ -415,13 +418,14 @@ One slice per commit, each with its unit and UI tests. Standings comes first bec
 
 ### Phase 4: live
 Live polling (visible-only), live card, live game detail; verified on two real game nights, each recorded start to finish
-(the 5 Nov recording stopped in Q1, so what `status`, scores and the box score do at the final is still unknown). No tests running during a recording.
+(the final of 5 Nov is recorded, docs/bnxt-api.md, but not that whole game). No tests running during a recording.
 - [x] Game detail while live: Plays tab first (newest first, score after made shots, 3PT marker, per period); header, score and quarter table
   from the feed; polling every 10 s only while visible, stopping at the final whistle; remote-config switch `features.liveStats`
 - [x] Home live card: the feed's score, clock and last play while Home is visible
 - [x] Checked in the app during CHA–RCB on 5 Nov 2026 (Home card, game header, Plays); `LiveGameUITests` runs whenever a game is live
 - [x] Live box score from the feed's player lines while BNXT's is empty (players matched to rosters by scoreboard name; VAL
   computed with BNXT's formula, which none of the feed's `eff_*` values matches); Summary uses it too
+- [x] Final-whistle handling checked against the 5 Nov recording: the feed's quarters and box score cover BNXT's ~5 min gap; incomplete data isn't cached as final
 - [ ] Two game nights recorded start to finish, including the final whistle
 
 ### Phase 5: hardening & beta

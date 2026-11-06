@@ -54,7 +54,8 @@ final class ClubViewModel {
 
         // Rosters often have no jersey numbers; the latest box score has them (docs/bnxt-api.md).
         var jerseys: [Int: String] = [:]
-        if let latest = results.first, let box = try? await api.boxScore(gameId: latest.id, competitionId: season.competitionId, isFinal: true) {
+        if let latest = results.first, let box = try? await api.boxScore(gameId: latest.id, competitionId: season.competitionId, isFinal: true,
+                                                                         settledAt: latest.settledAt) {
             jerseys = ClubPage.jerseys(from: [box.value], teamId: id)
         }
         if let roster = fetched.roster?.value {

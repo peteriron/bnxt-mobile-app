@@ -367,4 +367,16 @@ extension Game {
              period: feed.statusText.isEmpty ? period : feed.statusText, arena: arena, geniusId: geniusId, phaseId: phaseId,
              teamTotals: teamTotals)
     }
+
+    /// When a finished game's box score can be treated as final (docs/bnxt-api.md "Polling policy").
+    var settledAt: Date { tipOff.addingTimeInterval(3 * 3600) }
+
+    /// A finished game with the feed's quarters while BNXT has none, if the feed agrees on the final score.
+    func fillingQuarters(from feed: LiveFeed) -> Game {
+        guard home.periodScores.isEmpty, feed.homeScore == home.score, feed.awayScore == away.score else { return self }
+        return Game(id: id, tipOff: tipOff, status: status,
+                    home: GameSide(team: home.team, score: home.score, periodScores: feed.homePeriodScores),
+                    away: GameSide(team: away.team, score: away.score, periodScores: feed.awayPeriodScores),
+                    period: period, arena: arena, geniusId: geniusId, phaseId: phaseId, teamTotals: teamTotals)
+    }
 }

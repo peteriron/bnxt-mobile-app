@@ -108,7 +108,7 @@ final class GameViewModel {
         return GameDetail.earlierMeetings(of: game, in: teamGames.values.flatMap { $0 })
     }
 
-    func load(season: Season) async {
+    func load(season: Season, liveStatsEnabled: Bool = true) async {
         if state != .loaded { state = .loading }
         let api = api, id = gameId, competitionId = season.competitionId
         async let standingsRequest = try? api.standings(competitionId: competitionId, phaseId: season.phaseIds.first ?? 0)
@@ -124,10 +124,12 @@ final class GameViewModel {
 
         switch game.status {
         case .finished, .inProgress:
-            if let fetched = try? await api.boxScore(gameId: id, competitionId: competitionId, isFinal: game.status == .finished) {
+            if let fetched = try? await api.boxScore(gameId: id, competitionId: competitionId, isFinal: game.status == .finished,
+                                                  settledAt: game.settledAt) {
                 box = fetched.value
                 sources.append(fetched)
             }
+            await coverMissingFinalData(season: season, liveStatsEnabled: liveStatsEnabled)
         case .scheduled:
             await loadPreview(home: game.home.team.id, away: game.away.team.id)
         }
@@ -177,13 +179,30 @@ final class GameViewModel {
         guard refreshGame, let fetched = try? await api.game(id: gameId) else { return }
         apply(fetched.value)
         if fetched.value.status == .finished {
-            liveFeed = nil
-            liveBox = nil
-            game = merged()
-            await load(season: season) // the final box score, cache-first from now on
+            await load(season: season, liveStatsEnabled: liveStatsEnabled) // the final box score, cache-first once complete
         } else if let fetchedBox = try? await api.boxScore(gameId: gameId, competitionId: season.competitionId, isFinal: false) {
             box = fetchedBox.value
         }
+    }
+
+    /// BNXT says `finished` before it has the quarters and box score (docs/bnxt-api.md). Until then the feed fills
+    /// them in, if it agrees on the final score; otherwise, or once BNXT's are in, the feed is dropped.
+    private func coverMissingFinalData(season: Season, liveStatsEnabled: Bool) async {
+        guard let finished = bnxtGame, finished.status == .finished else { return }
+        let hasFinalBox = box?.isEmpty == false
+        let isComplete = hasFinalBox && !finished.home.periodScores.isEmpty
+        if !isComplete, liveStatsEnabled, let id = await resolveGeniusId(season: season),
+           let feed = try? await liveStats.feed(geniusId: id) {
+            liveFeed = feed
+        }
+        if !isComplete, liveStatsEnabled, let liveFeed,
+           liveFeed.homeScore == finished.home.score, liveFeed.awayScore == finished.away.score {
+            liveBox = hasFinalBox ? nil : LiveBoxScore.make(liveFeed, game: finished, rosters: await rosters(for: finished, season: season))
+        } else {
+            liveFeed = nil
+            liveBox = nil
+        }
+        game = merged()
     }
 
     private func rosters(for game: Game, season: Season) async -> [Int: [RosterEntry]] {
@@ -212,9 +231,12 @@ final class GameViewModel {
     }
 
     private func merged() -> Game? {
-        guard let bnxtGame else { return nil }
-        guard bnxtGame.isLive, let liveFeed else { return bnxtGame }
-        return bnxtGame.applying(liveFeed)
+        guard let bnxtGame, let liveFeed else { return bnxtGame }
+        switch bnxtGame.status {
+        case .inProgress: return bnxtGame.applying(liveFeed)
+        case .finished: return bnxtGame.fillingQuarters(from: liveFeed)
+        case .scheduled: return bnxtGame
+        }
     }
 
     private func setStandings(_ rows: [Standing]) {

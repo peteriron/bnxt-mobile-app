@@ -59,7 +59,7 @@ Competition-team IDs (new every season): 537 CHA, 539 OOS, 541 ANT, 543 MON, 545
 | Field | Meaning / quirk |
 |---|---|
 | `competitors[].side` | **1 = home, 2 = away** (confirmed against the box score's `is_home`) |
-| `status` | `ready` (scheduled), `live` (from tip-off, 5 Nov 2026), `finished`. While live (first 18 min recorded): `period` stays **null**, quarter scores stay empty, only the total score updates, and `boxscore/game` stays `{"data":[]}`. The live clock, period and box score therefore exist only in the FIBA feed. What changes at the final is still to record |
+| `status` | `ready` (scheduled), `live` (from tip-off, 5 Nov 2026), `finished`. While live (first 18 min recorded): `period` stays **null**, quarter scores stay empty, only the total score updates, and `boxscore/game` stays `{"data":[]}`. The live clock, period and box score therefore exist only in the FIBA feed. At the final (5 Nov 2026) `finished` comes first, with the score only; quarters, `period` and the box score follow about 5 min later, and the box score is still corrected for a few minutes after that (see "Game night 5 Nov 2026") |
 | `game_time` | `"YYYY-MM-DD HH:mm:ss"`, Brussels local time with no zone → `GameTime.parse` |
 | `throw_made/all/percent` | **Field goals** (2PT + 3PT) |
 | `free_throw_*` · `two_point_*` · `three_point_*` | FT · 2PT · 3PT |
@@ -126,8 +126,8 @@ request count and didn't reset within 40 s, so the window is at least a minute.
 
 #### Game night 5 Nov 2026 (CHA–RCB, game 11351, genius 2873634)
 
-The recording ran from tip-off (20:30) to 20:48, Q1 1:44 left, 18–11. It **missed the end of the game**, so the `status` change at
-the final and the box score appearing are still unrecorded. Record the next game night start to finish (Phase 4 needs two anyway).
+Recorded in parts: tip-off (20:30) to 20:48 (Q1 1:44 left, 18–11), then from Q4 3:45 left through the final. The middle wasn't
+recorded, so this doesn't count as a start-to-finish night (Phase 4 needs two).
 
 - **BNXT API while live:** `schedule/find` and `schedule/overview` change only when the BNXT side copies the score over: 8 times in
   18 min, 1–3 min apart (median 172 s), sometimes skipping baskets (FIBA showed 10–7, 10–8 and 13–8; BNXT went 8–5 → 15–8).
@@ -140,3 +140,18 @@ the final and the box score appearing are still unrecorded. Record the next game
   (Xcode test run 20:31:20–20:37:35, `ci-local.sh` until 20:45:11), and from 20:45:16 Remaining fell by exactly our own requests
   while the game was still live and the website was serving it. Conclusion: **per client IP**. Run no tests during a recording,
   so the reading stays clean.
+- **The final whistle** (one game, polled every 10 s):
+
+  | Time | What changed |
+  |---|---|
+  | 22:29:25 | BNXT's score reaches the final 77–74, still `live` (FIBA: ~0:13 left) |
+  | 22:32:20 | FIBA's last change: clock `00:00`, `period` 4, `pbp` starts with `game`/`end` and `period`/`end`. The feed has no status field |
+  | 22:32:23 | `schedule/find`: `finished`, score 77–74, `period` null, quarters and box score still empty |
+  | 22:32:47 | The game slider's first change after the final |
+  | 22:37:19 | `schedule/find`: `period` Q4 and quarters, matching FIBA's |
+  | 22:37:22 | `boxscore/game` first has lines, **but not all**: 11 for CHA, without its #1 |
+  | 22:38:25 | Box score: CHA's #1 added, two players' minutes change |
+  | 22:39:28 | Box score: four players' minutes change. No later change by 22:51 |
+
+  So BNXT's `finished` follows FIBA within seconds, but `finished` doesn't mean complete: for ~5 min only the feed has quarters and
+  player lines, and BNXT's first box score is provisional. The feed stayed unchanged and available after the final.

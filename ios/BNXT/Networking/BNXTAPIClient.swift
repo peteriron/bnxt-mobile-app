@@ -35,6 +35,8 @@ struct BNXTAPIClient: Sendable {
         /// Use a usable cached copy younger than this without a request; otherwise behave like `.networkFirst`.
         /// For big responses that change only after game nights (the leaders are 1.4 MB and take ~10 s).
         case maxAge(TimeInterval)
+        /// Use a usable cached copy stored at or after this moment without a request; otherwise behave like `.networkFirst`.
+        case storedSince(Date)
     }
 
     let configuration: APIConfiguration?
@@ -98,15 +100,18 @@ struct BNXTAPIClient: Sendable {
     }
 
     /// One game with arena and quarter scores. Pass `.cacheFirst` once the game is known to be finished.
+    /// BNXT sends `finished` before it has the quarters, so a cached game without them is refetched.
     func game(id: Int, cachePolicy: CachePolicy = .networkFirst) async throws -> Fetched<Game> {
         try await fetch(Endpoint("schedule/find/\(id)"), as: Envelope<Game>.self, policy: cachePolicy,
-                        isUsable: { $0.status == .finished }, map: { $0.data })
+                        isUsable: { $0.status == .finished && !$0.home.periodScores.isEmpty }, map: { $0.data })
     }
 
-    /// A game's box score. For a finished game it's served cache-first; an empty cached one is refetched.
-    func boxScore(gameId: Int, competitionId: Int = Season.current.competitionId, isFinal: Bool) async throws -> Fetched<BoxScore> {
+    /// A game's box score. For a finished game it's served cache-first; an empty cached one is refetched, and so is
+    /// one stored before `settledAt`, because BNXT keeps correcting a box score just after the game (docs/bnxt-api.md).
+    func boxScore(gameId: Int, competitionId: Int = Season.current.competitionId, isFinal: Bool,
+                  settledAt: Date? = nil) async throws -> Fetched<BoxScore> {
         try await fetch(Endpoint("boxscore/game/\(competitionId)/\(gameId)"), as: Envelope<BoxScore>.self,
-                        policy: isFinal ? .cacheFirst : .networkFirst, isUsable: { !$0.isEmpty }, map: { $0.data })
+                        policy: isFinal ? settledAt.map(CachePolicy.storedSince) ?? .cacheFirst : .networkFirst, isUsable: { !$0.isEmpty }, map: { $0.data })
     }
 
     /// A player's games this season. Takes the **roster id**, not the player id (docs/bnxt-api.md).
@@ -180,6 +185,7 @@ struct BNXTAPIClient: Sendable {
             switch policy {
             case .cacheFirst: return stored
             case let .maxAge(age) where now().timeIntervalSince(cached.fetchedAt) < age: return stored
+            case let .storedSince(date) where cached.fetchedAt >= date: return stored
             default: break
             }
         }

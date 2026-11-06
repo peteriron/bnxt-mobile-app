@@ -186,7 +186,7 @@ struct GameBoxScore: View {
                     .accessibilityElement(children: .contain)
                     .accessibilityIdentifier("game.boxScore")
                 if model.isLiveBox {
-                    Text("Live box score: FIBA LiveStats. The official one replaces it after the game.")
+                    Text("Unofficial box score from FIBA LiveStats. The official one replaces it when BNXT publishes it.")
                         .font(.caption)
                         .foregroundStyle(Theme.textTertiary)
                         .padding(.horizontal, 4)

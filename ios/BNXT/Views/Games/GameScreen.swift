@@ -20,7 +20,7 @@ struct GameScreen: View {
                 case .idle, .loading:
                     ProgressView().frame(maxWidth: .infinity, minHeight: 300)
                 case .failed:
-                    LoadFailedView { Task { await model.load(season: appModel.season) } }
+                    LoadFailedView { Task { await model.load(season: appModel.season, liveStatsEnabled: liveStatsEnabled) } }
                 case .loaded:
                     if let game = model.game { content(game) }
                 }
@@ -32,17 +32,19 @@ struct GameScreen: View {
         .background(Theme.ink)
         .navigationTitle(Text(verbatim: title))
         .navigationBarTitleDisplayMode(.inline)
-        .refreshable { await model.load(season: appModel.season) }
-        .task { if model.state == .idle { await model.load(season: appModel.season) } }
+        .refreshable { await model.load(season: appModel.season, liveStatsEnabled: liveStatsEnabled) }
+        .task { if model.state == .idle { await model.load(season: appModel.season, liveStatsEnabled: liveStatsEnabled) } }
         // Live polling only while this screen is visible: the task ends when it goes away (§4 Network etiquette).
         .task(id: model.game?.isLive == true) {
             if model.game?.isLive == true {
-                await model.watchLive(season: appModel.season, liveStatsEnabled: appModel.config?.features.liveStats ?? true)
+                await model.watchLive(season: appModel.season, liveStatsEnabled: liveStatsEnabled)
             }
         }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("screen.game.\(model.gameId)")
     }
+
+    private var liveStatsEnabled: Bool { appModel.config?.features.liveStats ?? true }
 
     private var title: String {
         guard let game = model.game else { return "" }
