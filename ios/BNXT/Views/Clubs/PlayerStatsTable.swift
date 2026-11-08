@@ -5,22 +5,26 @@ struct PlayerStatsTable: View {
     @Bindable var model: ClubViewModel
     let onSelect: (Route) -> Void
 
-    private let nameWidth: CGFloat = 132
-    private let columnWidth: CGFloat = 44
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    /// Widths and heights grow with the text so numbers never wrap; the stats scroll sideways (§4).
+    @ScaledMetric(relativeTo: .subheadline) private var scale: CGFloat = 1
+    private var nameWidth: CGFloat { min(132 * scale, 190) }
+    private var columnWidth: CGFloat { 44 * scale }
+    private var rowHeight: CGFloat { 40 * scale }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 0) {
                     Text(verbatim: "PLAYER").font(.caption2.weight(.bold)).foregroundStyle(Theme.textTertiary)
-                        .frame(width: nameWidth, height: 32, alignment: .leading)
+                        .frame(width: nameWidth, height: 32 * scale, alignment: .leading)
                     ForEach(model.playerStats) { line in
                         Button { onSelect(.player(rosterId: line.rosterId)) } label: {
                             Text(verbatim: line.player.shortName)
                                 .font(.subheadline.weight(.semibold))
                                 .foregroundStyle(Theme.textPrimary)
-                                .lineLimit(1)
-                                .frame(width: nameWidth, height: 40, alignment: .leading)
+                                .lineLimit(dynamicTypeSize.isAccessibilitySize ? 2 : 1)
+                                .frame(width: nameWidth, height: rowHeight, alignment: .leading)
                         }
                         .buttonStyle(.plain)
                     }
@@ -48,7 +52,7 @@ struct PlayerStatsTable: View {
                                 cell(Format.percentage(line.perGame.threePointPercentage), highlighted: false)
                                 cell(Format.percentage(line.perGame.freeThrowPercentage), highlighted: false)
                             }
-                            .frame(height: 40)
+                            .frame(height: rowHeight)
                             .accessibilityElement(children: .ignore)
                             .accessibilityLabel(Text(verbatim: line.player.fullName))
                             .accessibilityValue(Text(verbatim: ClubPage.StatColumn.allCases
@@ -75,7 +79,7 @@ struct PlayerStatsTable: View {
         let label = Text(verbatim: title)
             .font(.caption2.weight(.bold))
             .foregroundStyle(column != nil && column == model.statSort ? Theme.lime : Theme.textTertiary)
-            .frame(width: columnWidth, height: 32, alignment: .trailing)
+            .frame(width: columnWidth, height: 32 * scale, alignment: .trailing)
         if let column {
             Button { model.statSort = column } label: { label }
                 .buttonStyle(.plain)

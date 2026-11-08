@@ -73,16 +73,18 @@ struct SectionHeader: View {
     var action: (() -> Void)?
 
     var body: some View {
-        HStack(alignment: .firstTextBaseline) {
+        AdaptiveStack(verticalAlignment: .firstTextBaseline, spacing: 2) {
             Text(title)
                 .font(.title3.weight(.bold))
                 .foregroundStyle(Theme.textPrimary)
                 .accessibilityAddTraits(.isHeader)
-            Spacer()
+                .frame(maxWidth: .infinity, alignment: .leading)
             if let actionTitle, let action {
-                Button(actionTitle, action: action)
-                    .font(.subheadline.weight(.medium))
-                    .tint(Theme.violetHigh)
+                Button(action: action) {
+                    Text(actionTitle).frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
+                }
+                .font(.subheadline.weight(.medium))
+                .tint(Theme.violetHigh)
             }
         }
         .padding(.horizontal, 4)

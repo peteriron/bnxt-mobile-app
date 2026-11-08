@@ -226,12 +226,18 @@ private struct LeaderHero: View {
     let club: Club
     let action: () -> Void
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
         let player = row.entry.player
+        let large = dynamicTypeSize.isAccessibilitySize
         Button(action: action) {
             ZStack(alignment: .bottomLeading) {
                 LinearGradient(colors: [club.graphicColor.color.opacity(0.6), Theme.surface], startPoint: .topTrailing, endPoint: .bottomLeading)
-                if let url = player.photo?.medium ?? player.photo?.url {
+                // No room for the photo beside large text.
+                if large {
+                    EmptyView()
+                } else if let url = player.photo?.medium ?? player.photo?.url {
                     AsyncImage(url: url) { phase in
                         if case let .success(image) = phase { image.resizable().scaledToFit() } else { Color.clear }
                     }
@@ -248,23 +254,23 @@ private struct LeaderHero: View {
                         .font(.caption.weight(.bold))
                         .textCase(.uppercase)
                         .foregroundStyle(Theme.textPrimary)
-                    Spacer()
+                    if !large { Spacer() }
                     Text(verbatim: category.formatted(row.entry.value))
                         .font(Theme.score(.largeTitle))
                         .foregroundStyle(Theme.textPrimary)
                     Text(verbatim: player.fullName)
                         .font(.headline)
                         .foregroundStyle(Theme.textPrimary)
-                        .lineLimit(2)
+                        .lineLimit(large ? nil : 2)
                     HStack(spacing: 6) {
                         ClubLogo(club: club, size: 16)
                         Text(verbatim: club.displayName).font(.footnote).foregroundStyle(Theme.textSecondary)
                     }
                 }
-                .frame(maxWidth: 200, alignment: .leading)
+                .frame(maxWidth: large ? .infinity : 200, alignment: .leading)
                 .padding(16)
             }
-            .frame(height: 180)
+            .frame(height: large ? nil : 180)
             .clipShape(RoundedRectangle(cornerRadius: 20))
             .contentShape(RoundedRectangle(cornerRadius: 20))
         }
@@ -282,25 +288,30 @@ private struct LeaderRow: View {
     let category: LeaderCategory
     let club: Club
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
-        HStack(spacing: 10) {
+        let large = dynamicTypeSize.isAccessibilitySize
+        let value = Text(verbatim: category.formatted(row.entry.value))
+            .font(Theme.compactNumber(.body))
+            .foregroundStyle(Theme.textPrimary)
+        HStack(alignment: large ? .top : .center, spacing: 10) {
             Text(verbatim: "\(row.rank)")
                 .font(Theme.compactNumber(.subheadline))
                 .foregroundStyle(Theme.textTertiary)
-                .frame(width: 24)
+                .fixedSize()
+                .frame(minWidth: 24)
             PlayerAvatar(player: row.entry.player, size: 38)
             VStack(alignment: .leading, spacing: 3) {
                 Text(verbatim: row.entry.player.fullName)
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(Theme.textPrimary)
-                    .lineLimit(1)
-                Text(verbatim: club.displayName).font(.caption).foregroundStyle(Theme.textSecondary).lineLimit(1)
+                    .oneLineUnlessAccessibilitySize()
+                Text(verbatim: club.displayName).font(.caption).foregroundStyle(Theme.textSecondary).oneLineUnlessAccessibilitySize()
+                if large { value } // below the names: beside them it would squeeze them to a few letters
                 Meter(fraction: row.fraction, color: club.graphicColor)
             }
-            Text(verbatim: category.formatted(row.entry.value))
-                .font(Theme.compactNumber(.body))
-                .foregroundStyle(Theme.textPrimary)
-                .frame(minWidth: 52, alignment: .trailing)
+            if !large { value.frame(minWidth: 52, alignment: .trailing) }
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 8)
@@ -318,24 +329,29 @@ private struct TeamStatRow: View {
     let club: Club?
     let isFavorite: Bool
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
-        HStack(spacing: 10) {
+        let large = dynamicTypeSize.isAccessibilitySize
+        let value = Text(verbatim: category.formatted(row.value))
+            .font(Theme.compactNumber(.body))
+            .foregroundStyle(Theme.textPrimary)
+        HStack(alignment: large ? .top : .center, spacing: 10) {
             Text(verbatim: "\(row.rank)")
                 .font(Theme.compactNumber(.subheadline))
                 .foregroundStyle(Theme.textTertiary)
-                .frame(width: 24)
+                .fixedSize()
+                .frame(minWidth: 24)
             ClubLogo(club: club, size: 30)
             VStack(alignment: .leading, spacing: 5) {
                 Text(verbatim: club?.displayName ?? "")
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(Theme.textPrimary)
-                    .lineLimit(1)
+                    .oneLineUnlessAccessibilitySize()
+                if large { value }
                 Meter(fraction: row.fraction, color: club?.graphicColor ?? .violet)
             }
-            Text(verbatim: category.formatted(row.value))
-                .font(Theme.compactNumber(.body))
-                .foregroundStyle(Theme.textPrimary)
-                .frame(minWidth: 52, alignment: .trailing)
+            if !large { value.frame(minWidth: 52, alignment: .trailing) }
         }
         .padding(.horizontal, 14)
         .frame(minHeight: 52)

@@ -97,7 +97,51 @@ private struct PlayerHero: View {
     let club: Club?
     let openClub: () -> Void
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            // No room for the photo beside large text: the names and club take the full width.
+            names
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.vertical, 12)
+                .accessibilityElement(children: .contain)
+                .accessibilityLabel(Text(verbatim: [player.fullName, jersey.map { "#\($0)" }].compactMap { $0 }.joined(separator: ", ")))
+        } else {
+            photoHero
+        }
+    }
+
+    private var names: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(verbatim: player.firstName)
+                .font(.title3.weight(.semibold))
+                .foregroundStyle(Theme.textSecondary)
+            Text(verbatim: player.lastName.uppercased())
+                .font(Theme.display(.title))
+                .foregroundStyle(Theme.textPrimary)
+                .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
+                .minimumScaleFactor(0.6)
+            if let club {
+                Button(action: openClub) {
+                    HStack(spacing: 6) {
+                        ClubLogo(club: club, size: 22)
+                        Text(verbatim: club.displayName).font(.subheadline.weight(.semibold))
+                        Image(systemName: "chevron.right").font(.caption2.weight(.bold))
+                    }
+                    .foregroundStyle(Theme.textPrimary)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 6)
+                    .background(.ultraThinMaterial, in: Capsule())
+                }
+                .buttonStyle(.plain)
+                .padding(.top, 6)
+                .accessibilityIdentifier("player.club")
+            }
+        }
+    }
+
+    private var photoHero: some View {
         ZStack(alignment: .bottomLeading) {
             if let jersey {
                 Text(verbatim: jersey)
@@ -111,32 +155,7 @@ private struct PlayerHero: View {
             }
             photo
                 .frame(maxWidth: .infinity, alignment: .trailing)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(verbatim: player.firstName)
-                    .font(.title3.weight(.semibold))
-                    .foregroundStyle(Theme.textSecondary)
-                Text(verbatim: player.lastName.uppercased())
-                    .font(Theme.display(.title))
-                    .foregroundStyle(Theme.textPrimary)
-                    .lineLimit(2)
-                    .minimumScaleFactor(0.6)
-                if let club {
-                    Button(action: openClub) {
-                        HStack(spacing: 6) {
-                            ClubLogo(club: club, size: 22)
-                            Text(verbatim: club.displayName).font(.subheadline.weight(.semibold))
-                            Image(systemName: "chevron.right").font(.caption2.weight(.bold))
-                        }
-                        .foregroundStyle(Theme.textPrimary)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 6)
-                        .background(.ultraThinMaterial, in: Capsule())
-                    }
-                    .buttonStyle(.plain)
-                    .padding(.top, 6)
-                    .accessibilityIdentifier("player.club")
-                }
-            }
+            names
             .frame(maxWidth: 220, alignment: .leading)
             .padding(.bottom, 12)
             .accessibilityElement(children: .contain)
@@ -168,13 +187,18 @@ private struct PlayerBio: View {
     let entry: RosterEntry?
     let age: Int?
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
-        HStack(spacing: 8) {
-            item(entry?.position?.abbreviation, "Position")
-            item(entry?.heightCm.map { "\($0) cm" }, "Height")
-            item(age.map { "\($0)" }, "Age")
-            item(entry?.player.nationalityCode.map { [Nationality.flag(ioc: $0), $0].compactMap { $0 }.joined(separator: " ") }, "Nationality",
-                 accessibilityValue: entry?.player.nationalityCode.map { Nationality.name(ioc: $0) })
+        let items: [(value: String?, title: LocalizedStringKey, accessibilityValue: String?)] = [
+            (entry?.position?.abbreviation, "Position", nil),
+            (entry?.heightCm.map { "\($0) cm" }, "Height", nil),
+            (age.map { "\($0)" }, "Age", nil),
+            (entry?.player.nationalityCode.map { [Nationality.flag(ioc: $0), $0].compactMap { $0 }.joined(separator: " ") }, "Nationality",
+             entry?.player.nationalityCode.map { Nationality.name(ioc: $0) })
+        ]
+        TileRows(count: items.count, perRow: dynamicTypeSize.isAccessibilitySize ? 2 : 4) { index in
+            item(items[index].value, items[index].title, accessibilityValue: items[index].accessibilityValue)
         }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("player.bio")
@@ -188,7 +212,7 @@ private struct PlayerBio: View {
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
             Text(title).font(.caption2.weight(.bold)).textCase(.uppercase).foregroundStyle(Theme.textTertiary)
-                .lineLimit(1).minimumScaleFactor(0.7)
+                .oneLineUnlessAccessibilitySize().minimumScaleFactor(0.7)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 10)
@@ -205,6 +229,8 @@ private struct SeasonAverages: View {
     let season: PlayerPage.SeasonStats
     let rank: (LeaderCategory) -> Int?
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     private struct Item: Identifiable {
         let id: String
         let value: Double
@@ -220,9 +246,10 @@ private struct SeasonAverages: View {
         VStack(alignment: .leading, spacing: 10) {
             SectionHeader(title: "Season averages")
             Text("\(season.games) games").font(.footnote).foregroundStyle(Theme.textSecondary).padding(.horizontal, 4)
+            let perRow = dynamicTypeSize.isAccessibilitySize ? 2 : 4
             VStack(spacing: 8) {
-                HStack(spacing: 8) { ForEach(main) { tile($0, large: true) } }
-                HStack(spacing: 8) { ForEach(more) { tile($0, large: false) } }
+                TileRows(count: main.count, perRow: perRow) { tile(main[$0], large: true) }
+                TileRows(count: more.count, perRow: perRow) { tile(more[$0], large: false) }
             }
         }
         .accessibilityElement(children: .contain)
@@ -240,7 +267,7 @@ private struct SeasonAverages: View {
             Text(verbatim: item.id).font(.caption2.weight(.bold)).foregroundStyle(Theme.textTertiary)
             if let rank {
                 Text("#\(rank) in league")
-                    .font(.system(size: 9, weight: .heavy))
+                    .font(.caption2.weight(.heavy))
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
                     .padding(.horizontal, 5)
@@ -263,19 +290,21 @@ private struct ShootingRings: View {
     let season: PlayerPage.SeasonStats
     let color: RGB
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
         let totals = season.totals, perGame = season.perGame
+        let rings: [(LocalizedStringKey, Double?, String)] = [
+            ("FG", totals.fieldGoalPercentage, Self.detail(perGame.fieldGoalsMade, perGame.fieldGoalsAttempted)),
+            ("2PT", totals.twoPointPercentage, Self.detail(perGame.twoPointersMade, perGame.twoPointersAttempted)),
+            ("3PT", totals.threePointPercentage, Self.detail(perGame.threePointersMade, perGame.threePointersAttempted)),
+            ("FT", totals.freeThrowPercentage, Self.detail(perGame.freeThrowsMade, perGame.freeThrowsAttempted))
+        ]
         VStack(alignment: .leading, spacing: 10) {
             SectionHeader(title: "Shooting")
-            HStack {
-                StatRing(title: "FG", percentage: totals.fieldGoalPercentage,
-                         detail: Self.detail(perGame.fieldGoalsMade, perGame.fieldGoalsAttempted), color: color)
-                StatRing(title: "2PT", percentage: totals.twoPointPercentage,
-                         detail: Self.detail(perGame.twoPointersMade, perGame.twoPointersAttempted), color: color)
-                StatRing(title: "3PT", percentage: totals.threePointPercentage,
-                         detail: Self.detail(perGame.threePointersMade, perGame.threePointersAttempted), color: color)
-                StatRing(title: "FT", percentage: totals.freeThrowPercentage,
-                         detail: Self.detail(perGame.freeThrowsMade, perGame.freeThrowsAttempted), color: color)
+            TileRows(count: rings.count, perRow: dynamicTypeSize.isAccessibilitySize ? 2 : 4, spacing: 12) { index in
+                StatRing(title: rings[index].0, percentage: rings[index].1, detail: rings[index].2, color: color)
+                    .frame(maxWidth: .infinity)
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 14)
@@ -298,19 +327,13 @@ private struct GameLog: View {
     let appModel: AppModel
     let onSelect: (Route) -> Void
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             SectionHeader(title: "Game log")
             VStack(spacing: 0) {
-                HStack(spacing: 0) {
-                    Text("Opponent").frame(maxWidth: .infinity, alignment: .leading)
-                    ForEach(["MIN", "PTS", "REB", "AST"], id: \.self) { Text(verbatim: $0).frame(width: 36, alignment: .trailing) }
-                }
-                .font(.caption2.weight(.bold))
-                .foregroundStyle(Theme.textTertiary)
-                .padding(.horizontal, 14)
-                .frame(height: 32)
-                .accessibilityHidden(true)
+                if !dynamicTypeSize.isAccessibilitySize { columnTitles }
                 ForEach(rows) { row in
                     Button { onSelect(.game(id: row.id)) } label: { rowView(row) }
                         .buttonStyle(.plain)
@@ -323,8 +346,66 @@ private struct GameLog: View {
         .accessibilityIdentifier("player.log")
     }
 
+    private var columnTitles: some View {
+                HStack(spacing: 0) {
+                    Text("Opponent").frame(maxWidth: .infinity, alignment: .leading)
+                    ForEach(["MIN", "PTS", "REB", "AST"], id: \.self) { Text(verbatim: $0).frame(width: 36, alignment: .trailing) }
+                }
+                .font(.caption2.weight(.bold))
+                .foregroundStyle(Theme.textTertiary)
+                .padding(.horizontal, 14)
+                .frame(height: 32)
+                .accessibilityHidden(true)
+    }
+
     private func rowView(_ row: PlayerPage.LogRow) -> some View {
         let opponent = appModel.club(id: row.opponent.id) ?? Club(team: row.opponent, settings: appModel.config?.teams[row.opponent.id])
+        let stats = row.line.stats
+        return Group {
+            if dynamicTypeSize.isAccessibilitySize {
+                // Two lines: the opponent and result, then the numbers spelled out with their names.
+                VStack(alignment: .leading, spacing: 4) {
+                    opponentLine(row, opponent: opponent)
+                    Text(verbatim: "MIN \(Format.count(stats.minutes)) · PTS \(Format.count(stats.points)) · "
+                         + "REB \(Format.count(stats.rebounds)) · AST \(Format.count(stats.assists))")
+                        .font(.subheadline)
+                        .monospacedDigit()
+                        .foregroundStyle(Theme.textSecondary)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.vertical, 8)
+            } else {
+                columnsRow(row, opponent: opponent)
+            }
+        }
+        .padding(.horizontal, 14)
+        .frame(minHeight: 44)
+        .contentShape(Rectangle())
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text(verbatim: "\(row.isHome ? String(localized: "versus") : String(localized: "at")) \(opponent.displayName)"))
+        .accessibilityValue(Text(verbatim: [
+            row.won.map { $0 ? String(localized: "won") : String(localized: "lost") },
+            row.teamScore.flatMap { own in row.opponentScore.map { "\(own)-\($0)" } },
+            String(localized: "\(Format.count(stats.points)) points, \(Format.count(stats.rebounds)) rebounds, \(Format.count(stats.assists)) assists")
+        ].compactMap { $0 }.joined(separator: ", ")))
+        .accessibilityAddTraits(.isButton)
+    }
+
+    private func opponentLine(_ row: PlayerPage.LogRow, opponent: Club) -> some View {
+        HStack(spacing: 8) {
+            Text(verbatim: row.isHome ? "vs" : "@").font(.caption).foregroundStyle(Theme.textTertiary)
+            ClubLogo(club: opponent, size: 22)
+            Text(verbatim: opponent.shortName).font(.subheadline.weight(.semibold)).foregroundStyle(Theme.textPrimary)
+            if let won = row.won, let own = row.teamScore, let other = row.opponentScore {
+                Text(verbatim: "\(won ? "W" : "L") \(own)-\(other)")
+                    .font(.caption.weight(.semibold))
+                    .monospacedDigit()
+                    .foregroundStyle(won ? Theme.win : Theme.loss)
+            }
+        }
+    }
+
+    private func columnsRow(_ row: PlayerPage.LogRow, opponent: Club) -> some View {
         let stats = row.line.stats
         return HStack(spacing: 0) {
             HStack(spacing: 8) {
@@ -350,16 +431,5 @@ private struct GameLog: View {
             .monospacedDigit()
             .foregroundStyle(Theme.textSecondary)
         }
-        .padding(.horizontal, 14)
-        .frame(minHeight: 44)
-        .contentShape(Rectangle())
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(verbatim: "\(row.isHome ? String(localized: "versus") : String(localized: "at")) \(opponent.displayName)"))
-        .accessibilityValue(Text(verbatim: [
-            row.won.map { $0 ? String(localized: "won") : String(localized: "lost") },
-            row.teamScore.flatMap { own in row.opponentScore.map { "\(own)-\($0)" } },
-            String(localized: "\(Format.count(stats.points)) points, \(Format.count(stats.rebounds)) rebounds, \(Format.count(stats.assists)) assists")
-        ].compactMap { $0 }.joined(separator: ", ")))
-        .accessibilityAddTraits(.isButton)
     }
 }

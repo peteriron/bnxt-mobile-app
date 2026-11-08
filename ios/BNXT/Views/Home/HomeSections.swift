@@ -5,12 +5,15 @@ struct HomeClubLeaders: View {
     let leaders: [HomePage.ClubLeader]
     let onSelect: (Route) -> Void
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
+        let perRow = dynamicTypeSize.isAccessibilitySize ? 1 : 2
         Grid(horizontalSpacing: 10, verticalSpacing: 10) {
-            ForEach(Array(stride(from: 0, to: leaders.count, by: 2)), id: \.self) { start in
+            ForEach(Array(stride(from: 0, to: leaders.count, by: perRow)), id: \.self) { start in
                 GridRow {
-                    ForEach(leaders[start..<min(start + 2, leaders.count)]) { leader in clubLeaderTile(leader) }
-                    if start + 1 >= leaders.count { Color.clear.gridCellUnsizedAxes([.horizontal, .vertical]) }
+                    ForEach(leaders[start..<min(start + perRow, leaders.count)]) { leader in clubLeaderTile(leader) }
+                    if start + perRow > leaders.count { Color.clear.gridCellUnsizedAxes([.horizontal, .vertical]) }
                 }
             }
         }
@@ -28,7 +31,7 @@ struct HomeClubLeaders: View {
                     Text(verbatim: leader.player.player.shortName)
                         .font(.caption)
                         .foregroundStyle(Theme.textSecondary)
-                        .lineLimit(1)
+                        .oneLineUnlessAccessibilitySize()
                 }
                 Spacer(minLength: 0)
             }
@@ -51,6 +54,8 @@ struct HomeLeagueLeaders: View {
     let club: (Team) -> Club
     let onSelect: (Route) -> Void
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
         VStack(spacing: 0) {
             ForEach(Array(entries.enumerated()), id: \.element.rosterId) { index, entry in
@@ -65,11 +70,16 @@ struct HomeLeagueLeaders: View {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(verbatim: entry.player.fullName).font(.subheadline.weight(.semibold)).foregroundStyle(Theme.textPrimary)
                             Text(verbatim: entryClub.displayName).font(.caption).foregroundStyle(Theme.textSecondary)
+                            if dynamicTypeSize.isAccessibilitySize {
+                                Text(verbatim: "\(Format.average(entry.value)) VAL").font(Theme.compactNumber(.body)).foregroundStyle(Theme.textPrimary)
+                            }
                         }
                         Spacer()
-                        VStack(alignment: .trailing, spacing: 0) {
-                            Text(verbatim: Format.average(entry.value)).font(Theme.compactNumber(.body)).foregroundStyle(Theme.textPrimary)
-                            Text(verbatim: "VAL").font(.caption2.weight(.bold)).foregroundStyle(Theme.textTertiary)
+                        if !dynamicTypeSize.isAccessibilitySize {
+                            VStack(alignment: .trailing, spacing: 0) {
+                                Text(verbatim: Format.average(entry.value)).font(Theme.compactNumber(.body)).foregroundStyle(Theme.textPrimary)
+                                Text(verbatim: "VAL").font(.caption2.weight(.bold)).foregroundStyle(Theme.textTertiary)
+                            }
                         }
                     }
                     .padding(.horizontal, 14)
@@ -96,6 +106,8 @@ struct HomeAroundTheLeague: View {
     let club: (Team) -> Club
     let onSelect: (Route) -> Void
 
+    @ScaledMetric(relativeTo: .subheadline) private var cardWidth: CGFloat = 150
+
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 10) {
@@ -121,7 +133,7 @@ struct HomeAroundTheLeague: View {
             resultLine(game.away, won: game.winner?.id == game.away.team.id)
         }
         .padding(12)
-        .frame(width: 150)
+        .frame(width: cardWidth)
         .background(Theme.surface, in: RoundedRectangle(cornerRadius: 18))
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(verbatim: "\(club(game.home.team).displayName) \(game.home.score ?? 0), "
@@ -149,11 +161,13 @@ struct HomeStandingCard: View {
     let club: (Team) -> Club
     let action: () -> Void
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
         let standing = summary.standing
         return Button(action: action) {
             VStack(spacing: 0) {
-                HStack(spacing: 14) {
+                AdaptiveStack(verticalAlignment: .center, spacing: 14) {
                     Text(verbatim: Format.ordinal(standing.position))
                         .font(Theme.score(.largeTitle))
                         .foregroundStyle(Theme.textPrimary)
@@ -199,24 +213,38 @@ struct HomeStandingCard: View {
         return parts.joined(separator: " · ")
     }
 
+    @ViewBuilder
     private func snippetRow(_ row: StandingsTable.Row, isMine: Bool) -> some View {
         let standing = row.standing
-        return HStack(spacing: 10) {
-            Rectangle()
-                .fill(row.zone.flatMap { RGB(hexString: $0.color) }?.color ?? .clear)
-                .frame(width: 3, height: 22)
-            Text(verbatim: "\(row.rank)")
-                .font(Theme.compactNumber(.subheadline))
-                .foregroundStyle(Theme.textTertiary)
-                .frame(width: 22)
-            ClubLogo(club: club(standing.team), size: 22)
-            Text(verbatim: club(standing.team).displayName)
-                .font(.subheadline.weight(isMine ? .bold : .regular))
-                .foregroundStyle(Theme.textPrimary)
-                .lineLimit(1)
-            Spacer()
-            Text(verbatim: "\(standing.wins)–\(standing.losses)").frame(width: 44, alignment: .trailing)
-            Text(verbatim: Format.plusMinus(Double(standing.pointDifference))).frame(width: 44, alignment: .trailing)
+        let record = "\(standing.wins)–\(standing.losses)", difference = Format.plusMinus(Double(standing.pointDifference))
+        let zone = Rectangle().fill(row.zone.flatMap { RGB(hexString: $0.color) }?.color ?? .clear).frame(width: 3)
+        let name = Text(verbatim: club(standing.team).displayName)
+            .font(.subheadline.weight(isMine ? .bold : .regular))
+            .foregroundStyle(Theme.textPrimary)
+        let rank = Text(verbatim: "\(row.rank)").font(Theme.compactNumber(.subheadline)).foregroundStyle(Theme.textTertiary)
+        Group {
+            if dynamicTypeSize.isAccessibilitySize {
+                // Two lines: fixed-width number columns would break the digits apart.
+                HStack(alignment: .top, spacing: 10) {
+                    zone
+                    VStack(alignment: .leading, spacing: 2) {
+                        HStack(spacing: 8) { rank; name }
+                        Text(verbatim: "\(record) · \(difference)")
+                    }
+                    Spacer(minLength: 0)
+                }
+                .padding(.vertical, 6)
+            } else {
+                HStack(spacing: 10) {
+                    zone.frame(height: 22)
+                    rank.frame(width: 22)
+                    ClubLogo(club: club(standing.team), size: 22)
+                    name.lineLimit(1)
+                    Spacer()
+                    Text(verbatim: record).frame(width: 44, alignment: .trailing)
+                    Text(verbatim: difference).frame(width: 44, alignment: .trailing)
+                }
+            }
         }
         .font(.subheadline)
         .monospacedDigit()

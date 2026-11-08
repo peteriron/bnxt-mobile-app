@@ -110,9 +110,11 @@ private struct StandingsTableView: View {
     let favoriteId: Int?
     let onSelect: (Int) -> Void
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
         VStack(spacing: 0) {
-            header
+            if !dynamicTypeSize.isAccessibilitySize { header } // the rows spell their numbers out instead
             ForEach(rows) { row in
                 if let cutLine, row.rank == cutLine + 1 {
                     CutLine()
@@ -163,9 +165,51 @@ private struct RowView: View {
     let club: Club
     let isFavorite: Bool
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
+        Group {
+            if dynamicTypeSize.isAccessibilitySize { stacked } else { columns }
+        }
+        .frame(minHeight: 44)
+        .background(isFavorite ? Theme.lime.opacity(0.06) : .clear)
+        .contentShape(Rectangle())
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text(verbatim: "\(row.rank). \(club.displayName)"))
+        .accessibilityValue(accessibilityValue)
+        .accessibilityAddTraits(.isButton)
+    }
+
+    private var zoneBar: some View {
+        Rectangle()
+            .fill(row.zone.flatMap { RGB(hexString: $0.color) }?.color ?? .clear)
+            .frame(width: 3)
+    }
+
+    /// Accessibility sizes: the club on one line, its numbers spelled out on the next, so no column breaks digits apart.
+    private var stacked: some View {
         let standing = row.standing
-        HStack(spacing: 0) {
+        return HStack(alignment: .top, spacing: 10) {
+            zoneBar
+            VStack(alignment: .leading, spacing: 4) {
+                HStack(spacing: 8) {
+                    Text(verbatim: "\(row.rank)").font(Theme.compactNumber(.subheadline)).foregroundStyle(Theme.textPrimary)
+                    Text(verbatim: club.displayName).font(.subheadline.weight(.semibold)).foregroundStyle(Theme.textPrimary)
+                }
+                Text(verbatim: ["\(standing.wins)–\(standing.losses)", Format.plusMinus(Double(standing.pointDifference)),
+                                standing.streak.map(Format.streak)].compactMap { $0 }.joined(separator: " · "))
+                    .font(.subheadline)
+                    .foregroundStyle(Theme.textSecondary)
+            }
+            Spacer(minLength: 0)
+        }
+        .padding(.vertical, 8)
+        .padding(.trailing, 14)
+    }
+
+    private var columns: some View {
+        let standing = row.standing
+        return HStack(spacing: 0) {
             HStack(spacing: 0) {
                 Rectangle()
                     .fill(row.zone.flatMap { RGB(hexString: $0.color) }?.color ?? .clear)
@@ -204,13 +248,6 @@ private struct RowView: View {
             .foregroundStyle(Theme.textSecondary)
         }
         .padding(.trailing, 14)
-        .frame(minHeight: 44)
-        .background(isFavorite ? Theme.lime.opacity(0.06) : .clear)
-        .contentShape(Rectangle())
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(verbatim: "\(row.rank). \(club.displayName)"))
-        .accessibilityValue(accessibilityValue)
-        .accessibilityAddTraits(.isButton)
     }
 
     private var accessibilityValue: Text {

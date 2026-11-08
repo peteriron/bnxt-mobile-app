@@ -47,28 +47,49 @@ struct GameRow: View {
     var favoriteClubId: Int?
     var subtitle: String?
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
-        HStack(spacing: 12) {
-            VStack(spacing: 8) {
-                side(game.home, club: home, opponentScore: game.away.score)
-                side(game.away, club: away, opponentScore: game.home.score)
-            }
-            Divider().overlay(Theme.surface3)
-            VStack(alignment: .trailing, spacing: 3) {
-                StatusPill(label: GameStatusLabel(game: game))
-                if let subtitle {
-                    Text(verbatim: subtitle)
-                        .font(.caption)
-                        .foregroundStyle(Theme.textSecondary)
+        Group {
+            if dynamicTypeSize.isAccessibilitySize {
+                // The status above the clubs: a narrow status column would break "20:30" over two lines.
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack(spacing: 8) {
+                        StatusPill(label: GameStatusLabel(game: game))
+                        if let subtitle { subtitleText(subtitle) }
+                    }
+                    sides
+                }
+            } else {
+                HStack(spacing: 12) {
+                    sides
+                    Divider().overlay(Theme.surface3)
+                    VStack(alignment: .trailing, spacing: 3) {
+                        StatusPill(label: GameStatusLabel(game: game))
+                        if let subtitle { subtitleText(subtitle) }
+                    }
+                    .frame(width: 76, alignment: .trailing)
                 }
             }
-            .frame(width: 76, alignment: .trailing)
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 12)
         .contentShape(Rectangle())
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(verbatim: accessibilityText))
+    }
+
+    private var sides: some View {
+        VStack(spacing: 8) {
+            side(game.home, club: home, opponentScore: game.away.score)
+            side(game.away, club: away, opponentScore: game.home.score)
+        }
+    }
+
+    private func subtitleText(_ subtitle: String) -> some View {
+        Text(verbatim: subtitle)
+            .font(.caption)
+            .foregroundStyle(Theme.textSecondary)
     }
 
     private func side(_ side: GameSide, club: Club?, opponentScore: Int?) -> some View {
@@ -78,7 +99,7 @@ struct GameRow: View {
             Text(verbatim: club?.displayName ?? side.team.name)
                 .font(.body.weight(dimmed ? .regular : .semibold))
                 .foregroundStyle(dimmed ? Theme.textSecondary : Theme.textPrimary)
-                .lineLimit(1)
+                .oneLineUnlessAccessibilitySize()
             if side.team.id == favoriteClubId {
                 Circle().fill(Theme.lime).frame(width: 6, height: 6).accessibilityHidden(true)
             }
@@ -112,19 +133,25 @@ struct LiveCard: View {
     let away: Club?
     var lastPlay: String?
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             StatusPill(label: GameStatusLabel(game: game))
-            HStack {
-                team(home, fallback: game.home.team)
-                Spacer()
-                Text(verbatim: "\(game.home.score ?? 0) – \(game.away.score ?? 0)")
-                    .font(Theme.score(.largeTitle))
-                    .foregroundStyle(Theme.textPrimary)
-                    .minimumScaleFactor(0.6)
-                    .lineLimit(1)
-                Spacer()
-                team(away, fallback: game.away.team)
+            if dynamicTypeSize.isAccessibilitySize {
+                VStack(alignment: .leading, spacing: 8) {
+                    team(home, fallback: game.home.team)
+                    score
+                    team(away, fallback: game.away.team)
+                }
+            } else {
+                HStack {
+                    team(home, fallback: game.home.team)
+                    Spacer()
+                    score
+                    Spacer()
+                    team(away, fallback: game.away.team)
+                }
             }
             if let lastPlay {
                 Text(verbatim: lastPlay)
@@ -144,15 +171,30 @@ struct LiveCard: View {
         .accessibilityElement(children: .combine)
     }
 
+    private var score: some View {
+        Text(verbatim: "\(game.home.score ?? 0) – \(game.away.score ?? 0)")
+            .font(Theme.score(.largeTitle))
+            .foregroundStyle(Theme.textPrimary)
+            .minimumScaleFactor(0.6)
+            .lineLimit(1)
+    }
+
+    @ViewBuilder
     private func team(_ club: Club?, fallback: Team) -> some View {
-        VStack(spacing: 6) {
-            ClubLogo(club: club, size: 48)
-            Text(verbatim: club?.displayName ?? fallback.name)
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(Theme.textSecondary)
-                .multilineTextAlignment(.center)
-                .lineLimit(2)
+        let name = Text(verbatim: club?.displayName ?? fallback.name)
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(Theme.textSecondary)
+        if dynamicTypeSize.isAccessibilitySize {
+            HStack(spacing: 10) {
+                ClubLogo(club: club, size: 48)
+                name
+            }
+        } else {
+            VStack(spacing: 6) {
+                ClubLogo(club: club, size: 48)
+                name.multilineTextAlignment(.center).lineLimit(2)
+            }
+            .frame(width: 92)
         }
-        .frame(width: 92)
     }
 }

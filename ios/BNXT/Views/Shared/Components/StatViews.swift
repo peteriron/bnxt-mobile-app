@@ -9,6 +9,9 @@ struct StatRing: View {
     let detail: String
     var color: RGB = .violet
 
+    /// Grows with the percentage inside it.
+    @ScaledMetric(relativeTo: .footnote) private var ringSize: CGFloat = 62
+
     var body: some View {
         VStack(spacing: 6) {
             ZStack {
@@ -22,7 +25,7 @@ struct StatRing: View {
                     .monospacedDigit()
                     .foregroundStyle(Theme.textPrimary)
             }
-            .frame(width: 62, height: 62)
+            .frame(width: ringSize, height: ringSize)
             Text(title)
                 .font(.caption2.weight(.bold))
                 .foregroundStyle(Theme.textTertiary)
@@ -44,8 +47,12 @@ struct Sparkline: View {
     var average: Double?
     var color: RGB = .violet
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @ScaledMetric(relativeTo: .caption2) private var height: CGFloat = 120
+
     var body: some View {
         let line = color.lifted().color
+        let large = dynamicTypeSize.isAccessibilitySize
         Chart {
             ForEach(Array(values.enumerated()), id: \.offset) { index, value in
                 AreaMark(x: .value("Game", index), y: .value("Value", value))
@@ -71,21 +78,22 @@ struct Sparkline: View {
         .chartXAxis {
             AxisMarks(preset: .aligned, values: Array(values.indices)) { mark in
                 AxisValueLabel(collisionResolution: .disabled) {
-                    if let index = mark.as(Int.self), labels.indices.contains(index) {
+                    // At accessibility sizes the opponents' codes would overlap; VoiceOver reads the values instead.
+                    if !large, let index = mark.as(Int.self), labels.indices.contains(index) {
                         Text(verbatim: labels[index]).font(.caption2).foregroundStyle(Theme.textTertiary)
                     }
                 }
             }
         }
         .chartYAxis {
-            AxisMarks(position: .leading) { _ in
+            AxisMarks(position: .leading, values: .automatic(desiredCount: large ? 2 : 4)) { _ in
                 AxisGridLine().foregroundStyle(Theme.surface3)
                 AxisValueLabel().foregroundStyle(Theme.textTertiary)
             }
         }
         // Room at both ends so the first and last points and their labels aren't clipped.
         .chartXScale(range: .plotDimension(padding: 20))
-        .frame(height: 120)
+        .frame(height: min(height, 240))
         .accessibilityElement()
         .accessibilityLabel("Points per game")
         .accessibilityValue(Text(verbatim: values.map { Format.count($0) }.joined(separator: ", ")))
@@ -132,7 +140,12 @@ struct BoxScoreTable: View {
         box.players.sorted { ($0.isStarter ? 1 : 0, $0.stats.minutes) > ($1.isStarter ? 1 : 0, $1.stats.minutes) }
     }
 
-    private let rowHeight: CGFloat = 40
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    /// Column widths and row heights grow with the text, so numbers never wrap; the stats scroll sideways (§4).
+    @ScaledMetric(relativeTo: .subheadline) private var scale: CGFloat = 1
+    private var rowHeight: CGFloat { dynamicTypeSize.isAccessibilitySize ? 40 * scale * 1.6 : 40 * scale }
+    /// The pinned column stops growing so the stats keep some room; names wrap instead.
+    private var nameWidth: CGFloat { min(132 * scale, 230) }
 
     var body: some View {
         let lines = Self.orderedLines(box)
@@ -140,23 +153,26 @@ struct BoxScoreTable: View {
         HStack(spacing: 0) {
             // Pinned player column
             VStack(alignment: .leading, spacing: 0) {
-                header("PLAYER", width: 132, alignment: .leading)
+                header("PLAYER", width: nameWidth, alignment: .leading)
                 ForEach(lines) { line in
                     Button { onSelect?(line) } label: {
                         HStack(spacing: 6) {
-                            Text(verbatim: line.jersey ?? "")
-                                .font(.caption.weight(.semibold))
-                                .foregroundStyle(Theme.textTertiary)
-                                .frame(width: 20, alignment: .trailing)
+                            // At accessibility sizes the number would take a third of the pinned column.
+                            if !dynamicTypeSize.isAccessibilitySize {
+                                Text(verbatim: line.jersey ?? "")
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(Theme.textTertiary)
+                                    .frame(width: 20, alignment: .trailing)
+                            }
                             Text(verbatim: line.player.shortName)
                                 .font(.subheadline.weight(.semibold))
                                 .foregroundStyle(Theme.textPrimary)
-                                .lineLimit(1)
+                                .lineLimit(dynamicTypeSize.isAccessibilitySize ? 3 : 1)
                             if line.isStarter {
                                 Circle().fill(Theme.violetHigh).frame(width: 5, height: 5).accessibilityLabel("Starter")
                             }
                         }
-                        .frame(width: 132, height: rowHeight, alignment: .leading)
+                        .frame(width: nameWidth, height: rowHeight, alignment: .leading)
                     }
                     .buttonStyle(.plain)
                     .disabled(onSelect == nil)
@@ -164,8 +180,8 @@ struct BoxScoreTable: View {
                 Text("Team")
                     .font(.subheadline.weight(.heavy))
                     .foregroundStyle(Theme.textPrimary)
-                    .frame(width: 132, height: rowHeight, alignment: .leading)
-                    .padding(.leading, 26)
+                    .frame(width: nameWidth, height: rowHeight, alignment: .leading)
+                    .padding(.leading, dynamicTypeSize.isAccessibilitySize ? 0 : 26)
             }
             .padding(.leading, 12)
             .background(Theme.surface)
@@ -174,7 +190,7 @@ struct BoxScoreTable: View {
 
             ScrollView(.horizontal, showsIndicators: false) {
                 VStack(spacing: 0) {
-                    HStack(spacing: 0) { ForEach(columns) { header($0.title, width: $0.width, alignment: .trailing) } }
+                    HStack(spacing: 0) { ForEach(columns) { header($0.title, width: $0.width * scale, alignment: .trailing) } }
                     ForEach(lines) { line in
                         HStack(spacing: 0) {
                             ForEach(columns) { column in cell(column.value(line.stats), column: column, bold: false) }
@@ -200,7 +216,7 @@ struct BoxScoreTable: View {
         Text(verbatim: title)
             .font(.caption2.weight(.bold))
             .foregroundStyle(Theme.textTertiary)
-            .frame(width: width, height: 32, alignment: alignment)
+            .frame(width: width, height: 32 * scale, alignment: alignment)
     }
 
     private func cell(_ text: String, column: Column, bold: Bool) -> some View {
@@ -208,6 +224,6 @@ struct BoxScoreTable: View {
             .font(.subheadline.weight(bold || column.highlighted ? .bold : .regular))
             .monospacedDigit()
             .foregroundStyle(bold || column.highlighted ? Theme.textPrimary : Theme.textSecondary)
-            .frame(width: column.width, alignment: .trailing)
+            .frame(width: column.width * scale, alignment: .trailing)
     }
 }

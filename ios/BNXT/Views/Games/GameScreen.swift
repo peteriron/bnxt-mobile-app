@@ -126,7 +126,7 @@ private struct GameHeader: View {
                     .foregroundStyle(Theme.textSecondary)
                 status
             }
-            HStack(alignment: .center, spacing: 8) {
+            AdaptiveStack(horizontalAlignment: .center, verticalAlignment: .center, spacing: 8) {
                 team(home, standing: homeStanding, side: "Home")
                 middle.frame(minWidth: 120)
                 team(away, standing: awayStanding, side: "Away")
@@ -189,10 +189,9 @@ private struct GameHeader: View {
                     .foregroundStyle(Theme.textPrimary)
                     .multilineTextAlignment(.center)
                     .lineLimit(2)
-                HStack(spacing: 0) {
-                    if let standing { Text(verbatim: "\(standing.wins)–\(standing.losses) · ") }
-                    Text(side)
-                }
+                // One Text, so it wraps as a sentence instead of splitting into columns.
+                (Text(verbatim: standing.map { "\($0.wins)–\($0.losses) · " } ?? "") + Text(side))
+                .multilineTextAlignment(.center)
                 .font(.caption2.weight(.semibold))
                 .foregroundStyle(Theme.textTertiary)
             }
@@ -210,8 +209,60 @@ private struct QuarterTable: View {
     let home: Club
     let away: Club
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
         let titles = GameDetail.periodTitles(game)
+        Group {
+            if dynamicTypeSize.isAccessibilitySize { transposed(titles) } else { columns(titles) }
+        }
+        .padding(.horizontal, 12)
+        .padding(.bottom, 6)
+        .background(Theme.surface, in: RoundedRectangle(cornerRadius: 18))
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("game.quarters")
+    }
+
+    /// Accessibility sizes: one row per period and a column per club, so each number gets room.
+    private func transposed(_ titles: [String]) -> some View {
+        Grid(alignment: .trailing, horizontalSpacing: 12, verticalSpacing: 6) {
+            GridRow {
+                Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
+                Text(verbatim: home.shortName)
+                Text(verbatim: away.shortName)
+            }
+            .font(.caption2.weight(.bold))
+            .foregroundStyle(Theme.textTertiary)
+            ForEach(Array(titles.enumerated()), id: \.offset) { index, title in
+                GridRow {
+                    Text(verbatim: title).font(.caption2.weight(.bold)).foregroundStyle(Theme.textTertiary).gridColumnAlignment(.leading)
+                    Text(verbatim: game.home.periodScores[safe: index].map { "\($0)" } ?? "–")
+                    Text(verbatim: game.away.periodScores[safe: index].map { "\($0)" } ?? "–")
+                }
+                .foregroundStyle(Theme.textSecondary)
+            }
+            GridRow {
+                Text(verbatim: "T").font(.caption2.weight(.bold)).foregroundStyle(Theme.textTertiary)
+                Text(verbatim: game.home.score.map { "\($0)" } ?? "–")
+                Text(verbatim: game.away.score.map { "\($0)" } ?? "–")
+            }
+            .fontWeight(.bold)
+            .foregroundStyle(Theme.textPrimary)
+        }
+        .font(.subheadline)
+        .monospacedDigit()
+        .padding(.vertical, 10)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text("Quarters"))
+        .accessibilityValue(Text(verbatim: [quarters(home, side: game.home), quarters(away, side: game.away)].joined(separator: "; ")))
+    }
+
+    private func quarters(_ club: Club, side: GameSide) -> String {
+        "\(club.displayName): " + side.periodScores.enumerated().map { "\(GameDetail.periodTitles(game)[$0.offset]) \($0.element)" }
+            .joined(separator: ", ")
+    }
+
+    private func columns(_ titles: [String]) -> some View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {
                 Spacer().frame(maxWidth: .infinity)
@@ -224,11 +275,6 @@ private struct QuarterTable: View {
             row(home, side: game.home, count: titles.count)
             row(away, side: game.away, count: titles.count)
         }
-        .padding(.horizontal, 12)
-        .padding(.bottom, 6)
-        .background(Theme.surface, in: RoundedRectangle(cornerRadius: 18))
-        .accessibilityElement(children: .contain)
-        .accessibilityIdentifier("game.quarters")
     }
 
     private func row(_ club: Club, side: GameSide, count: Int) -> some View {

@@ -72,7 +72,7 @@ struct HomeScreen: View {
                         Text(verbatim: club.displayName)
                             .font(Theme.display(.title2))
                             .foregroundStyle(Theme.textPrimary)
-                            .lineLimit(1)
+                            .oneLineUnlessAccessibilitySize()
                             .minimumScaleFactor(0.7)
                     }
                 }
@@ -96,7 +96,7 @@ struct HomeScreen: View {
             .accessibilityIdentifier("home.live")
         }
         if model.nextGame != nil || model.lastResult != nil {
-            HStack(alignment: .top, spacing: 10) {
+            AdaptiveStack(spacing: 10) {
                 if let next = model.nextGame { nextCard(next) }
                 if let last = model.lastResult { lastCard(last) }
             }
@@ -151,7 +151,7 @@ struct HomeScreen: View {
                     Text(verbatim: HomePage.countdown(to: game.tipOff, now: model.now()))
                         .font(Theme.score(.title3))
                         .foregroundStyle(Theme.textPrimary)
-                        .lineLimit(1)
+                        .oneLineUnlessAccessibilitySize()
                         .minimumScaleFactor(0.7)
                     Text(verbatim: Self.nextGameDetail(game.tipOff, now: model.now()))
                         .font(.caption)

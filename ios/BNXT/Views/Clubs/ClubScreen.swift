@@ -81,9 +81,11 @@ private struct ClubHero: View {
     let isFavorite: Bool
     let makeFavorite: () -> Void
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            HStack(spacing: 14) {
+            AdaptiveStack(verticalAlignment: .center, spacing: 14) {
                 ClubLogo(club: club, size: 76)
                 VStack(alignment: .leading, spacing: 3) {
                     Text(verbatim: club?.displayName ?? "")
@@ -103,16 +105,15 @@ private struct ClubHero: View {
             }
             .overlay(alignment: .trailing) { watermark }
 
-            HStack(spacing: 8) {
-                fact(standing.map { "\($0.wins)–\($0.losses)" }, "Record")
-                fact(standing.map { Format.ordinal($0.position) }, "League")
-                fact(statistics.map { Format.average($0.pointsFor) }, "PPG")
-                fact(statistics.map { Format.average($0.pointsAgainst) }, "Opp PPG")
-            }
+            let facts: [(String?, LocalizedStringKey)] = [
+                (standing.map { "\($0.wins)–\($0.losses)" }, "Record"), (standing.map { Format.ordinal($0.position) }, "League"),
+                (statistics.map { Format.average($0.pointsFor) }, "PPG"), (statistics.map { Format.average($0.pointsAgainst) }, "Opp PPG")
+            ]
+            TileRows(count: facts.count, perRow: dynamicTypeSize.isAccessibilitySize ? 2 : 4) { fact(facts[$0].0, facts[$0].1) }
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("club.facts")
 
-            HStack(spacing: 10) {
+            AdaptiveStack(spacing: 10) {
                 if isFavorite {
                     Label("My club", systemImage: "star.fill")
                         .font(.body.weight(.semibold))
@@ -197,26 +198,33 @@ private struct RosterList: View {
 private struct RosterRowView: View {
     let row: ClubPage.RosterRow
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
         let player = row.entry.player
+        let large = dynamicTypeSize.isAccessibilitySize
         HStack(spacing: 12) {
             Text(verbatim: row.jersey ?? "")
                 .font(Theme.score(.subheadline))
                 .foregroundStyle(Theme.textTertiary)
-                .frame(width: 28, alignment: .trailing)
-            PlayerAvatar(player: player, size: 42)
+                .fixedSize()
+                .frame(minWidth: 28, alignment: .trailing)
+            if !large { PlayerAvatar(player: player, size: 42) }
             VStack(alignment: .leading, spacing: 2) {
                 Text(verbatim: player.fullName)
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(Theme.textPrimary)
-                    .lineLimit(1)
+                    .oneLineUnlessAccessibilitySize()
                 Text(verbatim: details)
                     .font(.caption)
                     .foregroundStyle(Theme.textSecondary)
-                    .lineLimit(1)
+                    .oneLineUnlessAccessibilitySize()
+                if large, let points = row.pointsPerGame {
+                    Text(verbatim: "\(Format.average(points)) PTS").font(Theme.score(.callout)).foregroundStyle(Theme.textPrimary)
+                }
             }
             Spacer(minLength: 4)
-            if let points = row.pointsPerGame {
+            if !large, let points = row.pointsPerGame {
                 VStack(spacing: 0) {
                     Text(verbatim: Format.average(points)).font(Theme.score(.callout)).foregroundStyle(Theme.textPrimary)
                     Text(verbatim: "PTS").font(.caption2.weight(.bold)).foregroundStyle(Theme.textTertiary)

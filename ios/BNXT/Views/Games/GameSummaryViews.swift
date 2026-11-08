@@ -7,6 +7,8 @@ struct GameSummary: View {
     let club: (Team) -> Club
     let onSelect: (Route) -> Void
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
         let home = model.teamBox(.home), away = model.teamBox(.away)
         if home == nil && away == nil {
@@ -15,7 +17,7 @@ struct GameSummary: View {
             VStack(alignment: .leading, spacing: 18) {
                 VStack(alignment: .leading, spacing: 10) {
                     SectionHeader(title: "Top performers")
-                    HStack(alignment: .top, spacing: 10) {
+                    AdaptiveStack(spacing: 10) {
                         performer(GameDetail.topPerformer(home), club: club(game.home.team))
                         performer(GameDetail.topPerformer(away), club: club(game.away.team))
                     }
@@ -77,11 +79,12 @@ struct GameSummary: View {
             VStack(spacing: 14) {
                 ForEach(rows) { row in
                     VStack(spacing: 4) {
+                        let title = Text(verbatim: row.title).font(.caption.weight(.semibold)).foregroundStyle(Theme.textSecondary)
+                        if dynamicTypeSize.isAccessibilitySize { title.frame(maxWidth: .infinity, alignment: .leading) }
                         HStack {
                             value(row.home, row: row, isBetter: row.better == .home)
                             Spacer()
-                            Text(verbatim: row.title).font(.caption.weight(.semibold)).foregroundStyle(Theme.textSecondary)
-                            Spacer()
+                            if !dynamicTypeSize.isAccessibilitySize { title; Spacer() }
                             value(row.away, row: row, isBetter: row.better == .away)
                         }
                         GeometryReader { proxy in
@@ -132,10 +135,21 @@ struct GameSummary: View {
             SectionHeader(title: "Game leaders")
             VStack(spacing: 0) {
                 ForEach(Array(stats.enumerated()), id: \.offset) { _, stat in
-                    HStack {
-                        leader(GameDetail.leader(home, stat.1), stat: stat.1, alignment: .leading)
-                        Text(stat.0).font(.caption.weight(.bold)).textCase(.uppercase).foregroundStyle(Theme.textTertiary)
-                        leader(GameDetail.leader(away, stat.1), stat: stat.1, alignment: .trailing)
+                    let title = Text(stat.0).font(.caption.weight(.bold)).textCase(.uppercase).foregroundStyle(Theme.textTertiary)
+                    Group {
+                        if dynamicTypeSize.isAccessibilitySize {
+                            VStack(alignment: .leading, spacing: 6) {
+                                title
+                                leader(GameDetail.leader(home, stat.1), stat: stat.1, alignment: .leading)
+                                leader(GameDetail.leader(away, stat.1), stat: stat.1, alignment: .leading)
+                            }
+                        } else {
+                            HStack {
+                                leader(GameDetail.leader(home, stat.1), stat: stat.1, alignment: .leading)
+                                title
+                                leader(GameDetail.leader(away, stat.1), stat: stat.1, alignment: .trailing)
+                            }
+                        }
                     }
                     .padding(.horizontal, 14)
                     .padding(.vertical, 10)
@@ -152,7 +166,8 @@ struct GameSummary: View {
                 HStack(spacing: 8) {
                     if alignment == .leading { PlayerAvatar(player: line.player, size: 32) }
                     VStack(alignment: alignment, spacing: 0) {
-                        Text(verbatim: line.player.lastName).font(.footnote.weight(.semibold)).foregroundStyle(Theme.textPrimary).lineLimit(1)
+                        Text(verbatim: line.player.lastName).font(.footnote.weight(.semibold)).foregroundStyle(Theme.textPrimary)
+                            .oneLineUnlessAccessibilitySize()
                         Text(verbatim: Format.count(line.stats[keyPath: stat])).font(Theme.score(.callout)).foregroundStyle(Theme.textPrimary)
                     }
                     if alignment == .trailing { PlayerAvatar(player: line.player, size: 32) }

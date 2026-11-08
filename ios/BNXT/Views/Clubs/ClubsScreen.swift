@@ -11,7 +11,7 @@ struct ClubsScreen: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     /// Three columns (§3.8); two at accessibility text sizes so names stay readable.
-    private var columns: Int { dynamicTypeSize.isAccessibilitySize ? 2 : 3 }
+    private var columns: Int { dynamicTypeSize.isAccessibilitySize ? 1 : 3 }
 
     /// Clubs split into rows of `columns`.
     static func rows(_ clubs: [Club], columns: Int) -> [[Club]] {
