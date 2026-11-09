@@ -359,7 +359,8 @@ and players can't be searched offline before a roster was ever cached (clubs sti
 
 ## 8. Release status & roadmap
 
-**Live:** nothing yet. **On `main`:** app shell 0.1.0 (Home, Games, Standings, Stats, Clubs, Archivo display type, theme tokens, API key plumbing, test targets, local CI), live recorder.
+**Live:** nothing yet. **TestFlight:** 1.0.0 (2), uploaded 9 Nov 2026. **App Store Connect:** 1.0.0 (2) staged, Dutch primary listing
+plus English, not submitted (Submit for Review is the human's step; tag `v1.0.0` goes on the build that's submitted). **On `main`:** app shell 0.1.0 (Home, Games, Standings, Stats, Clubs, Archivo display type, theme tokens, API key plumbing, test targets, local CI), live recorder.
 **Prototype:** v0.1 (HTML, data snapshot 3 Nov 2026).
 
 ### Phase 0: foundations & permission (in progress)
