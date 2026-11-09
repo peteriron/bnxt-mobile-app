@@ -9,6 +9,7 @@ struct BNXTApp: App {
     @State private var versionChecker: VersionChecker
 
     init() {
+        PerformanceMarks.appStarted()
         // Logos and photos are re-used everywhere; give AsyncImage a real disk cache.
         URLCache.shared = URLCache(memoryCapacity: 20 << 20, diskCapacity: 150 << 20)
         #if DEBUG

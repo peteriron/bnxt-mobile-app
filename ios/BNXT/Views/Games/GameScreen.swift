@@ -22,7 +22,7 @@ struct GameScreen: View {
                 case .failed:
                     LoadFailedView { Task { await model.load(season: appModel.season, liveStatsEnabled: liveStatsEnabled) } }
                 case .loaded:
-                    if let game = model.game { content(game) }
+                    if let game = model.game { content(game).onAppear { PerformanceMarks.gameContentShown() } }
                 }
             }
             .padding(.horizontal)
@@ -33,6 +33,7 @@ struct GameScreen: View {
         .navigationTitle(Text(verbatim: title))
         .navigationBarTitleDisplayMode(.inline)
         .refreshable { await model.load(season: appModel.season, liveStatsEnabled: liveStatsEnabled) }
+        .onAppear { if model.state == .idle { PerformanceMarks.gameScreenAppeared() } }
         .task { if model.state == .idle { await model.load(season: appModel.season, liveStatsEnabled: liveStatsEnabled) } }
         // Live polling only while this screen is visible: the task ends when it goes away (§4 Network etiquette).
         .task(id: model.game?.isLive == true) {

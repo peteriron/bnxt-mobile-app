@@ -32,6 +32,7 @@ struct HomeScreen: View {
                 case .loaded:
                     if let cachedAt = model.cachedAt { CachedNote(date: cachedAt) }
                     content
+                        .onAppear { PerformanceMarks.homeShown() }
                 }
             }
             .padding(.vertical)
