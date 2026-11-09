@@ -11,6 +11,8 @@ struct GamePreview: View {
     let onSelect: (Route) -> Void
 
     @State private var addingToCalendar = false
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    private var large: Bool { dynamicTypeSize.isAccessibilitySize }
 
     var body: some View {
         let home = club(game.home.team), away = club(game.away.team)
@@ -42,10 +44,10 @@ struct GamePreview: View {
         }
     }
 
-    private func seasonTable(home: Club, away: Club) -> some View {
+    private func previewRows(home: Club, away: Club) -> [PreviewRow] {
         let homeStanding = model.standings[home.id], awayStanding = model.standings[away.id]
         let homeForm = model.teamForm(teamId: home.id), awayForm = model.teamForm(teamId: away.id)
-        let rows: [PreviewRow] = [
+        return [
             PreviewRow(title: "Record", home: homeStanding.map { "\($0.wins)–\($0.losses)" } ?? "–",
                        away: awayStanding.map { "\($0.wins)–\($0.losses)" } ?? "–"),
             PreviewRow(title: "Position", home: homeStanding.map { Format.ordinal($0.position) } ?? "–",
@@ -57,6 +59,10 @@ struct GamePreview: View {
             PreviewRow(title: "FG%", home: Self.average(homeForm.fieldGoalPercentage), away: Self.average(awayForm.fieldGoalPercentage)),
             PreviewRow(title: "3P%", home: Self.average(homeForm.threePointPercentage), away: Self.average(awayForm.threePointPercentage))
         ]
+    }
+
+    private func seasonTable(home: Club, away: Club) -> some View {
+        let rows = previewRows(home: home, away: away)
         return VStack(alignment: .leading, spacing: 10) {
             SectionHeader(title: "Season so far")
             VStack(spacing: 0) {
@@ -67,24 +73,31 @@ struct GamePreview: View {
                 }
                 .padding(.vertical, 10)
                 ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
-                    HStack {
-                        Text(verbatim: row.home).fontWeight(.bold).foregroundStyle(Theme.textPrimary)
-                        Spacer()
-                        Text(row.title).font(.caption.weight(.semibold)).foregroundStyle(Theme.textTertiary)
-                        Spacer()
-                        Text(verbatim: row.away).fontWeight(.bold).foregroundStyle(Theme.textPrimary)
+                    let title = Text(row.title).font(.caption.weight(.semibold)).foregroundStyle(Theme.textTertiary)
+                    VStack(spacing: 2) {
+                        // At accessibility sizes the title gets its own line; between the numbers it wrapped per syllable.
+                        if large { title.frame(maxWidth: .infinity, alignment: .leading).padding(.top, 6) }
+                        HStack {
+                            Text(verbatim: row.home).fontWeight(.bold).foregroundStyle(Theme.textPrimary)
+                            Spacer()
+                            if !large { title; Spacer() }
+                            Text(verbatim: row.away).fontWeight(.bold).foregroundStyle(Theme.textPrimary)
+                        }
                     }
                     .font(.subheadline)
                     .monospacedDigit()
                     .frame(minHeight: 34)
                     .accessibilityElement(children: .combine)
                 }
-                HStack {
-                    FormStrip(wins: model.form(teamId: home.id))
-                    Spacer()
-                    Text("Last 5").font(.caption.weight(.semibold)).foregroundStyle(Theme.textTertiary)
-                    Spacer()
-                    FormStrip(wins: model.form(teamId: away.id))
+                let lastFive = Text("Last 5").font(.caption.weight(.semibold)).foregroundStyle(Theme.textTertiary)
+                VStack(spacing: 2) {
+                    if large { lastFive.frame(maxWidth: .infinity, alignment: .leading).padding(.top, 6) }
+                    HStack {
+                        FormStrip(wins: model.form(teamId: home.id))
+                        Spacer()
+                        if !large { lastFive; Spacer() }
+                        FormStrip(wins: model.form(teamId: away.id))
+                    }
                 }
                 .frame(minHeight: 40)
             }
@@ -106,7 +119,7 @@ struct GamePreview: View {
     private func playersToWatch(home: Club, away: Club) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             SectionHeader(title: "Players to watch")
-            HStack(alignment: .top, spacing: 10) {
+            AdaptiveStack(spacing: 10) {
                 watch(GameDetail.playerToWatch(model.players[home.id] ?? []), club: home)
                 watch(GameDetail.playerToWatch(model.players[away.id] ?? []), club: away)
             }
@@ -141,7 +154,7 @@ struct GamePreview: View {
     }
 
     private func actions(home: Club, away: Club) -> some View {
-        HStack(spacing: 10) {
+        AdaptiveStack(spacing: 10) {
             if let url = home.ticketURL {
                 Link(destination: url) { Label("Tickets", systemImage: "ticket").frame(maxWidth: .infinity) }
                     .buttonStyle(.borderedProminent)

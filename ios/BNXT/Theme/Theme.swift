@@ -25,6 +25,10 @@ enum Theme {
     static let win = RGB(hex: 0x3DDC97).color
     static let loss = RGB(hex: 0xFF5C74).color
 
+    /// A badge's background: its text colour at this opacity (LIVE, W/L, Compare's "Change").
+    /// Light enough that small badge text keeps 4.5:1 on every surface (ThemeTests).
+    static let badgeTintOpacity = 0.12
+
     /// Wide italic display type for headlines (Archivo Expanded Black Italic, §7.10).
     /// Scales with Dynamic Type relative to `style`. Body text stays on the system font.
     static func display(_ style: Font.TextStyle = .largeTitle) -> Font {

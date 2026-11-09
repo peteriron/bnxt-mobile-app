@@ -23,8 +23,16 @@ struct OnboardingView: View {
     }
 
     private var welcome: some View {
+        // Scrolls only when the text is too large to fit.
+        ViewThatFits(in: .vertical) {
+            welcomeContent
+            ScrollView { welcomeContent }
+        }
+    }
+
+    private var welcomeContent: some View {
         VStack(alignment: .leading, spacing: 18) {
-            Spacer()
+            Spacer(minLength: 0)
             VStack(alignment: .leading, spacing: 6) {
                 Text(verbatim: "BNXT")
                     .font(.custom(DisplayFace.headline.rawValue, size: 88, relativeTo: .largeTitle))
@@ -33,6 +41,10 @@ struct OnboardingView: View {
                     .font(.custom(DisplayFace.headline.rawValue, size: 36, relativeTo: .title))
                     .foregroundStyle(Theme.lime)
             }
+            // The wordmark is a logo: it grows a little with the text size, never past the screen.
+            .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
+            .lineLimit(1)
+            .minimumScaleFactor(0.5)
             .accessibilityElement(children: .combine)
             .accessibilityAddTraits(.isHeader)
             Text("Belgium and the Netherlands, 16 clubs, one league. Live scores, box scores and stats for every game.")
@@ -57,17 +69,19 @@ struct OnboardingView: View {
 
     private var picker: some View {
         VStack(alignment: .leading, spacing: 0) {
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Pick your club")
-                    .font(Theme.display(.title))
-                    .foregroundStyle(Theme.textPrimary)
-                    .accessibilityAddTraits(.isHeader)
-                Text("Home will show your club's games, standing and leaders. You can change it any time.")
-                    .font(.subheadline)
-                    .foregroundStyle(Theme.textSecondary)
-            }
-            .padding([.horizontal, .top], 20)
+            // The title scrolls with the clubs, so large text never squeezes the list out.
             ScrollView {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Pick your club")
+                        .font(Theme.display(.title))
+                        .foregroundStyle(Theme.textPrimary)
+                        .accessibilityAddTraits(.isHeader)
+                    Text("Home will show your club's games, standing and leaders. You can change it any time.")
+                        .font(.subheadline)
+                        .foregroundStyle(Theme.textSecondary)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding([.horizontal, .top], 20)
                 ClubPickerGrid(appModel: appModel, selection: selection) { selection = $0 }
                     .padding(.bottom, 110)
             }

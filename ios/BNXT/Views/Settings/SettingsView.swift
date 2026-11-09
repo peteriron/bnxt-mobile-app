@@ -14,11 +14,13 @@ struct SettingsView: View {
             List {
                 Section("My club") {
                     Button { pickingClub = true } label: {
-                        HStack(spacing: 12) {
-                            ClubLogo(club: favorites.resolve(in: appModel.clubs), size: 34)
-                            Text(verbatim: favorites.resolve(in: appModel.clubs)?.displayName ?? String(localized: "None"))
-                                .foregroundStyle(Theme.textPrimary)
-                            Spacer()
+                        AdaptiveStack(verticalAlignment: .center, spacing: 8) {
+                            HStack(spacing: 12) {
+                                ClubLogo(club: favorites.resolve(in: appModel.clubs), size: 34)
+                                Text(verbatim: favorites.resolve(in: appModel.clubs)?.displayName ?? String(localized: "None"))
+                                    .foregroundStyle(Theme.textPrimary)
+                            }
+                            Spacer(minLength: 0)
                             Text("Change").foregroundStyle(Theme.violetHigh)
                         }
                     }

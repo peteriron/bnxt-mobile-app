@@ -25,7 +25,7 @@ struct StatusPill: View {
             .foregroundStyle(Theme.live)
             .padding(.horizontal, 8)
             .padding(.vertical, 4)
-            .background(Theme.live.opacity(0.16), in: Capsule())
+            .background(Theme.live.opacity(Theme.badgeTintOpacity), in: Capsule())
             .accessibilityElement(children: .combine)
         case .final:
             Text("Final")

@@ -57,7 +57,7 @@ struct FormStrip: View {
                     .font(.caption2.weight(.heavy))
                     .frame(width: 20, height: 20)
                     .foregroundStyle(won ? Theme.win : Theme.loss)
-                    .background((won ? Theme.win : Theme.loss).opacity(0.16), in: RoundedRectangle(cornerRadius: 6))
+                    .background((won ? Theme.win : Theme.loss).opacity(Theme.badgeTintOpacity), in: RoundedRectangle(cornerRadius: 6))
             }
         }
         .accessibilityElement()

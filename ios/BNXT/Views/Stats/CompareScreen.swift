@@ -27,7 +27,7 @@ struct CompareScreen: View {
                     LoadFailedView { Task { await load(refresh: true) } }
                 case .loaded:
                     if let cachedAt = model.cachedAt { CachedNote(date: cachedAt) }
-                    HStack(spacing: 10) {
+                    AdaptiveStack(spacing: 10) {
                         ForEach(PlayerComparison.Side.allCases, id: \.self) { side in
                             CompareSlot(side: side, candidate: model.player(on: side), club: club(model.player(on: side)?.teamId)) {
                                 picking = side
@@ -126,7 +126,7 @@ private struct CompareSlot: View {
                     .padding(.horizontal, 10)
                     .padding(.vertical, 4)
                     .foregroundStyle(side.textColor)
-                    .background(side.color.opacity(0.16), in: Capsule())
+                    .background(side.color.opacity(Theme.badgeTintOpacity), in: Capsule())
             }
             .padding(12)
             .frame(maxWidth: .infinity)
@@ -178,7 +178,8 @@ private struct MirrorRow: View {
         Text(verbatim: stat.formatted(value))
             .font(Theme.compactNumber(.subheadline))
             .foregroundStyle(wins ? Theme.textPrimary : Theme.textTertiary)
-            .frame(width: 48, alignment: side == .first ? .leading : .trailing)
+            .fixedSize() // grows with the text instead of breaking "17,7" over three lines
+            .frame(minWidth: 48, alignment: side == .first ? .leading : .trailing)
     }
 
     /// A grows leftwards from the centre, B rightwards.

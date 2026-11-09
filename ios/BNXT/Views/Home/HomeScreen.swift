@@ -183,7 +183,7 @@ struct HomeScreen: View {
                             .font(.caption.weight(.heavy))
                             .frame(width: 24, height: 24)
                             .foregroundStyle(won ? Theme.win : Theme.loss)
-                            .background((won ? Theme.win : Theme.loss).opacity(0.16), in: RoundedRectangle(cornerRadius: 7))
+                            .background((won ? Theme.win : Theme.loss).opacity(Theme.badgeTintOpacity), in: RoundedRectangle(cornerRadius: 7))
                     }
                     Text(verbatim: "\(own ?? 0)–\(other ?? 0)")
                         .font(Theme.score(.title3))

@@ -36,6 +36,23 @@ final class ThemeTests: XCTestCase {
         }
     }
 
+    /// Badge text (LIVE, W/L, Compare's "Change") sits on its own colour as a tint. The audit flagged LIVE at 4.46:1.
+    /// Colours are listed here, not taken from Theme, so a changed token can't pass by changing both sides.
+    func testBadgeTextClearsAAOnItsOwnTint() {
+        // name: (text, tint)
+        let badges: [String: (text: RGB, tint: RGB)] = [
+            "live": (RGB(hex: 0xFF3B52), RGB(hex: 0xFF3B52)), "win": (RGB(hex: 0x3DDC97), RGB(hex: 0x3DDC97)),
+            "loss": (RGB(hex: 0xFF5C74), RGB(hex: 0xFF5C74)), "compare first": (RGB(hex: 0xA08CFF), RGB(hex: 0x6441FF)),
+            "compare second": (RGB(hex: 0xFF6A13), RGB(hex: 0xFF6A13))
+        ]
+        for background in [RGB.ink, RGB.surface] {
+            for (name, badge) in badges {
+                let fill = background.mixed(with: badge.tint, amount: Theme.badgeTintOpacity)
+                XCTAssertGreaterThanOrEqual(badge.text.contrast(with: fill), 4.5, "\(name) badge on \(background)")
+            }
+        }
+    }
+
     /// A face missing from UIAppFonts or the bundle makes SwiftUI fall back to the system font silently.
     func testEveryDisplayFaceIsBundledAndRegistered() {
         for face in DisplayFace.allCases {
