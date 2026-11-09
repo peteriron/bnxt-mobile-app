@@ -24,6 +24,8 @@ struct Fetched<Value: Sendable>: Sendable {
 ///   (`.cacheFirst`, `.maxAge`) are marked `.stored`.
 /// - Immutable data (a finished game's box score) is served cache-first without a request. An empty
 ///   cached result isn't trusted, because it may still be filled in later.
+/// - `RateLimitGuard` holds off the network when BNXT's per-IP limit runs low or it answers 429/5xx: cached copies
+///   are served meanwhile (marked `.cache`); with nothing cached, a back-off fails fast with `.rateLimited`.
 /// - Dependencies are injected (playbook 02): tests pass a `MockURLProtocol` session, a temp-directory
 ///   cache and a fixed clock.
 struct BNXTAPIClient: Sendable {
@@ -43,12 +45,15 @@ struct BNXTAPIClient: Sendable {
     let session: URLSession
     let cache: ResponseCache?
     let now: @Sendable () -> Date
+    /// Shared by every copy of this client (it's a struct), so all screens respect the same limit.
+    let rateLimit: RateLimitGuard
     /// The website sends `?lang=` and `X-Localization`; NL/FR come later (§7.11).
     let language: String
 
     init(configuration: APIConfiguration? = .main, session: URLSession = .shared, cache: ResponseCache? = .default,
-         language: String = "en", now: @escaping @Sendable () -> Date = Date.init) {
+         language: String = "en", now: @escaping @Sendable () -> Date = Date.init, rateLimit: RateLimitGuard = RateLimitGuard()) {
         self.configuration = configuration
+        self.rateLimit = rateLimit
         self.session = session
         self.cache = cache
         self.language = language
@@ -191,15 +196,8 @@ struct BNXTAPIClient: Sendable {
             guard let payload = try? JSONDecoder().decode(Payload.self, from: entry.data) else { return nil }
             return Fetched(value: map(payload), source: .cache, fetchedAt: entry.storedAt)
         }
-        if let cached, isUsable(cached.value) {
-            let stored = Fetched(value: cached.value, source: .stored, fetchedAt: cached.fetchedAt)
-            switch policy {
-            case .cacheFirst: return stored
-            case let .maxAge(age) where now().timeIntervalSince(cached.fetchedAt) < age: return stored
-            case let .storedSince(date) where cached.fetchedAt >= date: return stored
-            default: break
-            }
-        }
+        if let cached, isUsable(cached.value), let stored = deliberateHit(cached, policy: policy) { return stored }
+        if let held = try heldOff(cached) { return held }
         do {
             let data = try await load(endpoint)
             let payload: Payload
@@ -217,6 +215,26 @@ struct BNXTAPIClient: Sendable {
             if let cached { return cached }
             throw error
         }
+    }
+
+    /// The cached copy, marked `.stored`, when the policy says to use it without asking.
+    private func deliberateHit<Value>(_ cached: Fetched<Value>, policy: CachePolicy) -> Fetched<Value>? {
+        let stored = Fetched(value: cached.value, source: .stored, fetchedAt: cached.fetchedAt)
+        switch policy {
+        case .cacheFirst: return stored
+        case let .maxAge(age) where now().timeIntervalSince(cached.fetchedAt) < age: return stored
+        case let .storedSince(date) where cached.fetchedAt >= date: return stored
+        default: return nil
+        }
+    }
+
+    /// While the rate-limit guard holds off: the cached copy, or (backing off, nothing cached) a fast failure.
+    /// Running low with nothing cached returns nil: one request beats an empty screen.
+    private func heldOff<Value>(_ cached: Fetched<Value>?) throws -> Fetched<Value>? {
+        guard let hold = rateLimit.holdUntil(at: now()) else { return nil }
+        if let cached { return cached }
+        if hold.inBackoff { throw APIError.rateLimited(retryAfter: hold.until.timeIntervalSince(now())) }
+        return nil
     }
 
     private func load(_ endpoint: Endpoint) async throws -> Data {
@@ -237,11 +255,14 @@ struct BNXTAPIClient: Sendable {
             throw APIError.network(error.code)
         }
         guard let http = response as? HTTPURLResponse else { throw APIError.invalidResponse }
+        let retryAfter = http.value(forHTTPHeaderField: "Retry-After").flatMap(TimeInterval.init)
+        rateLimit.record(status: http.statusCode, remaining: http.value(forHTTPHeaderField: "X-RateLimit-Remaining").flatMap { Int($0) },
+                         retryAfter: retryAfter, at: now())
         switch http.statusCode {
         case 200..<300: return data
         case 401: throw APIError.unauthorized
         case 404: throw APIError.notFound
-        case 429: throw APIError.rateLimited(retryAfter: http.value(forHTTPHeaderField: "Retry-After").flatMap(TimeInterval.init))
+        case 429: throw APIError.rateLimited(retryAfter: retryAfter)
         default: throw APIError.http(status: http.statusCode)
         }
     }

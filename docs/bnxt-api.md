@@ -97,7 +97,9 @@ All people in the API are professional players and staff with public league prof
 - Live: one request per live screen every **10 s** (5 s minimum if the cadence turns out higher), only while the screen is visible, paused in the background.
   Measured 5 Nov 2026: FIBA publishes every ~30 s and BNXT's live score every 1–3 min, so 10 s for the FIBA feed and 30 s for
   `schedule/find` lose nothing (to settle in Phase 4).
-- Exponential back-off on 429/5xx. Stop and show cached data when `X-RateLimit-Remaining` < 20.
+- Exponential back-off on 429/5xx. Stop and show cached data when `X-RateLimit-Remaining` < 20. Enforced by `RateLimitGuard`
+  (9 Nov 2026): below 20, cached copies until the ~65 s window resets (still one request if nothing is cached); a 429 holds
+  off for its `Retry-After`, a 5xx for 5 s doubling to 60 s, during which nothing-cached requests fail fast; a success resets it.
 
 ## Research tooling
 
