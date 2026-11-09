@@ -12,8 +12,8 @@ options:
 
 settings:
   base:
-    MARKETING_VERSION: "0.1.0"        # x.y.z, set by the bump_version lane; read by the version checker (§3.9)
-    CURRENT_PROJECT_VERSION: "1"      # build number, only ever goes up
+    MARKETING_VERSION: "1.0.0"        # x.y.z, set by the bump_version lane; read by the version checker (§3.9)
+    CURRENT_PROJECT_VERSION: "2"      # build number, only ever goes up
     SWIFT_VERSION: "6.0"
     SWIFT_STRICT_CONCURRENCY: complete
     ENABLE_USER_SCRIPT_SANDBOXING: YES
