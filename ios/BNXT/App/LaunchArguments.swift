@@ -43,6 +43,27 @@ enum LaunchArguments {
         #endif
     }
 
+    /// `--uitest-offline`: every request fails as if there were no connection (Debug only; §4 Offline).
+    static let offlineFlag = "--uitest-offline"
+    /// `--uitest-clear-cache`: start with an empty response cache, as on a first launch (Debug only).
+    static let clearCacheFlag = "--uitest-clear-cache"
+
+    static func offline(_ arguments: [String] = ProcessInfo.processInfo.arguments) -> Bool {
+        #if DEBUG
+        return arguments.contains(offlineFlag)
+        #else
+        return false
+        #endif
+    }
+
+    static func clearCache(_ arguments: [String] = ProcessInfo.processInfo.arguments) -> Bool {
+        #if DEBUG
+        return arguments.contains(clearCacheFlag)
+        #else
+        return false
+        #endif
+    }
+
     static func resetState(_ arguments: [String] = ProcessInfo.processInfo.arguments) -> Bool {
         arguments.contains(resetStateFlag)
     }

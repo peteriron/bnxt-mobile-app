@@ -40,7 +40,12 @@ final class FavoriteClubStore {
     /// The favourite among `clubs`, re-linking by short name after a season change.
     func resolve(in clubs: [Club]) -> Club? {
         guard let saved else { return nil }
-        if let club = clubs.first(where: { $0.id == saved.teamId }) { return club }
+        if let club = clubs.first(where: { $0.id == saved.teamId }) {
+            // Picked offline, the favourite was saved with a made-up short name: adopt the API's real one,
+            // which is what finds the club again after a season change.
+            if !club.shortNameIsDerived, club.shortName != saved.shortName { save(Saved(teamId: club.id, shortName: club.shortName)) }
+            return club
+        }
         guard let renewed = clubs.first(where: { $0.shortName == saved.shortName }) else { return nil }
         save(Saved(teamId: renewed.id, shortName: renewed.shortName))
         return renewed

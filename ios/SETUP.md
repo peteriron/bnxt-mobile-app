@@ -137,7 +137,8 @@ swiftlint --strict
 ## Manual QA (what automation can't reach)
 
 - A real live game night: score, clock and play-by-play against the official site; battery over 2 hours.
-- Offline after a successful load, and first launch offline.
+- Offline on a device: Airplane Mode, and a weak connection (requests time out after 20 s). `OfflineUITests` covers first launch
+  offline and relaunching offline after an online run, with `--uitest-offline` (every request fails) and `--uitest-clear-cache`.
 - Dynamic Type at AX sizes and VoiceOver on each new screen, on a device.
 - Tickets / BNXT.tv / game report links open correctly; Add to Calendar.
 

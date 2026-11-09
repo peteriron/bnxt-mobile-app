@@ -11,6 +11,13 @@ struct BNXTApp: App {
     init() {
         // Logos and photos are re-used everywhere; give AsyncImage a real disk cache.
         URLCache.shared = URLCache(memoryCapacity: 20 << 20, diskCapacity: 150 << 20)
+        #if DEBUG
+        // UI tests: a first launch (no cached responses) and/or no network (§4 Offline).
+        if LaunchArguments.clearCache(), let directory = ResponseCache.default?.directory {
+            try? FileManager.default.removeItem(at: directory)
+        }
+        if LaunchArguments.offline() { URLProtocol.registerClass(OfflineURLProtocol.self) }
+        #endif
 
         let installed = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0"
         // UI tests can pin a policy (Debug only); otherwise the remote config decides (§3.9, §7.24).

@@ -113,6 +113,27 @@ final class FavoriteClubStoreTests: XCTestCase {
         XCTAssertEqual(FavoriteClubStore(defaults: defaults, resetState: false).clubId, 701, "the new id is saved")
     }
 
+    /// Bug (found 9 Nov 2026 by OfflineUITests): picked during an offline first launch, the favourite was saved with the
+    /// short name derived from the config ("SPI"), never corrected, and lost at the next season change (new ids, "CHA").
+    func testAFavouritePickedOfflineSurvivesTheNextSeasonChange() throws {
+        let configOnly = try XCTUnwrap(Club.merge(teams: [], config: RemoteConfig.bundled()).first { $0.id == 537 })
+        XCTAssertNotEqual(configOnly.shortName, "CHA", "precondition: the config has no short names")
+        let store = FavoriteClubStore(defaults: defaults, resetState: false)
+        store.choose(configOnly)
+
+        XCTAssertEqual(store.resolve(in: [club(537, "CHA")])?.id, 537, "online: the API's club")
+        XCTAssertEqual(store.resolve(in: [club(701, "CHA")])?.id, 701, "next season: found again by its real short name")
+    }
+
+    func testADerivedShortNameNeverReplacesTheRealOne() throws {
+        let store = FavoriteClubStore(defaults: defaults, resetState: false)
+        store.choose(club(537, "CHA"))
+        let configOnly = try XCTUnwrap(Club.merge(teams: [], config: RemoteConfig.bundled()).first { $0.id == 537 })
+
+        XCTAssertEqual(store.resolve(in: [configOnly])?.id, 537)
+        XCTAssertEqual(store.saved?.shortName, "CHA")
+    }
+
     func testUnknownClubResolvesToNil() {
         let store = FavoriteClubStore(defaults: defaults, resetState: false)
         store.choose(club(537, "CHA"))

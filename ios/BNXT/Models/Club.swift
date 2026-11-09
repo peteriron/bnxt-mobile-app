@@ -17,12 +17,15 @@ struct Club: Identifiable, Hashable, Sendable {
     let brandColor: RGB?
     /// Dark logos get a light plate (§7.26).
     let needsLogoPlate: Bool
+    /// A config-only club's short name is made up from its display name ("SPI", not the API's "CHA").
+    let shortNameIsDerived: Bool
 
     /// The brand colour lifted to 3:1 on ink, for gradients, bars and rings (§5.1). Never for text.
     var graphicColor: RGB { (brandColor ?? .violet).lifted(toContrast: 3, against: .ink) }
 
     init(id: Int, shortName: String, displayName: String, officialName: String, city: String? = nil, country: Country? = nil,
-         logoURL: URL? = nil, ticketURL: URL? = nil, brandColor: RGB? = nil, needsLogoPlate: Bool = false) {
+         logoURL: URL? = nil, ticketURL: URL? = nil, brandColor: RGB? = nil, needsLogoPlate: Bool = false,
+         shortNameIsDerived: Bool = false) {
         self.id = id
         self.shortName = shortName
         self.displayName = displayName
@@ -33,6 +36,7 @@ struct Club: Identifiable, Hashable, Sendable {
         self.ticketURL = ticketURL
         self.brandColor = brandColor
         self.needsLogoPlate = needsLogoPlate
+        self.shortNameIsDerived = shortNameIsDerived
     }
 
     init(team: Team, settings: RemoteConfig.TeamSettings?) {
@@ -53,7 +57,8 @@ struct Club: Identifiable, Hashable, Sendable {
         guard let name = settings.displayName else { return nil }
         let letters = name.filter(\.isLetter)
         self.init(id: id, shortName: String(letters.prefix(3)).uppercased(), displayName: name, officialName: name,
-                  city: settings.city, country: settings.country, brandColor: settings.rgb, needsLogoPlate: settings.logoPlate ?? false)
+                  city: settings.city, country: settings.country, brandColor: settings.rgb, needsLogoPlate: settings.logoPlate ?? false,
+                  shortNameIsDerived: true)
     }
 
     /// All clubs: API teams merged with config; config-only clubs fill in when the API had nothing.
