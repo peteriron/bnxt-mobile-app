@@ -15,6 +15,8 @@ SCREENSHOT_DEVICE = ENV.fetch("SCREENSHOT_DEVICE", "iPhone 14 Plus")
 # `name=` alone resolves to the newest runtime, which may not have that device; pin the OS.
 SCREENSHOT_OS = ENV.fetch("SCREENSHOT_OS", "26.5")
 SCREENSHOT_NAMES = %w[01-Home 02-Games 03-Standings 04-Stats 05-Clubs].freeze
+# Listing languages; nl-NL is the primary. The app UI is English for now, so both get the same screenshots.
+LOCALES = %w[nl-NL en-US].freeze
 BLOCKING_STATES = %w[WAITING_FOR_REVIEW IN_REVIEW PENDING_DEVELOPER_RELEASE PENDING_APPLE_RELEASE].freeze
 
 def generate!
@@ -54,7 +56,7 @@ platform :ios do
     UI.success("Bumped to #{version} (#{build})")
   end
 
-  desc "Capture App Store screenshots with AppStoreScreenshotUITests into fastlane/screenshots/en-US"
+  desc "Capture App Store screenshots with AppStoreScreenshotUITests into fastlane/screenshots/<locale>"
   lane :screenshots do
     generate!
     work = File.join(REPO_DIR, ".tmp", "screenshots")
@@ -72,6 +74,10 @@ platform :ios do
     end
     missing = SCREENSHOT_NAMES.reject { |n| File.exist?(File.join(out, "#{n}.png")) }
     UI.user_error!("Missing screenshots: #{missing.join(', ')}") unless missing.empty?
+    (LOCALES - ["en-US"]).each do |locale|
+      dir = File.join(IOS_DIR, "fastlane", "screenshots", locale)
+      sh("rm -rf '#{dir}' && cp -R '#{out}' '#{dir}'")
+    end
     UI.success("Screenshots in #{out}. Look at every one before staging.")
   end
 

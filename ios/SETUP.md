@@ -152,7 +152,11 @@ One-time setup:
    `~/.appstoreconnect/private_keys/AuthKey_<KEY_ID>.p8`. Never commit it.
 3. `ios/fastlane/.env` (git-ignored): `ASC_KEY_ID=…` and `ASC_ISSUER_ID=…`.
 4. `cd ios && bundle install`.
-5. Privacy policy and support URLs (currently placeholders in `ios/fastlane/metadata/en-US/*_url.txt`).
+5. Privacy policy, support and marketing pages: `docs/*.html`, published by GitHub Pages at https://peteriron.github.io/bnxt-mobile-app/.
+6. Signing is manual (decided 9 Nov 2026): the App Manager API key can't use cloud-managed distribution certificates, and a key's role
+   can't be changed. `ExportOptions.plist` uses the "Apple Distribution: Peter Jans" certificate (in this Mac's keychain, expires
+   Aug 2027) and the App Store profile "BNXT App Store" (created through the API). When the certificate is renewed, regenerate that profile.
+7. Listing: Dutch (nl-NL) is the primary language, English (en-US) the second; `fastlane screenshots` copies the same images to both.
 
 Lanes (`ios/fastlane/Fastfile`, not yet exercised against App Store Connect): `test`, `bump_version version:x.y.z`, `screenshots`,
 `build_and_upload` (`ios/scripts/release.sh`), `stage_app_store version:x.y.z`. The last refuses while any version is with Apple, and verifies the screenshots landed.

@@ -1,0 +1,12 @@
+Volg je club door de BNXT League, de gezamenlijke hoogste afdeling van België en Nederland.
+
+• Je club eerst: volgende wedstrijd, laatste uitslag, stand en topspelers op één scherm
+• Live wedstrijden met score, klok en play-by-play
+• Volledige boxscores, kwartstanden en uitblinkers van elke wedstrijd
+• Standen van de hele competitie, België en Nederland, plus het verwachte playoffbeeld
+• Statistiekleiders in negen categorieën en spelers naast elkaar vergelijken
+• Elke club, selectie en spelerspagina met seizoensgemiddelden en wedstrijdlogboek
+
+Geen account, geen tracking. Gebouwd op openbare gegevens van de BNXT League.
+
+De app zelf is voorlopig in het Engels.
